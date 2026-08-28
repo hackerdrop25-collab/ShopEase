@@ -1,0 +1,9 @@
+# Controllers directory
+# Route handler functions will be added here in Phases 3-6:
+#   authController.js     (Phase 3)
+#   productController.js  (Phase 4)
+#   cartController.js     (Phase 5)
+#   wishlistController.js (Phase 5)
+#   orderController.js    (Phase 5)
+#   paymentController.js  (Phase 6)
+#   adminController.js    (Phase 8)
