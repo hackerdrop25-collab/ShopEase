@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/auth.css';
 
@@ -17,9 +17,30 @@ export default function Profile() {
   const navigate = useNavigate();
   const { user, loading, isAuthenticated, logout, updateProfile, changePassword } = useAuth();
 
-  const [tab, setTab] = useState('profile'); // 'profile' or 'password'
+  const [tab, setTab] = useState('profile'); // 'profile', 'password', or 'orders'
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  // Fetch orders when the orders tab is active
+  useEffect(() => {
+    if (tab === 'orders' && isAuthenticated) {
+      fetchUserOrders();
+    }
+  }, [tab, isAuthenticated]);
+
+  const fetchUserOrders = async () => {
+    try {
+      setLoadingOrders(true);
+      const response = await api.get('/orders');
+      setOrders(response.data.orders || []);
+    } catch (err) {
+      console.error('Failed to fetch orders:', err);
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Profile Form State
@@ -163,7 +184,12 @@ export default function Profile() {
 
   return (
     <div className="auth-container">
-      <div className="auth-card profile-card">
+      {/* Return to Home link */}
+      <Link to="/" style={{ position: 'absolute', top: '20px', left: '20px', color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
+        ← Back to ShopEase Home
+      </Link>
+
+      <div className="auth-card profile-card" style={{ maxWidth: '800px', width: '100%' }}>
         <div className="profile-header">
           <h1>My Profile</h1>
           <button onClick={handleLogout} className="btn btn-danger">
@@ -172,7 +198,7 @@ export default function Profile() {
         </div>
 
         {/* Tabs */}
-        <div className="profile-tabs">
+        <div className="profile-tabs" style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
           <button
             className={`tab ${tab === 'profile' ? 'active' : ''}`}
             onClick={() => {
@@ -190,6 +216,15 @@ export default function Profile() {
             }}
           >
             Change Password
+          </button>
+          <button
+            className={`tab ${tab === 'orders' ? 'active' : ''}`}
+            onClick={() => {
+              setTab('orders');
+              setMessage('');
+            }}
+          >
+            My Orders
           </button>
         </div>
 
@@ -285,6 +320,68 @@ export default function Profile() {
               {isLoading ? 'Changing...' : 'Change Password'}
             </button>
           </form>
+        )}
+
+        {/* Orders Tab */}
+        {tab === 'orders' && (
+          <div className="orders-tab" style={{ marginTop: '20px' }}>
+            {loadingOrders ? (
+              <div style={{ textAlign: 'center', padding: '20px' }}>Loading your orders...</div>
+            ) : orders.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '35px 20px', background: '#f7fafc', borderRadius: '12px' }}>
+                <p style={{ color: '#718096', fontSize: '15px', fontWeight: '600', margin: 0 }}>No orders placed yet!</p>
+                <Link to="/" className="btn btn-primary" style={{ marginTop: '15px', display: 'inline-block' }}>Shop Now</Link>
+              </div>
+            ) : (
+              <div className="orders-list" style={{ display: 'flex', flexDirection: 'col', gap: '20px' }}>
+                {orders.map((order) => (
+                  <div key={order._id} className="order-item-card" style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px', background: 'white' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #edf2f7', paddingBottom: '12px', marginBottom: '12px', flexWrap: 'wrap', gap: '10px' }}>
+                      <div>
+                        <span style={{ fontSize: '12px', color: '#718096', display: 'block' }}>ORDER NUMBER</span>
+                        <strong style={{ fontSize: '15px', color: '#2d3748' }}>{order.orderNumber}</strong>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '12px', color: '#718096', display: 'block' }}>DATE PLACED</span>
+                        <span style={{ fontSize: '14px', fontWeight: '600' }}>{new Date(order.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '12px', color: '#718096', display: 'block' }}>TOTAL AMOUNT</span>
+                        <strong style={{ fontSize: '16px', color: '#48bb78' }}>₹{order.totalPrice}</strong>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '12px', color: '#718096', display: 'block', textAlign: 'right' }}>STATUS</span>
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '3px 10px',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          background: order.orderStatus === 'delivered' ? '#c6f6d5' : order.orderStatus === 'cancelled' ? '#fed7d7' : '#feebc8',
+                          color: order.orderStatus === 'delivered' ? '#22543d' : order.orderStatus === 'cancelled' ? '#742a2a' : '#744210'
+                        }}>
+                          {order.orderStatus}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Order Items */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {order.items?.map((item, idx) => (
+                        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                          <span style={{ color: '#4a5568', fontWeight: '500' }}>
+                            {item.title} <span style={{ color: '#a0aec0' }}>x {item.quantity}</span>
+                          </span>
+                          <span style={{ fontWeight: '600', color: '#2d3748' }}>₹{item.price * item.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

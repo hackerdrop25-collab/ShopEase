@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
         phone,
       });
 
-      const { token, user: userData } = response.data.data;
+      const { token, user: userData } = response.data;
 
       // Store token and user
       localStorage.setItem('token', token);
@@ -52,8 +52,9 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       const message =
         err.response?.data?.message || err.message || 'Registration failed';
+      const validationErrors = err.response?.data?.errors || null;
       setError(message);
-      return { success: false, error: message };
+      return { success: false, error: message, validationErrors };
     }
   };
 
@@ -65,7 +66,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await api.post('/auth/login', { email, password });
 
-      const { token, user: userData } = response.data.data;
+      const { token, user: userData } = response.data;
 
       // Store token and user
       localStorage.setItem('token', token);
@@ -105,7 +106,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.get('/auth/profile');
-      const userData = response.data.data;
+      const userData = response.data.user || response.data.data;
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
       return { success: true, user: userData };
@@ -124,7 +125,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.put('/auth/profile', data);
-      const userData = response.data.data;
+      const userData = response.data.user || response.data.data;
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
       return { success: true, user: userData };

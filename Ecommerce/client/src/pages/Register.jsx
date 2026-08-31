@@ -62,6 +62,8 @@ export default function Register() {
       errors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       errors.password = 'Password must be at least 8 characters';
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      errors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
 
     if (!formData.phone.trim()) {
@@ -101,6 +103,12 @@ export default function Register() {
     if (result.success) {
       // Redirect to profile on success
       navigate('/profile');
+    } else if (result.validationErrors) {
+      const fieldErrors = {};
+      result.validationErrors.forEach((err) => {
+        fieldErrors[err.field] = err.message;
+      });
+      setValidationErrors(fieldErrors);
     }
   };
 
