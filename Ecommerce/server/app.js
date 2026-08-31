@@ -21,6 +21,10 @@ const mongoose = require('mongoose');
 
 // xss-clean removed (deprecated) — Helmet CSP + mongoSanitize handle injection prevention
 const routes = require('./routes/index');
+const productRoutes = require('./routes/productRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 const { errorHandler, AppError } = require('./middleware/errorHandler');
 
 const app = express();
@@ -99,7 +103,7 @@ app.use('/api', (req, res, next) => {
   if (mongoose.connection.readyState !== 1) {
     return res.status(503).json({
       success: false,
-      message: 'Database unavailable. Check the MongoDB username, password, and connection string in server/.env.',
+      message: 'Database unavailable. Start MongoDB locally or whitelist your IP in MongoDB Atlas (https://cloud.mongodb.com).',
     });
   }
   return next();
@@ -120,6 +124,10 @@ app.get('/', (req, res) => {
 });
 
 // ── 8. API Routes ─────────────────────────────────────────────────────────────
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/api', routes);
 
 // ── 9. 404 Handler (for unmatched routes) ────────────────────────────────────

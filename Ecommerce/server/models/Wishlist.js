@@ -36,14 +36,12 @@ const wishlistSchema = new mongoose.Schema(
       index: true,
     },
 
-    products: {
-      type: [wishlistItemSchema],
-      default: [],
-      validate: {
-        validator: (arr) => arr.length <= 100,
-        message: 'Wishlist cannot contain more than 100 products',
-      },
-    },
+    products: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+      }
+    ],
   },
   {
     timestamps: true,

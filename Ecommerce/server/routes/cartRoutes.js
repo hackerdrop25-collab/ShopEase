@@ -1,35 +1,37 @@
-/**
- * ShopEase - Cart Routes (Phase 5)
- *
- * All routes are protected (require JWT).
- *
- *   GET    /             → getCart
- *   POST   /add          → addToCart
- *   PUT    /update/:productId → updateCartItem
- *   DELETE /remove/:productId → removeFromCart
- *   DELETE /clear        → clearCart
- */
-
-const express = require('express');
-const { protect } = require('../middleware/auth');
+const express = require("express");
 
 const {
   getCart,
   addToCart,
   updateCartItem,
   removeFromCart,
-  clearCart,
-} = require('../controllers/cartController');
+  clearCart
+} = require("../controllers/cartController");
+
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// All cart routes require authentication
-router.use(protect);
+router.get("/", protect, getCart);
 
-router.get('/', getCart);
-router.post('/add', addToCart);
-router.put('/update/:productId', updateCartItem);
-router.delete('/remove/:productId', removeFromCart);
-router.delete('/clear', clearCart);
+router.post("/add", protect, addToCart);
+
+router.put(
+  "/update/:productId",
+  protect,
+  updateCartItem
+);
+
+router.delete(
+  "/remove/:productId",
+  protect,
+  removeFromCart
+);
+
+router.delete(
+  "/clear",
+  protect,
+  clearCart
+);
 
 module.exports = router;

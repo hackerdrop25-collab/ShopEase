@@ -69,10 +69,30 @@ const cartSchema = new mongoose.Schema(
       index: true,
     },
 
-    items: {
-      type: [cartItemSchema],
-      default: [],
-    },
+    items: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product',
+        },
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+        price: {
+          type: Number,
+          default: 0,
+        },
+        title: {
+          type: String,
+          default: '',
+        },
+        image: {
+          type: String,
+          default: '',
+        },
+      }
+    ],
 
     // Coupon applied to this cart
     appliedCoupon: {

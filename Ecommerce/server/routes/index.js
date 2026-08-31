@@ -37,6 +37,6 @@ router.use('/wishlist', require('./wishlistRoutes'));
 router.use('/orders', require('./orderRoutes'));
 
 // ── Phase 6: Payment Routes ──────────────────────────────────────────────────
-// router.use('/payment', require('./paymentRoutes'));
+router.use('/payment', require('./paymentRoutes'));
 
 module.exports = router;

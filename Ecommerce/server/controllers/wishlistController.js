@@ -1,89 +1,129 @@
-/**
- * ShopEase - Wishlist Controller (Phase 5)
- *
- * All routes are protected (require JWT).
- *
- *   GET    /api/wishlist                   → getWishlist
- *   POST   /api/wishlist/add               → addToWishlist
- *   DELETE /api/wishlist/remove/:productId  → removeFromWishlist
- */
+const Wishlist = require("../models/Wishlist");
+const Product = require("../models/Product");
 
-const Wishlist = require('../models/Wishlist');
-const Product = require('../models/Product');
-const { AppError, catchAsync } = require('../middleware/errorHandler');
-const { sendResponse } = require('../utils/sendResponse');
+// GET WISHLIST
+const getWishlist = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    let wishlist = await Wishlist.findOne({
+      user: userId
+    }).populate("products");
 
-// ── GET WISHLIST ─────────────────────────────────────────────────────────────
-const getWishlist = catchAsync(async (req, res, next) => {
-  let wishlist = await Wishlist.findOne({ user: req.user._id })
-    .populate('products.product', 'title slug price comparePrice stock images rating numReviews isActive');
+    if (!wishlist) {
+      wishlist = await Wishlist.create({
+        user: userId,
+        products: []
+      });
+    }
 
-  if (!wishlist) {
-    wishlist = await Wishlist.create({
-      user: req.user._id,
-      products: [],
+    res.status(200).json(wishlist);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get wishlist",
+      error: error.message
     });
   }
+};
 
-  return sendResponse(res, 200, 'Wishlist fetched successfully.', { wishlist });
-});
 
-// ── ADD TO WISHLIST ──────────────────────────────────────────────────────────
-const addToWishlist = catchAsync(async (req, res, next) => {
-  const { productId } = req.body;
+// ADD WISHLIST
+const addToWishlist = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const userId = req.user.id || req.user._id;
 
-  if (!productId) {
-    return next(new AppError('Product ID is required.', 400));
-  }
+    const product = await Product.findOne({
+      _id: productId,
+      isActive: true
+    });
 
-  const product = await Product.findOne({ _id: productId, isActive: true });
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
 
-  if (!product) {
-    return next(new AppError('Product not found.', 404));
-  }
+    let wishlist = await Wishlist.findOne({
+      user: userId
+    });
 
-  let wishlist = await Wishlist.findOne({ user: req.user._id });
+    if (!wishlist) {
+      wishlist = new Wishlist({
+        user: userId,
+        products: []
+      });
+    }
 
-  if (!wishlist) {
-    wishlist = new Wishlist({
-      user: req.user._id,
-      products: [],
+    const exists = wishlist.products.some(
+      id => id.toString() === productId
+    );
+
+    if (exists) {
+      return res.status(400).json({
+        message: "Product already in wishlist"
+      });
+    }
+
+    wishlist.products.push(productId);
+
+    await wishlist.save();
+    await wishlist.populate("products");
+
+    res.status(200).json({
+      message: "Added to wishlist",
+      wishlist
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to add wishlist",
+      error: error.message
     });
   }
+};
 
-  // Use the model's built-in hasProduct method
-  if (wishlist.hasProduct(productId)) {
-    return next(new AppError('Product already in wishlist.', 400));
+
+// REMOVE WISHLIST
+const removeFromWishlist = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user.id || req.user._id;
+
+    const wishlist = await Wishlist.findOne({
+      user: userId
+    });
+
+    if (!wishlist) {
+      return res.status(404).json({
+        message: "Wishlist not found"
+      });
+    }
+
+    wishlist.products =
+      wishlist.products.filter(
+        id => id.toString() !== productId
+      );
+
+    await wishlist.save();
+    await wishlist.populate("products");
+
+    res.status(200).json({
+      message: "Removed from wishlist",
+      wishlist
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to remove wishlist",
+      error: error.message
+    });
   }
+};
 
-  // Use the model's built-in addProduct method (saves automatically)
-  await wishlist.addProduct(productId);
-
-  await wishlist.populate('products.product', 'title slug price comparePrice stock images rating numReviews isActive');
-
-  return sendResponse(res, 200, 'Product added to wishlist.', { wishlist });
-});
-
-// ── REMOVE FROM WISHLIST ─────────────────────────────────────────────────────
-const removeFromWishlist = catchAsync(async (req, res, next) => {
-  const { productId } = req.params;
-
-  const wishlist = await Wishlist.findOne({ user: req.user._id });
-
-  if (!wishlist) {
-    return next(new AppError('Wishlist not found.', 404));
-  }
-
-  // Use the model's built-in removeProduct method (saves automatically)
-  await wishlist.removeProduct(productId);
-
-  await wishlist.populate('products.product', 'title slug price comparePrice stock images rating numReviews isActive');
-
-  return sendResponse(res, 200, 'Product removed from wishlist.', { wishlist });
-});
 
 module.exports = {
   getWishlist,
   addToWishlist,
-  removeFromWishlist,
+  removeFromWishlist
 };

@@ -278,12 +278,20 @@ export default function Cart() {
             </div>
 
             <button
-              type="submit"
+              type="button"
+              onClick={() => navigate('/checkout')}
               className="btn btn-primary btn-full"
-              style={{ marginTop: '20px' }}
+              style={{ marginTop: '20px', padding: '14px', fontSize: '15px' }}
+            >
+              ⚡ Proceed to Checkout & Payment
+            </button>
+            <button
+              type="submit"
+              className="btn btn-secondary btn-full"
+              style={{ marginTop: '10px' }}
               disabled={loading}
             >
-              {loading ? 'Processing Checkout...' : 'Place Order (COD)'}
+              {loading ? 'Processing Checkout...' : 'Quick Place Order (COD)'}
             </button>
           </form>
         </div>

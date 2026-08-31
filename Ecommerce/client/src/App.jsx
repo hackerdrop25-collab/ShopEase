@@ -18,6 +18,9 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
+import AdminDashboard from './pages/AdminDashboard';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Protected Route Component
@@ -77,6 +80,30 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Wishlist />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

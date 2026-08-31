@@ -119,7 +119,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // ── Indexes ───────────────────────────────────────────────────────────────────
-userSchema.index({ email: 1 });
+// Note: email unique index is defined via `unique: true` on the field above
 
 // ── Pre-save Hook: Hash password before saving ────────────────────────────────
 userSchema.pre('save', async function (next) {

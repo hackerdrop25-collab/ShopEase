@@ -38,34 +38,31 @@ const specSchema = new mongoose.Schema(
 // ── Product Schema ────────────────────────────────────────────────────────────
 const productSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
-      required: [true, 'Product title is required'],
       trim: true,
-      minlength: [3,   'Title must be at least 3 characters'],
-      maxlength: [200, 'Title cannot exceed 200 characters'],
     },
 
-    // URL-friendly identifier (auto-generated from title)
+    title: {
+      type: String,
+      trim: true,
+    },
+
+    // URL-friendly identifier (auto-generated from title/name)
     slug: {
       type: String,
-      unique: true,
       lowercase: true,
-      index: true,
     },
 
     description: {
       type: String,
       required: [true, 'Product description is required'],
       trim: true,
-      minlength: [20,   'Description must be at least 20 characters'],
-      maxlength: [5000, 'Description cannot exceed 5000 characters'],
     },
 
     shortDescription: {
       type: String,
       trim: true,
-      maxlength: [300, 'Short description cannot exceed 300 characters'],
     },
 
     price: {
@@ -78,19 +75,10 @@ const productSchema = new mongoose.Schema(
     comparePrice: {
       type: Number,
       min: [0, 'Compare price cannot be negative'],
-      validate: {
-        validator: function (val) {
-          // comparePrice must be >= price if provided
-          return !val || val >= this.price;
-        },
-        message: 'Compare price must be greater than or equal to selling price',
-      },
     },
 
     stock: {
       type: Number,
-      required: [true, 'Stock quantity is required'],
-      min: [0, 'Stock cannot be negative'],
       default: 0,
     },
 
@@ -98,37 +86,44 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Category is required'],
       trim: true,
-      enum: {
-        values: [
-          'Electronics',
-          'Fashion',
-          'Home & Kitchen',
-          'Books',
-          'Sports & Outdoors',
-          'Beauty & Personal Care',
-          'Toys & Games',
-          'Automotive',
-          'Health & Wellness',
-          'Grocery',
-          'Other',
-        ],
-        message: '{VALUE} is not a supported category',
-      },
+    },
+
+    subcategory: {
+      type: String,
+      trim: true,
+      default: 'General',
+    },
+
+    unit: {
+      type: String,
+      trim: true,
+      default: '1 kg',
+    },
+
+    isOrganic: {
+      type: Boolean,
+      default: true,
+    },
+
+    farmOrigin: {
+      type: String,
+      trim: true,
+      default: 'Organic Valley Farms',
+    },
+
+    harvestDate: {
+      type: String,
+      trim: true,
     },
 
     brand: {
       type: String,
       trim: true,
-      maxlength: [100, 'Brand name cannot exceed 100 characters'],
     },
 
-    // At least one product image is required
     images: {
-      type: [imageSchema],
-      validate: {
-        validator: (arr) => arr.length >= 1,
-        message: 'At least one product image is required',
-      },
+      type: mongoose.Schema.Types.Mixed,
+      default: [],
     },
 
     // Average rating — auto-updated by Review.calcAverageRating()
@@ -208,23 +203,27 @@ productSchema.virtual('inStock').get(function () {
   return this.stock > 0;
 });
 
+// ── Pre-validate Hook: Sync name and title ──────────────────────────────────
+productSchema.pre('validate', function (next) {
+  if (this.name && !this.title) this.title = this.name;
+  if (this.title && !this.name) this.name = this.title;
+  next();
+});
+
 // ── Pre-save Hook: Generate Slug ──────────────────────────────────────────────
 productSchema.pre('save', async function (next) {
-  if (!this.isModified('title')) return next();
+  const titleOrName = this.title || this.name;
+  if (!titleOrName) return next();
 
-  // Convert title to lowercase kebab-case slug
-  let slug = this.title
+  if (!this.isModified('title') && !this.isModified('name') && this.slug) return next();
+
+  // Convert title/name to lowercase kebab-case slug
+  let slug = titleOrName
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')   // remove special characters
     .trim()
     .replace(/\s+/g, '-')           // spaces → hyphens
     .replace(/-+/g, '-');           // collapse multiple hyphens
-
-  // Ensure uniqueness by appending a short ID suffix if needed
-  const existing = await this.constructor.findOne({ slug, _id: { $ne: this._id } });
-  if (existing) {
-    slug = `${slug}-${this._id.toString().slice(-6)}`;
-  }
 
   this.slug = slug;
   next();

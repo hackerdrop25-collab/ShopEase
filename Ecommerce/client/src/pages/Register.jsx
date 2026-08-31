@@ -116,7 +116,7 @@ export default function Register() {
     <div className="auth-container">
       <div className="auth-card">
         <h1>Create Account</h1>
-        <p className="auth-subtitle">Join ShopEase today</p>
+        <p className="auth-subtitle">Join AgriFresh today 🌾</p>
 
         {error && <div className="error-message">{error}</div>}
 

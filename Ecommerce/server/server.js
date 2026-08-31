@@ -20,11 +20,15 @@ const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // ── Handle Uncaught Exceptions ───────────────────────────────────────────────
-// Must be registered BEFORE any other code runs
 process.on('uncaughtException', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n🔴 Port ${PORT} is already in use!`);
+    console.error(`   Run this command to fix it:`);
+    console.error(`   npx kill-port ${PORT}\n`);
+    process.exit(1);
+  }
   console.error('💥 UNCAUGHT EXCEPTION! Shutting down…');
   console.error(`${err.name}: ${err.message}`);
-  console.error(err.stack);
   process.exit(1);
 });
 

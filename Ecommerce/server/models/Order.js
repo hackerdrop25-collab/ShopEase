@@ -43,13 +43,15 @@ const orderItemSchema = new mongoose.Schema(
 // ── Shipping Address Sub-Schema ───────────────────────────────────────────────
 const shippingAddressSchema = new mongoose.Schema(
   {
-    name:    { type: String, required: [true, 'Recipient name is required'], trim: true },
-    phone:   { type: String, required: [true, 'Phone is required'], trim: true },
-    street:  { type: String, required: [true, 'Street is required'], trim: true },
-    city:    { type: String, required: [true, 'City is required'], trim: true },
-    state:   { type: String, required: [true, 'State is required'], trim: true },
-    pincode: { type: String, required: [true, 'Pincode is required'], trim: true },
-    country: { type: String, default: 'India', trim: true },
+    name:     { type: String, trim: true },
+    fullName: { type: String, trim: true },
+    phone:    { type: String, required: [true, 'Phone is required'], trim: true },
+    street:   { type: String, trim: true },
+    address:  { type: String, trim: true },
+    city:     { type: String, required: [true, 'City is required'], trim: true },
+    state:    { type: String, required: [true, 'State is required'], trim: true },
+    pincode:  { type: String, required: [true, 'Pincode is required'], trim: true },
+    country:  { type: String, default: 'India', trim: true },
   },
   { _id: false }
 );
@@ -59,18 +61,11 @@ const paymentInfoSchema = new mongoose.Schema(
   {
     method: {
       type: String,
-      required: [true, 'Payment method is required'],
-      enum: {
-        values: ['razorpay', 'cod'],
-        message: 'Payment method must be "razorpay" or "cod"',
-      },
+      default: 'COD',
     },
-
-    // Razorpay-specific fields
-    razorpayOrderId:   { type: String, select: false }, // Razorpay order ID
-    razorpayPaymentId: { type: String },                // Razorpay payment ID (after success)
-    razorpaySignature: { type: String, select: false }, // for verification
-
+    razorpayOrderId:   { type: String, select: false },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String, select: false },
     paidAt: { type: Date },
   },
   { _id: false }
@@ -79,10 +74,8 @@ const paymentInfoSchema = new mongoose.Schema(
 // ── Order Schema ──────────────────────────────────────────────────────────────
 const orderSchema = new mongoose.Schema(
   {
-    // Human-readable order number (e.g. "ORD-20240819-A3F2E")
     orderNumber: {
       type: String,
-      unique: true,
       index: true,
     },
 
@@ -93,13 +86,7 @@ const orderSchema = new mongoose.Schema(
       index: true,
     },
 
-    items: {
-      type: [orderItemSchema],
-      validate: {
-        validator: (arr) => arr.length >= 1,
-        message: 'Order must contain at least one item',
-      },
-    },
+    items: [mongoose.Schema.Types.Mixed],
 
     shippingAddress: {
       type: shippingAddressSchema,
@@ -108,33 +95,25 @@ const orderSchema = new mongoose.Schema(
 
     paymentInfo: {
       type: paymentInfoSchema,
-      required: [true, 'Payment info is required'],
+      default: { method: 'COD' },
     },
 
-    // Price breakdown
-    itemsPrice:    { type: Number, required: true, min: 0 }, // sum of all item totals
-    taxPrice:      { type: Number, default: 0,    min: 0 }, // GST (18%)
-    shippingPrice: { type: Number, default: 0,    min: 0 }, // free above ₹500
-    discount:      { type: Number, default: 0,    min: 0 }, // coupon discount
-    totalPrice:    { type: Number, required: true, min: 0 }, // final amount charged
+    paymentMethod: { type: String, default: 'COD' },
+    itemsPrice:    { type: Number, default: 0 },
+    taxPrice:      { type: Number, default: 0 },
+    shippingPrice: { type: Number, default: 0 },
+    discount:      { type: Number, default: 0 },
+    totalPrice:    { type: Number, default: 0 },
+    totalAmount:   { type: Number, default: 0 },
 
     orderStatus: {
       type: String,
-      enum: {
-        values: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
-        message: '{VALUE} is not a valid order status',
-      },
-      default: 'pending',
-      index: true,
+      default: 'Processing',
     },
 
     paymentStatus: {
       type: String,
-      enum: {
-        values: ['pending', 'paid', 'failed', 'refunded'],
-        message: '{VALUE} is not a valid payment status',
-      },
-      default: 'pending',
+      default: 'Pending',
     },
 
     // Status timestamps

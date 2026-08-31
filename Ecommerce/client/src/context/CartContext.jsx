@@ -37,8 +37,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await api.get('/cart');
-      // Backend returns: { success: true, message: "...", cart: { ... } }
-      setCart(response.data.cart);
+      setCart(response.data.cart || response.data);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch cart');
@@ -51,7 +50,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await api.post('/cart/add', { productId, quantity });
-      setCart(response.data.cart);
+      setCart(response.data.cart || response.data);
       setError(null);
       return { success: true };
     } catch (err) {
@@ -67,7 +66,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await api.put(`/cart/update/${productId}`, { quantity });
-      setCart(response.data.cart);
+      setCart(response.data.cart || response.data);
       setError(null);
       return { success: true };
     } catch (err) {
@@ -83,7 +82,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await api.delete(`/cart/remove/${productId}`);
-      setCart(response.data.cart);
+      setCart(response.data.cart || response.data);
       setError(null);
       return { success: true };
     } catch (err) {
@@ -116,7 +115,7 @@ export const CartProvider = ({ children }) => {
   const fetchWishlist = async () => {
     try {
       const response = await api.get('/wishlist');
-      setWishlist(response.data.wishlist);
+      setWishlist(response.data.wishlist || response.data);
     } catch (err) {
       console.error('Failed to fetch wishlist', err);
     }
@@ -125,8 +124,9 @@ export const CartProvider = ({ children }) => {
   const toggleWishlist = async (productId) => {
     try {
       setLoading(true);
-      const isAlreadyInWishlist = wishlist?.products?.some(
-        (item) => (item.product?._id || item.product) === productId
+      const wishlistProducts = wishlist?.products || [];
+      const isAlreadyInWishlist = wishlistProducts.some(
+        (item) => (item._id || item.product?._id || item.product || item) === productId
       );
 
       let response;
@@ -135,7 +135,7 @@ export const CartProvider = ({ children }) => {
       } else {
         response = await api.post('/wishlist/add', { productId });
       }
-      setWishlist(response.data.wishlist);
+      setWishlist(response.data.wishlist || response.data);
       return { success: true };
     } catch (err) {
       const msg = err.response?.data?.message || 'Failed to toggle wishlist';
