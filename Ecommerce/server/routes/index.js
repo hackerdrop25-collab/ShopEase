@@ -32,8 +32,8 @@ router.use('/auth', require('./authRoutes'));
 router.use('/products', require('./productRoutes'));
 
 // ── Phase 5: Cart / Wishlist / Order Routes ──────────────────────────────────
-// router.use('/cart', require('./cartRoutes'));
-// router.use('/wishlist', require('./wishlistRoutes'));
+router.use('/cart', require('./cartRoutes'));
+router.use('/wishlist', require('./wishlistRoutes'));
 router.use('/orders', require('./orderRoutes'));
 
 // ── Phase 6: Payment Routes ──────────────────────────────────────────────────
