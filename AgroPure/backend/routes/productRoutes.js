@@ -6,6 +6,8 @@ const {
   getProductById,
   updateProduct,
   deleteProduct,
+  getMyProducts,
+  seedProducts,
 } = require("../controllers/productController");
 
 const protect = require("../middleware/authMiddleware");
@@ -19,6 +21,17 @@ const router = express.Router();
 
 // Get products
 router.get("/", getProducts);
+
+// Seed database with organic produce
+router.post("/seed", seedProducts);
+
+// Get farmer's own products (Protected)
+router.get(
+  "/my-products",
+  protect,
+  authorize("farmer", "admin"),
+  getMyProducts
+);
 
 // Get single product
 router.get("/:id", getProductById);

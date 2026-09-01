@@ -22,6 +22,7 @@ const productSchema = new mongoose.Schema(
         "Grains & Pulses",
         "Spices",
         "Natural Products",
+        "Seeds & Saplings",
         "Dairy",
         "Other",
       ],
