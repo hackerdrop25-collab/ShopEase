@@ -1,23 +1,15 @@
-const express = require("express");
+/**
+ * ShopEase - Wishlist Routes (Placeholder)
+ */
 
-const {
-  getWishlist,
-  addToWishlist,
-  removeFromWishlist
-} = require("../controllers/wishlistController");
-
-const protect = require("../middleware/authMiddleware");
-
+const express = require('express');
 const router = express.Router();
 
-router.get("/", protect, getWishlist);
-
-router.post("/add", protect, addToWishlist);
-
-router.delete(
-  "/remove/:productId",
-  protect,
-  removeFromWishlist
-);
+router.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Wishlist routes - Coming soon'
+  });
+});
 
 module.exports = router;

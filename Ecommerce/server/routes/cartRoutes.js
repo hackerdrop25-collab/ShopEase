@@ -1,37 +1,15 @@
-const express = require("express");
+/**
+ * ShopEase - Cart Routes (Placeholder)
+ */
 
-const {
-  getCart,
-  addToCart,
-  updateCartItem,
-  removeFromCart,
-  clearCart
-} = require("../controllers/cartController");
-
-const protect = require("../middleware/authMiddleware");
-
+const express = require('express');
 const router = express.Router();
 
-router.get("/", protect, getCart);
-
-router.post("/add", protect, addToCart);
-
-router.put(
-  "/update/:productId",
-  protect,
-  updateCartItem
-);
-
-router.delete(
-  "/remove/:productId",
-  protect,
-  removeFromCart
-);
-
-router.delete(
-  "/clear",
-  protect,
-  clearCart
-);
+router.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Cart routes - Coming soon'
+  });
+});
 
 module.exports = router;

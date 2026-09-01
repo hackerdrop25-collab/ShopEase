@@ -1,33 +1,15 @@
-const express = require("express");
+/**
+ * ShopEase - Order Routes (Placeholder)
+ */
 
-const {
-  createOrder,
-  getMyOrders,
-  getOrderById
-} = require("../controllers/orderController");
-
-const protect = require("../middleware/authMiddleware");
-
+const express = require('express');
 const router = express.Router();
 
-router.post("/", protect, createOrder);
-
-router.get(
-  "/my-orders",
-  protect,
-  getMyOrders
-);
-
-router.get(
-  "/",
-  protect,
-  getMyOrders
-);
-
-router.get(
-  "/:id",
-  protect,
-  getOrderById
-);
+router.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Order routes - Coming soon'
+  });
+});
 
 module.exports = router;

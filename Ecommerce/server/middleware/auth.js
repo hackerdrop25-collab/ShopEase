@@ -87,3 +87,33 @@ const protect = catchAsync(async (req, res, next) => {
 });
 
 module.exports = { protect };
+
+
+/**
+ * authorize - Restricts access to specific roles (admin, user, etc.)
+ * Use after protect middleware to check user role.
+ * 
+ * @param {...string} roles - Allowed roles (e.g., 'admin', 'user')
+ */
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return next(
+        new AppError('You must be logged in to access this resource.', 401)
+      );
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(
+          `User role '${req.user.role}' is not authorized to access this resource.`,
+          403
+        )
+      );
+    }
+
+    next();
+  };
+};
+
+module.exports = { protect, authorize };

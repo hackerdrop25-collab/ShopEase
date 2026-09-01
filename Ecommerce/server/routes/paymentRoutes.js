@@ -1,18 +1,15 @@
 /**
- * ShopEase - Payment Routes (Phase 6)
- *
- * Base path: /api/payment
+ * ShopEase - Payment Routes (Placeholder)
  */
 
 const express = require('express');
-const { protect } = require('../middleware/auth');
-const { createRazorpayOrder, verifyPayment } = require('../controllers/paymentController');
-
 const router = express.Router();
 
-router.use(protect);
-
-router.post('/create-order', createRazorpayOrder);
-router.post('/verify', verifyPayment);
+router.post('/create-order', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Payment routes - Coming soon'
+  });
+});
 
 module.exports = router;

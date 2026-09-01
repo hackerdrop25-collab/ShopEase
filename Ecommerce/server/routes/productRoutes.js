@@ -1,36 +1,27 @@
-const express = require("express");
+/**
+ * ShopEase - Product Routes
+ */
 
+const express = require('express');
+const router = express.Router();
 const {
+  getAllProducts,
+  getProductDetails,
   createProduct,
-  getProducts,
-  getProductById,
   updateProduct,
   deleteProduct,
-  seedProducts
-} = require("../controllers/productController");
+  getProductsByCategory
+} = require('../controllers/productController');
+const { protect, authorize } = require('../middleware/auth');
 
-const protect =
-  require("../middleware/authMiddleware");
+// Public routes
+router.get('/', getAllProducts);
+router.get('/category/:category', getProductsByCategory);
+router.get('/:id', getProductDetails);
 
-const router = express.Router();
-
-
-// PUBLIC ROUTES
-
-router.post("/seed", seedProducts);
-
-router.get("/", getProducts);
-
-router.get("/:id", getProductById);
-
-
-// PROTECTED ROUTES
-
-router.post("/", protect, createProduct);
-
-router.put("/:id", protect, updateProduct);
-
-router.delete("/:id", protect, deleteProduct);
-
+// Admin routes
+router.post('/', protect, authorize('admin'), createProduct);
+router.put('/:id', protect, authorize('admin'), updateProduct);
+router.delete('/:id', protect, authorize('admin'), deleteProduct);
 
 module.exports = router;
