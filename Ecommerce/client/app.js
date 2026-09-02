@@ -269,26 +269,8 @@ function proceedToCheckout() {
         showNotification('Your cart is empty!', 'error');
         return;
     }
-    
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const itemsList = cart.map(item => `${item.name} (${item.quantity}x)`).join('\\n');
-    
-    const message = `🛍️ ORDER SUMMARY\\n\\nTotal Amount: ₹${total.toLocaleString('en-IN')}\\n\\nItems:\\n${itemsList}\\n\\nChoose Payment Method:\\n1️⃣ GPay\\n2️⃣ Cash on Delivery\\n3️⃣ Credit/Debit Card\\n\\nEnter 1, 2, or 3:`;
-    
-    const choice = prompt(message);
-    
-    if (choice) {
-        const methods = { '1': 'GPay', '2': 'Cash on Delivery', '3': 'Credit/Debit Card' };
-        const method = methods[choice] || 'Unknown';
-        
-        alert(`✅ ORDER PLACED SUCCESSFULLY!\\n\\nOrder Details:\\n━━━━━━━━━━━━━━━━━━━━━\\nTotal: ₹${total.toLocaleString('en-IN')}\\nPayment: ${method}\\nItems: ${cart.length}\\n━━━━━━━━━━━━━━━━━━━━━\\n\\nThank you for shopping with ShopEase!\\n\\n📧 Order confirmation sent to your email\\n📦 Expected delivery: 3-5 business days`);
-        
-        cart = [];
-        saveCart();
-        updateCartCount();
-        closeModal('cartModal');
-        showNotification('Order placed successfully! 🎉', 'success');
-    }
+    closeModal('cartModal');
+    showCheckoutPage();
 }
 
 // Wishlist functions
@@ -572,4 +554,217 @@ function showUserMenu() {
     } else {
         showAuthModal('login');
     }
+}
+
+
+// Show Checkout Page
+function showCheckoutPage() {
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const modal = document.getElementById('productModal');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalBody.innerHTML = `
+        <div style="padding: 40px; max-width: 1200px; margin: 0 auto;">
+            <h2 style="margin-bottom: 30px; text-align: center; font-size: 2rem;">
+                <i class="fas fa-shopping-bag"></i> Checkout
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 30px;">
+                <!-- Left Side: Shipping Information -->
+                <div style="background: #f8f9fa; padding: 30px; border-radius: 12px;">
+                    <h3 style="margin-bottom: 25px; font-size: 1.5rem;">
+                        <i class="fas fa-shipping-fast"></i> Shipping Information
+                    </h3>
+                    
+                    <form id="checkoutForm" onsubmit="placeOrder(event)">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                Full Name <span style="color: red;">*</span>
+                            </label>
+                            <input type="text" id="fullName" required 
+                                   placeholder="Jane Doe"
+                                   style="width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                Phone Number <span style="color: red;">*</span>
+                            </label>
+                            <input type="tel" id="phoneNumber" required 
+                                   placeholder="10-digit mobile number"
+                                   pattern="[0-9]{10}"
+                                   style="width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                Delivery Address <span style="color: red;">*</span>
+                            </label>
+                            <textarea id="deliveryAddress" required rows="3"
+                                      placeholder="Street address, apartment, suite, etc."
+                                      style="width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                    City <span style="color: red;">*</span>
+                                </label>
+                                <input type="text" id="city" required 
+                                       placeholder="e.g. Mumbai"
+                                       style="width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                    PIN Code <span style="color: red;">*</span>
+                                </label>
+                                <input type="text" id="pinCode" required 
+                                       placeholder="6-digit PIN code"
+                                       pattern="[0-9]{6}"
+                                       style="width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                            </div>
+                        </div>
+                        
+                        <div style="margin: 30px 0; padding: 20px; background: white; border-radius: 8px; border: 2px solid #28a745;">
+                            <h4 style="margin-bottom: 15px; color: #333;">
+                                <i class="fas fa-credit-card"></i> Payment Method
+                            </h4>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <label style="display: flex; align-items: center; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.3s;"
+                                       onmouseover="this.style.borderColor='#2874f0'; this.style.background='#f0f7ff'"
+                                       onmouseout="this.style.borderColor='#ddd'; this.style.background='white'">
+                                    <input type="radio" name="paymentMethod" value="gpay" required
+                                           style="width: 20px; height: 20px; margin-right: 12px;">
+                                    <i class="fas fa-mobile-alt" style="font-size: 1.5rem; color: #2874f0; margin-right: 12px;"></i>
+                                    <span style="font-weight: 600; font-size: 1.1rem;">Google Pay (GPay)</span>
+                                </label>
+                                
+                                <label style="display: flex; align-items: center; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.3s;"
+                                       onmouseover="this.style.borderColor='#28a745'; this.style.background='#f0fff4'"
+                                       onmouseout="this.style.borderColor='#ddd'; this.style.background='white'">
+                                    <input type="radio" name="paymentMethod" value="cod" required
+                                           style="width: 20px; height: 20px; margin-right: 12px;">
+                                    <i class="fas fa-money-bill-wave" style="font-size: 1.5rem; color: #28a745; margin-right: 12px;"></i>
+                                    <span style="font-weight: 600; font-size: 1.1rem;">Cash on Delivery (COD)</span>
+                                </label>
+                            </div>
+                            
+                            <p style="margin-top: 15px; font-size: 0.9rem; color: #28a745; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Payment Method: Cash on Delivery (COD) only</span>
+                            </p>
+                        </div>
+                        
+                        <button type="submit" class="btn-checkout" style="width: 100%; padding: 18px; margin-top: 20px;">
+                            <i class="fas fa-check-circle"></i> Place Order
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Right Side: Order Summary -->
+                <div style="background: #f8f9fa; padding: 30px; border-radius: 12px; height: fit-content; position: sticky; top: 20px;">
+                    <h3 style="margin-bottom: 25px; font-size: 1.5rem;">
+                        <i class="fas fa-receipt"></i> Order Summary
+                    </h3>
+                    
+                    <div style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+                        ${cart.map(item => `
+                            <div style="display: flex; gap: 15px; padding: 15px; background: white; border-radius: 8px; margin-bottom: 12px;">
+                                <img src="${item.images?.[0]?.url || 'https://via.placeholder.com/60'}" 
+                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;"
+                                     onerror="this.src='https://via.placeholder.com/60'">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 5px;">${item.name}</div>
+                                    <div style="color: #666; font-size: 0.9rem;">${item.quantity}x ₹${item.price.toLocaleString('en-IN')}</div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--primary-color);">
+                                    ₹${(item.price * item.quantity).toLocaleString('en-IN')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div style="border-top: 2px solid #ddd; padding-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 1.1rem;">
+                            <span>Subtotal:</span>
+                            <span style="font-weight: 600;">₹${total.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 1.1rem;">
+                            <span>Delivery:</span>
+                            <span style="color: #28a745; font-weight: 600;">FREE</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding-top: 15px; border-top: 2px solid #ddd; font-size: 1.5rem; font-weight: 700;">
+                            <span>Grand Total:</span>
+                            <span style="color: var(--primary-color);">₹${total.toLocaleString('en-IN')}</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="closeModal('productModal'); showCart();" 
+                            style="width: 100%; padding: 12px; margin-top: 20px; background: white; border: 2px solid var(--primary-color); color: var(--primary-color); border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;"
+                            onmouseover="this.style.background='var(--primary-color)'; this.style.color='white'"
+                            onmouseout="this.style.background='white'; this.style.color='var(--primary-color)'">
+                        <i class="fas fa-arrow-left"></i> Return to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+// Place Order
+function placeOrder(e) {
+    e.preventDefault();
+    
+    const fullName = document.getElementById('fullName').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const deliveryAddress = document.getElementById('deliveryAddress').value;
+    const city = document.getElementById('city').value;
+    const pinCode = document.getElementById('pinCode').value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const itemsList = cart.map(item => `${item.name} (${item.quantity}x)`).join('\\n');
+    
+    const paymentMethodText = paymentMethod === 'gpay' ? 'Google Pay (GPay)' : 'Cash on Delivery (COD)';
+    
+    // Show success message
+    closeModal('productModal');
+    
+    setTimeout(() => {
+        alert(`✅ ORDER PLACED SUCCESSFULLY!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ORDER DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 Customer: ${fullName}
+📱 Phone: ${phoneNumber}
+📍 Address: ${deliveryAddress}, ${city} - ${pinCode}
+
+🛍️ Items (${cart.length}):
+${itemsList}
+
+💰 Total Amount: ₹${total.toLocaleString('en-IN')}
+💳 Payment: ${paymentMethodText}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Thank you for shopping with ShopEase!
+
+📧 Order confirmation sent to your email
+📦 Expected delivery: 3-5 business days
+🔔 You will receive SMS updates
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+        
+        // Clear cart
+        cart = [];
+        saveCart();
+        updateCartCount();
+        showNotification('Order placed successfully! 🎉', 'success');
+        loadHome();
+    }, 300);
 }

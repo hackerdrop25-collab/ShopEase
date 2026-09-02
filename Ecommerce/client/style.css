@@ -1152,3 +1152,32 @@ body {
         font-size: 1.4rem;
     }
 }
+
+
+/* ========================================
+   Checkout Page Responsive
+   ======================================== */
+@media (max-width: 1024px) {
+    .checkout-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Radio button hover effects */
+input[type="radio"]:checked + i {
+    color: var(--primary-color);
+}
+
+/* Form validation */
+input:invalid {
+    border-color: #dc3545 !important;
+}
+
+input:valid {
+    border-color: #28a745 !important;
+}
+
+/* Smooth transitions */
+* {
+    transition: border-color 0.3s ease;
+}
