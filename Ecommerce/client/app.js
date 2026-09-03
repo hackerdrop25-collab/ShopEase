@@ -6,53 +6,53 @@ let wishlist = JSON.parse(localStorage.getItem('shopease_wishlist')) || [];
 let allProducts = [];
 let currentUser = JSON.parse(localStorage.getItem('shopease_user')) || null;
 
-// Mock Product Data with Real Images
+// Mock Product Data with Real Images - Direct URLs
 const mockProducts = [
     // Electronics
-    { _id: "1", name: "Apple iPhone 15 Pro Max", description: "Latest iPhone with A17 Pro chip, 256GB storage", price: 159900, category: "Electronics", stock: 25, images: [{url: "https://picsum.photos/seed/iphone15/500/400"}], brand: "Apple", ratings: 4.9, numOfReviews: 1245 },
-    { _id: "2", name: "Samsung Galaxy S24 Ultra", description: "Flagship Android with 200MP camera, 12GB RAM", price: 129999, category: "Electronics", stock: 30, images: [{url: "https://picsum.photos/seed/samsung24/500/400"}], brand: "Samsung", ratings: 4.8, numOfReviews: 892 },
-    { _id: "3", name: "Dell XPS 15 Laptop", description: "Intel i7, 16GB RAM, 512GB SSD, 15.6\" 4K Display", price: 154999, category: "Electronics", stock: 15, images: [{url: "https://picsum.photos/seed/dellxps/500/400"}], brand: "Dell", ratings: 4.7, numOfReviews: 456 },
-    { _id: "4", name: "MacBook Air M3", description: "Apple M3 chip, 16GB RAM, 512GB SSD", price: 134900, category: "Electronics", stock: 20, images: [{url: "https://picsum.photos/seed/macbook/500/400"}], brand: "Apple", ratings: 4.9, numOfReviews: 678 },
-    { _id: "5", name: "Sony WH-1000XM5 Headphones", description: "Premium noise-cancelling wireless headphones", price: 29990, category: "Electronics", stock: 80, images: [{url: "https://picsum.photos/seed/sonyheadphones/500/400"}], brand: "Sony", ratings: 4.8, numOfReviews: 1234 },
+    { _id: "1", name: "Apple iPhone 15 Pro Max", description: "Latest iPhone with A17 Pro chip, 256GB storage", price: 159900, category: "Electronics", stock: 25, images: [{url: "https://images.unsplash.com/photo-1592286927505-1def25115558?w=500&h=400&fit=crop"}], brand: "Apple", ratings: 4.9, numOfReviews: 1245 },
+    { _id: "2", name: "Samsung Galaxy S24 Ultra", description: "Flagship Android with 200MP camera, 12GB RAM", price: 129999, category: "Electronics", stock: 30, images: [{url: "https://images.unsplash.com/photo-1511707267537-b85faf00021e?w=500&h=400&fit=crop"}], brand: "Samsung", ratings: 4.8, numOfReviews: 892 },
+    { _id: "3", name: "Dell XPS 15 Laptop", description: "Intel i7, 16GB RAM, 512GB SSD, 15.6\" 4K Display", price: 154999, category: "Electronics", stock: 15, images: [{url: "https://images.unsplash.com/photo-1588872657840-790ff3bde480?w=500&h=400&fit=crop"}], brand: "Dell", ratings: 4.7, numOfReviews: 456 },
+    { _id: "4", name: "MacBook Air M3", description: "Apple M3 chip, 16GB RAM, 512GB SSD", price: 134900, category: "Electronics", stock: 20, images: [{url: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&h=400&fit=crop"}], brand: "Apple", ratings: 4.9, numOfReviews: 678 },
+    { _id: "5", name: "Sony WH-1000XM5 Headphones", description: "Premium noise-cancelling wireless headphones", price: 29990, category: "Electronics", stock: 80, images: [{url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop"}], brand: "Sony", ratings: 4.8, numOfReviews: 1234 },
     
     // Fashion
-    { _id: "6", name: "Levi's Men's 511 Slim Jeans", description: "Classic slim fit jeans, dark wash", price: 3499, category: "Fashion", stock: 250, images: [{url: "https://picsum.photos/seed/levisjeans/500/400"}], brand: "Levi's", ratings: 4.5, numOfReviews: 1234 },
-    { _id: "7", name: "Nike Air Max 270", description: "Men's running shoes with Max Air cushioning", price: 12999, category: "Fashion", stock: 180, images: [{url: "https://picsum.photos/seed/nikeshoes/500/400"}], brand: "Nike", ratings: 4.7, numOfReviews: 2456 },
-    { _id: "8", name: "Adidas Originals Hoodie", description: "Men's pullover hoodie with Trefoil logo", price: 4999, category: "Fashion", stock: 200, images: [{url: "https://picsum.photos/seed/adidashoodie/500/400"}], brand: "Adidas", ratings: 4.6, numOfReviews: 890 },
-    { _id: "9", name: "Women's Designer Kurti", description: "Elegant printed kurti, soft cotton fabric", price: 1299, category: "Fashion", stock: 350, images: [{url: "https://picsum.photos/seed/kurti/500/400"}], brand: "Biba", ratings: 4.6, numOfReviews: 1567 },
-    { _id: "10", name: "Ray-Ban Aviator Sunglasses", description: "Classic aviator style, UV protection", price: 7999, category: "Fashion", stock: 150, images: [{url: "https://picsum.photos/seed/rayban/500/400"}], brand: "Ray-Ban", ratings: 4.8, numOfReviews: 2345 },
+    { _id: "6", name: "Levi's Men's 511 Slim Jeans", description: "Classic slim fit jeans, dark wash", price: 3499, category: "Fashion", stock: 250, images: [{url: "https://images.unsplash.com/photo-1542272604-787c62d465d1?w=500&h=400&fit=crop"}], brand: "Levi's", ratings: 4.5, numOfReviews: 1234 },
+    { _id: "7", name: "Nike Air Max 270", description: "Men's running shoes with Max Air cushioning", price: 12999, category: "Fashion", stock: 180, images: [{url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop"}], brand: "Nike", ratings: 4.7, numOfReviews: 2456 },
+    { _id: "8", name: "Adidas Originals Hoodie", description: "Men's pullover hoodie with Trefoil logo", price: 4999, category: "Fashion", stock: 200, images: [{url: "https://images.unsplash.com/photo-1556821552-5d0d0cffef25?w=500&h=400&fit=crop"}], brand: "Adidas", ratings: 4.6, numOfReviews: 890 },
+    { _id: "9", name: "Women's Designer Kurti", description: "Elegant printed kurti, soft cotton fabric", price: 1299, category: "Fashion", stock: 350, images: [{url: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&h=400&fit=crop"}], brand: "Biba", ratings: 4.6, numOfReviews: 1567 },
+    { _id: "10", name: "Ray-Ban Aviator Sunglasses", description: "Classic aviator style, UV protection", price: 7999, category: "Fashion", stock: 150, images: [{url: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&h=400&fit=crop"}], brand: "Ray-Ban", ratings: 4.8, numOfReviews: 2345 },
     
     // Home & Kitchen
-    { _id: "11", name: "Philips Air Fryer", description: "Digital air fryer, 4.1L capacity", price: 12999, category: "Home & Kitchen", stock: 80, images: [{url: "https://picsum.photos/seed/airfryer/500/400"}], brand: "Philips", ratings: 4.6, numOfReviews: 1234 },
-    { _id: "12", name: "Prestige Induction Cooktop", description: "2000W, touch panel, 8 preset menus", price: 3299, category: "Home & Kitchen", stock: 150, images: [{url: "https://picsum.photos/seed/induction/500/400"}], brand: "Prestige", ratings: 4.4, numOfReviews: 890 },
-    { _id: "13", name: "Milton Water Bottle 1L", description: "Insulated steel, keeps cold 24hrs", price: 699, category: "Home & Kitchen", stock: 500, images: [{url: "https://picsum.photos/seed/bottle/500/400"}], brand: "Milton", ratings: 4.5, numOfReviews: 2345 },
-    { _id: "14", name: "Bajaj Mixer Grinder", description: "750W, 3 jars, stainless steel blades", price: 4499, category: "Home & Kitchen", stock: 120, images: [{url: "https://picsum.photos/seed/mixer/500/400"}], brand: "Bajaj", ratings: 4.5, numOfReviews: 890 },
+    { _id: "11", name: "Philips Air Fryer", description: "Digital air fryer, 4.1L capacity", price: 12999, category: "Home & Kitchen", stock: 80, images: [{url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&h=400&fit=crop"}], brand: "Philips", ratings: 4.6, numOfReviews: 1234 },
+    { _id: "12", name: "Prestige Induction Cooktop", description: "2000W, touch panel, 8 preset menus", price: 3299, category: "Home & Kitchen", stock: 150, images: [{url: "https://images.unsplash.com/photo-1585521924220-e4b4b5e9b1d9?w=500&h=400&fit=crop"}], brand: "Prestige", ratings: 4.4, numOfReviews: 890 },
+    { _id: "13", name: "Milton Water Bottle 1L", description: "Insulated steel, keeps cold 24hrs", price: 699, category: "Home & Kitchen", stock: 500, images: [{url: "https://images.unsplash.com/photo-1602526206126-e55b40a5c8c3?w=500&h=400&fit=crop"}], brand: "Milton", ratings: 4.5, numOfReviews: 2345 },
+    { _id: "14", name: "Bajaj Mixer Grinder", description: "750W, 3 jars, stainless steel blades", price: 4499, category: "Home & Kitchen", stock: 120, images: [{url: "https://images.unsplash.com/photo-1584568694244-14fbbc5cef21?w=500&h=400&fit=crop"}], brand: "Bajaj", ratings: 4.5, numOfReviews: 890 },
     
     // Books
-    { _id: "15", name: "Rich Dad Poor Dad", description: "Personal finance classic by Robert Kiyosaki", price: 399, category: "Books", stock: 300, images: [{url: "https://picsum.photos/seed/richdad/500/400"}], brand: "Penguin", ratings: 4.8, numOfReviews: 3456 },
-    { _id: "16", name: "Atomic Habits", description: "James Clear's guide to building good habits", price: 499, category: "Books", stock: 280, images: [{url: "https://picsum.photos/seed/atomichabits/500/400"}], brand: "Penguin", ratings: 4.9, numOfReviews: 4567 },
-    { _id: "17", name: "The Alchemist", description: "Paulo Coelho's magical story", price: 350, category: "Books", stock: 320, images: [{url: "https://picsum.photos/seed/alchemist/500/400"}], brand: "Harper Collins", ratings: 4.7, numOfReviews: 5678 },
-    { _id: "18", name: "Sapiens", description: "Brief history of humankind by Yuval Noah Harari", price: 599, category: "Books", stock: 220, images: [{url: "https://picsum.photos/seed/sapiens/500/400"}], brand: "Harper", ratings: 4.8, numOfReviews: 2890 },
+    { _id: "15", name: "Rich Dad Poor Dad", description: "Personal finance classic by Robert Kiyosaki", price: 399, category: "Books", stock: 300, images: [{url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&h=400&fit=crop"}], brand: "Penguin", ratings: 4.8, numOfReviews: 3456 },
+    { _id: "16", name: "Atomic Habits", description: "James Clear's guide to building good habits", price: 499, category: "Books", stock: 280, images: [{url: "https://images.unsplash.com/photo-1507842217343-583f20270319?w=500&h=400&fit=crop"}], brand: "Penguin", ratings: 4.9, numOfReviews: 4567 },
+    { _id: "17", name: "The Alchemist", description: "Paulo Coelho's magical story", price: 350, category: "Books", stock: 320, images: [{url: "https://images.unsplash.com/photo-1495446815901-a7297e633e8f?w=500&h=400&fit=crop"}], brand: "Harper Collins", ratings: 4.7, numOfReviews: 5678 },
+    { _id: "18", name: "Sapiens", description: "Brief history of humankind by Yuval Noah Harari", price: 599, category: "Books", stock: 220, images: [{url: "https://images.unsplash.com/photo-1543002588-d4d29646cf48?w=500&h=400&fit=crop"}], brand: "Harper", ratings: 4.8, numOfReviews: 2890 },
     
     // Sports
-    { _id: "19", name: "Yoga Mat Premium 6mm", description: "Anti-slip, eco-friendly TPE, with bag", price: 999, category: "Sports & Fitness", stock: 200, images: [{url: "https://picsum.photos/seed/yogamat/500/400"}], brand: "Strauss", ratings: 4.4, numOfReviews: 890 },
-    { _id: "20", name: "Dumbbells Set 10kg", description: "Rubber-coated, hexagonal shape", price: 1899, category: "Sports & Fitness", stock: 150, images: [{url: "https://picsum.photos/seed/dumbbells/500/400"}], brand: "Kore", ratings: 4.6, numOfReviews: 567 },
-    { _id: "21", name: "Cricket Bat Kashmir Willow", description: "Full size, pre-treated blade", price: 1499, category: "Sports & Fitness", stock: 100, images: [{url: "https://picsum.photos/seed/cricketbat/500/400"}], brand: "Cosco", ratings: 4.2, numOfReviews: 456 },
-    { _id: "22", name: "Football Size 5", description: "Professional PU construction", price: 899, category: "Sports & Fitness", stock: 180, images: [{url: "https://picsum.photos/seed/football/500/400"}], brand: "Nivia", ratings: 4.4, numOfReviews: 789 },
+    { _id: "19", name: "Yoga Mat Premium 6mm", description: "Anti-slip, eco-friendly TPE, with bag", price: 999, category: "Sports & Fitness", stock: 200, images: [{url: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=400&fit=crop"}], brand: "Strauss", ratings: 4.4, numOfReviews: 890 },
+    { _id: "20", name: "Dumbbells Set 10kg", description: "Rubber-coated, hexagonal shape", price: 1899, category: "Sports & Fitness", stock: 150, images: [{url: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500&h=400&fit=crop"}], brand: "Kore", ratings: 4.6, numOfReviews: 567 },
+    { _id: "21", name: "Cricket Bat Kashmir Willow", description: "Full size, pre-treated blade", price: 1499, category: "Sports & Fitness", stock: 100, images: [{url: "https://images.unsplash.com/photo-1461651008914-0c37f6868585?w=500&h=400&fit=crop"}], brand: "Cosco", ratings: 4.2, numOfReviews: 456 },
+    { _id: "22", name: "Football Size 5", description: "Professional PU construction", price: 899, category: "Sports & Fitness", stock: 180, images: [{url: "https://images.unsplash.com/photo-1577902619648-41f103cecad8?w=500&h=400&fit=crop"}], brand: "Nivia", ratings: 4.4, numOfReviews: 789 },
     
     // Fresh Fruits
-    { _id: "23", name: "Fresh Apples - Shimla (1kg)", description: "Premium quality red apples from Shimla, crisp and sweet", price: 180, category: "Fresh Fruits", stock: 500, images: [{url: "https://picsum.photos/seed/apples/500/400"}], brand: "Fresh Farm", ratings: 4.7, numOfReviews: 1234 },
-    { _id: "24", name: "Alphonso Mangoes (1 Dozen)", description: "Authentic Ratnagiri Alphonso mangoes, king of fruits", price: 1200, category: "Fresh Fruits", stock: 150, images: [{url: "https://picsum.photos/seed/mangoes/500/400"}], brand: "Farm Fresh", ratings: 4.9, numOfReviews: 2456 },
-    { _id: "25", name: "Bananas - Robusta (1 Dozen)", description: "Fresh yellow bananas, rich in potassium", price: 60, category: "Fresh Fruits", stock: 800, images: [{url: "https://picsum.photos/seed/bananas/500/400"}], brand: "Fresh Farm", ratings: 4.6, numOfReviews: 890 },
-    { _id: "26", name: "Fresh Oranges - Nagpur (1kg)", description: "Juicy Nagpur oranges, vitamin C rich", price: 80, category: "Fresh Fruits", stock: 600, images: [{url: "https://picsum.photos/seed/oranges/500/400"}], brand: "Citrus Fresh", ratings: 4.5, numOfReviews: 678 },
-    { _id: "27", name: "Green Grapes - Seedless (500g)", description: "Fresh seedless green grapes, sweet and crunchy", price: 120, category: "Fresh Fruits", stock: 400, images: [{url: "https://picsum.photos/seed/grapes/500/400"}], brand: "Valley Fresh", ratings: 4.7, numOfReviews: 1123 },
-    { _id: "28", name: "Fresh Pomegranate (1kg)", description: "Premium quality pomegranate, rich in antioxidants", price: 200, category: "Fresh Fruits", stock: 300, images: [{url: "https://picsum.photos/seed/pomegranate/500/400"}], brand: "Fruit Basket", ratings: 4.8, numOfReviews: 890 },
-    { _id: "29", name: "Papaya - Ripe (1 piece)", description: "Fresh ripe papaya, ready to eat, approximately 1-1.5kg", price: 60, category: "Fresh Fruits", stock: 200, images: [{url: "https://picsum.photos/seed/papaya/500/400"}], brand: "Tropical Fresh", ratings: 4.4, numOfReviews: 567 },
-    { _id: "30", name: "Watermelon - Whole (1 piece)", description: "Sweet red watermelon, perfect for summer, 4-5kg", price: 40, category: "Fresh Fruits", stock: 100, images: [{url: "https://picsum.photos/seed/watermelon/500/400"}], brand: "Farm Direct", ratings: 4.6, numOfReviews: 1234 },
-    { _id: "31", name: "Fresh Strawberries (250g)", description: "Premium strawberries from hill stations, sweet and juicy", price: 150, category: "Fresh Fruits", stock: 180, images: [{url: "https://picsum.photos/seed/strawberries/500/400"}], brand: "Berry Fresh", ratings: 4.8, numOfReviews: 789 },
-    { _id: "32", name: "Kiwi Fruit (6 pieces)", description: "Fresh green kiwi, vitamin rich, great for health", price: 200, category: "Fresh Fruits", stock: 250, images: [{url: "https://picsum.photos/seed/kiwi/500/400"}], brand: "Exotic Fresh", ratings: 4.7, numOfReviews: 456 },
-    { _id: "33", name: "Dragon Fruit - White (1 piece)", description: "Exotic dragon fruit, refreshing and nutritious", price: 80, category: "Fresh Fruits", stock: 150, images: [{url: "https://picsum.photos/seed/dragonfruit/500/400"}], brand: "Exotic Fresh", ratings: 4.5, numOfReviews: 345 },
-    { _id: "34", name: "Fresh Pineapple (1 piece)", description: "Sweet and tangy pineapple, vitamin rich, 1-1.5kg", price: 60, category: "Fresh Fruits", stock: 200, images: [{url: "https://picsum.photos/seed/pineapple/500/400"}], brand: "Tropical Fresh", ratings: 4.6, numOfReviews: 678 }
+    { _id: "23", name: "Fresh Apples - Shimla (1kg)", description: "Premium quality red apples from Shimla, crisp and sweet", price: 180, category: "Fresh Fruits", stock: 500, images: [{url: "https://images.unsplash.com/photo-1579613832125-5ef7387b1e5a?w=500&h=400&fit=crop"}], brand: "Fresh Farm", ratings: 4.7, numOfReviews: 1234 },
+    { _id: "24", name: "Alphonso Mangoes (1 Dozen)", description: "Authentic Ratnagiri Alphonso mangoes, king of fruits", price: 1200, category: "Fresh Fruits", stock: 150, images: [{url: "https://images.unsplash.com/photo-1585518419759-c1b0a8b9a95e?w=500&h=400&fit=crop"}], brand: "Farm Fresh", ratings: 4.9, numOfReviews: 2456 },
+    { _id: "25", name: "Bananas - Robusta (1 Dozen)", description: "Fresh yellow bananas, rich in potassium", price: 60, category: "Fresh Fruits", stock: 800, images: [{url: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&h=400&fit=crop"}], brand: "Fresh Farm", ratings: 4.6, numOfReviews: 890 },
+    { _id: "26", name: "Fresh Oranges - Nagpur (1kg)", description: "Juicy Nagpur oranges, vitamin C rich", price: 80, category: "Fresh Fruits", stock: 600, images: [{url: "https://images.unsplash.com/photo-1589927961657-ef5833ce4d98?w=500&h=400&fit=crop"}], brand: "Citrus Fresh", ratings: 4.5, numOfReviews: 678 },
+    { _id: "27", name: "Green Grapes - Seedless (500g)", description: "Fresh seedless green grapes, sweet and crunchy", price: 120, category: "Fresh Fruits", stock: 400, images: [{url: "https://images.unsplash.com/photo-1581093162081-8022df4466f9?w=500&h=400&fit=crop"}], brand: "Valley Fresh", ratings: 4.7, numOfReviews: 1123 },
+    { _id: "28", name: "Fresh Pomegranate (1kg)", description: "Premium quality pomegranate, rich in antioxidants", price: 200, category: "Fresh Fruits", stock: 300, images: [{url: "https://images.unsplash.com/photo-1599599810694-b5ac4dd60bf1?w=500&h=400&fit=crop"}], brand: "Fruit Basket", ratings: 4.8, numOfReviews: 890 },
+    { _id: "29", name: "Papaya - Ripe (1 piece)", description: "Fresh ripe papaya, ready to eat, approximately 1-1.5kg", price: 60, category: "Fresh Fruits", stock: 200, images: [{url: "https://images.unsplash.com/photo-1585384696417-4e8a9e14abe9?w=500&h=400&fit=crop"}], brand: "Tropical Fresh", ratings: 4.4, numOfReviews: 567 },
+    { _id: "30", name: "Watermelon - Whole (1 piece)", description: "Sweet red watermelon, perfect for summer, 4-5kg", price: 40, category: "Fresh Fruits", stock: 100, images: [{url: "https://images.unsplash.com/photo-1584168694226-8d237b228d64?w=500&h=400&fit=crop"}], brand: "Farm Direct", ratings: 4.6, numOfReviews: 1234 },
+    { _id: "31", name: "Fresh Strawberries (250g)", description: "Premium strawberries from hill stations, sweet and juicy", price: 150, category: "Fresh Fruits", stock: 180, images: [{url: "https://images.unsplash.com/photo-1585518419759-c1b0a8b9a95e?w=500&h=400&fit=crop"}], brand: "Berry Fresh", ratings: 4.8, numOfReviews: 789 },
+    { _id: "32", name: "Kiwi Fruit (6 pieces)", description: "Fresh green kiwi, vitamin rich, great for health", price: 200, category: "Fresh Fruits", stock: 250, images: [{url: "https://images.unsplash.com/photo-1585581266814-a1a30a90c0ab?w=500&h=400&fit=crop"}], brand: "Exotic Fresh", ratings: 4.7, numOfReviews: 456 },
+    { _id: "33", name: "Dragon Fruit - White (1 piece)", description: "Exotic dragon fruit, refreshing and nutritious", price: 80, category: "Fresh Fruits", stock: 150, images: [{url: "https://images.unsplash.com/photo-1592835951911-c3400ca199e7?w=500&h=400&fit=crop"}], brand: "Exotic Fresh", ratings: 4.5, numOfReviews: 345 },
+    { _id: "34", name: "Fresh Pineapple (1 piece)", description: "Sweet and tangy pineapple, vitamin rich, 1-1.5kg", price: 60, category: "Fresh Fruits", stock: 200, images: [{url: "https://images.unsplash.com/photo-1582630667738-b83f419c1d48?w=500&h=400&fit=crop"}], brand: "Tropical Fresh", ratings: 4.6, numOfReviews: 678 }
 ];
 
 // Initialize on page load
@@ -123,14 +123,16 @@ function displayProducts(products) {
         card.className = 'product-card';
         card.style.animationDelay = `${index * 0.05}s`;
         
-        const imageUrl = product.images?.[0]?.url || 'https://via.placeholder.com/300x250?text=No+Image';
+        const imageUrl = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=500&h=400&fit=crop';
         const inStock = product.stock > 0;
         const isInWishlist = wishlist.some(item => item._id === product._id);
         
         card.innerHTML = `
             <div style="position: relative;">
                 <img src="${imageUrl}" alt="${product.name}" class="product-image" 
-                     onerror="this.src='https://via.placeholder.com/300x250?text=No+Image'">
+                     loading="lazy" crossorigin="anonymous"
+                     onerror="this.src='https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=500&h=400&fit=crop'" 
+                     style="display: block; width: 100%; height: 250px; object-fit: cover; background: #f0f0f0;">
                 <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" 
                         onclick="event.stopPropagation(); toggleWishlist('${product._id}')"
                         style="position: absolute; top: 10px; right: 10px; background: white; border: none; 
@@ -166,14 +168,15 @@ function displayProducts(products) {
 function showProductDetails(product) {
     const modal = document.getElementById('productModal');
     const modalBody = document.getElementById('modalBody');
-    const imageUrl = product.images?.[0]?.url || 'https://via.placeholder.com/600x400?text=No+Image';
+    const imageUrl = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&h=400&fit=crop';
     const inStock = product.stock > 0;
     
     modalBody.innerHTML = `
         <div style="padding: 30px;">
             <img src="${imageUrl}" alt="${product.name}" 
-                 style="width: 100%; height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 25px;"
-                 onerror="this.src='https://via.placeholder.com/600x400?text=No+Image'">
+                 loading="lazy" crossorigin="anonymous"
+                 style="width: 100%; height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 25px; display: block; background: #f0f0f0;"
+                 onerror="this.src='https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&h=400&fit=crop'">
             <span class="product-category">${product.category}</span>
             <h2 style="font-size: 2rem; margin: 15px 0; color: #333;">${product.name}</h2>
             <div style="display: flex; align-items: center; gap: 20px; margin: 20px 0;">
@@ -252,9 +255,11 @@ function showCart() {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'cart-item';
             itemDiv.innerHTML = `
-                <img src="${item.images?.[0]?.url || 'https://via.placeholder.com/100'}" 
+                <img src="${item.images?.[0]?.url || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=100&h=100&fit=crop'}" 
                      alt="${item.name}" class="cart-item-image"
-                     onerror="this.src='https://via.placeholder.com/100'">
+                     loading="lazy" crossorigin="anonymous"
+                     onerror="this.src='https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=100&h=100&fit=crop'"
+                     style="display: block; width: 100%; height: 100%; object-fit: cover;">
                 <div class="cart-item-info">
                     <div class="cart-item-name">${item.name}</div>
                     <div class="cart-item-price">₹${item.price.toLocaleString('en-IN')} × ${item.quantity}</div>
