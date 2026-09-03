@@ -1,9 +1,59 @@
-// ShopEase - Professional E-commerce JavaScript
+// ShopEase - Professional E-commerce JavaScript (Standalone Version)
 const API_URL = 'http://localhost:5000/api';
+const USE_MOCK_DATA = true; // Set to false to use real backend
 let cart = JSON.parse(localStorage.getItem('shopease_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('shopease_wishlist')) || [];
 let allProducts = [];
 let currentUser = JSON.parse(localStorage.getItem('shopease_user')) || null;
+
+// Mock Product Data with Real Images
+const mockProducts = [
+    // Electronics
+    { _id: "1", name: "Apple iPhone 15 Pro Max", description: "Latest iPhone with A17 Pro chip, 256GB storage", price: 159900, category: "Electronics", stock: 25, images: [{url: "https://picsum.photos/seed/iphone15/500/400"}], brand: "Apple", ratings: 4.9, numOfReviews: 1245 },
+    { _id: "2", name: "Samsung Galaxy S24 Ultra", description: "Flagship Android with 200MP camera, 12GB RAM", price: 129999, category: "Electronics", stock: 30, images: [{url: "https://picsum.photos/seed/samsung24/500/400"}], brand: "Samsung", ratings: 4.8, numOfReviews: 892 },
+    { _id: "3", name: "Dell XPS 15 Laptop", description: "Intel i7, 16GB RAM, 512GB SSD, 15.6\" 4K Display", price: 154999, category: "Electronics", stock: 15, images: [{url: "https://picsum.photos/seed/dellxps/500/400"}], brand: "Dell", ratings: 4.7, numOfReviews: 456 },
+    { _id: "4", name: "MacBook Air M3", description: "Apple M3 chip, 16GB RAM, 512GB SSD", price: 134900, category: "Electronics", stock: 20, images: [{url: "https://picsum.photos/seed/macbook/500/400"}], brand: "Apple", ratings: 4.9, numOfReviews: 678 },
+    { _id: "5", name: "Sony WH-1000XM5 Headphones", description: "Premium noise-cancelling wireless headphones", price: 29990, category: "Electronics", stock: 80, images: [{url: "https://picsum.photos/seed/sonyheadphones/500/400"}], brand: "Sony", ratings: 4.8, numOfReviews: 1234 },
+    
+    // Fashion
+    { _id: "6", name: "Levi's Men's 511 Slim Jeans", description: "Classic slim fit jeans, dark wash", price: 3499, category: "Fashion", stock: 250, images: [{url: "https://picsum.photos/seed/levisjeans/500/400"}], brand: "Levi's", ratings: 4.5, numOfReviews: 1234 },
+    { _id: "7", name: "Nike Air Max 270", description: "Men's running shoes with Max Air cushioning", price: 12999, category: "Fashion", stock: 180, images: [{url: "https://picsum.photos/seed/nikeshoes/500/400"}], brand: "Nike", ratings: 4.7, numOfReviews: 2456 },
+    { _id: "8", name: "Adidas Originals Hoodie", description: "Men's pullover hoodie with Trefoil logo", price: 4999, category: "Fashion", stock: 200, images: [{url: "https://picsum.photos/seed/adidashoodie/500/400"}], brand: "Adidas", ratings: 4.6, numOfReviews: 890 },
+    { _id: "9", name: "Women's Designer Kurti", description: "Elegant printed kurti, soft cotton fabric", price: 1299, category: "Fashion", stock: 350, images: [{url: "https://picsum.photos/seed/kurti/500/400"}], brand: "Biba", ratings: 4.6, numOfReviews: 1567 },
+    { _id: "10", name: "Ray-Ban Aviator Sunglasses", description: "Classic aviator style, UV protection", price: 7999, category: "Fashion", stock: 150, images: [{url: "https://picsum.photos/seed/rayban/500/400"}], brand: "Ray-Ban", ratings: 4.8, numOfReviews: 2345 },
+    
+    // Home & Kitchen
+    { _id: "11", name: "Philips Air Fryer", description: "Digital air fryer, 4.1L capacity", price: 12999, category: "Home & Kitchen", stock: 80, images: [{url: "https://picsum.photos/seed/airfryer/500/400"}], brand: "Philips", ratings: 4.6, numOfReviews: 1234 },
+    { _id: "12", name: "Prestige Induction Cooktop", description: "2000W, touch panel, 8 preset menus", price: 3299, category: "Home & Kitchen", stock: 150, images: [{url: "https://picsum.photos/seed/induction/500/400"}], brand: "Prestige", ratings: 4.4, numOfReviews: 890 },
+    { _id: "13", name: "Milton Water Bottle 1L", description: "Insulated steel, keeps cold 24hrs", price: 699, category: "Home & Kitchen", stock: 500, images: [{url: "https://picsum.photos/seed/bottle/500/400"}], brand: "Milton", ratings: 4.5, numOfReviews: 2345 },
+    { _id: "14", name: "Bajaj Mixer Grinder", description: "750W, 3 jars, stainless steel blades", price: 4499, category: "Home & Kitchen", stock: 120, images: [{url: "https://picsum.photos/seed/mixer/500/400"}], brand: "Bajaj", ratings: 4.5, numOfReviews: 890 },
+    
+    // Books
+    { _id: "15", name: "Rich Dad Poor Dad", description: "Personal finance classic by Robert Kiyosaki", price: 399, category: "Books", stock: 300, images: [{url: "https://picsum.photos/seed/richdad/500/400"}], brand: "Penguin", ratings: 4.8, numOfReviews: 3456 },
+    { _id: "16", name: "Atomic Habits", description: "James Clear's guide to building good habits", price: 499, category: "Books", stock: 280, images: [{url: "https://picsum.photos/seed/atomichabits/500/400"}], brand: "Penguin", ratings: 4.9, numOfReviews: 4567 },
+    { _id: "17", name: "The Alchemist", description: "Paulo Coelho's magical story", price: 350, category: "Books", stock: 320, images: [{url: "https://picsum.photos/seed/alchemist/500/400"}], brand: "Harper Collins", ratings: 4.7, numOfReviews: 5678 },
+    { _id: "18", name: "Sapiens", description: "Brief history of humankind by Yuval Noah Harari", price: 599, category: "Books", stock: 220, images: [{url: "https://picsum.photos/seed/sapiens/500/400"}], brand: "Harper", ratings: 4.8, numOfReviews: 2890 },
+    
+    // Sports
+    { _id: "19", name: "Yoga Mat Premium 6mm", description: "Anti-slip, eco-friendly TPE, with bag", price: 999, category: "Sports & Fitness", stock: 200, images: [{url: "https://picsum.photos/seed/yogamat/500/400"}], brand: "Strauss", ratings: 4.4, numOfReviews: 890 },
+    { _id: "20", name: "Dumbbells Set 10kg", description: "Rubber-coated, hexagonal shape", price: 1899, category: "Sports & Fitness", stock: 150, images: [{url: "https://picsum.photos/seed/dumbbells/500/400"}], brand: "Kore", ratings: 4.6, numOfReviews: 567 },
+    { _id: "21", name: "Cricket Bat Kashmir Willow", description: "Full size, pre-treated blade", price: 1499, category: "Sports & Fitness", stock: 100, images: [{url: "https://picsum.photos/seed/cricketbat/500/400"}], brand: "Cosco", ratings: 4.2, numOfReviews: 456 },
+    { _id: "22", name: "Football Size 5", description: "Professional PU construction", price: 899, category: "Sports & Fitness", stock: 180, images: [{url: "https://picsum.photos/seed/football/500/400"}], brand: "Nivia", ratings: 4.4, numOfReviews: 789 },
+    
+    // Fresh Fruits
+    { _id: "23", name: "Fresh Apples - Shimla (1kg)", description: "Premium quality red apples from Shimla, crisp and sweet", price: 180, category: "Fresh Fruits", stock: 500, images: [{url: "https://picsum.photos/seed/apples/500/400"}], brand: "Fresh Farm", ratings: 4.7, numOfReviews: 1234 },
+    { _id: "24", name: "Alphonso Mangoes (1 Dozen)", description: "Authentic Ratnagiri Alphonso mangoes, king of fruits", price: 1200, category: "Fresh Fruits", stock: 150, images: [{url: "https://picsum.photos/seed/mangoes/500/400"}], brand: "Farm Fresh", ratings: 4.9, numOfReviews: 2456 },
+    { _id: "25", name: "Bananas - Robusta (1 Dozen)", description: "Fresh yellow bananas, rich in potassium", price: 60, category: "Fresh Fruits", stock: 800, images: [{url: "https://picsum.photos/seed/bananas/500/400"}], brand: "Fresh Farm", ratings: 4.6, numOfReviews: 890 },
+    { _id: "26", name: "Fresh Oranges - Nagpur (1kg)", description: "Juicy Nagpur oranges, vitamin C rich", price: 80, category: "Fresh Fruits", stock: 600, images: [{url: "https://picsum.photos/seed/oranges/500/400"}], brand: "Citrus Fresh", ratings: 4.5, numOfReviews: 678 },
+    { _id: "27", name: "Green Grapes - Seedless (500g)", description: "Fresh seedless green grapes, sweet and crunchy", price: 120, category: "Fresh Fruits", stock: 400, images: [{url: "https://picsum.photos/seed/grapes/500/400"}], brand: "Valley Fresh", ratings: 4.7, numOfReviews: 1123 },
+    { _id: "28", name: "Fresh Pomegranate (1kg)", description: "Premium quality pomegranate, rich in antioxidants", price: 200, category: "Fresh Fruits", stock: 300, images: [{url: "https://picsum.photos/seed/pomegranate/500/400"}], brand: "Fruit Basket", ratings: 4.8, numOfReviews: 890 },
+    { _id: "29", name: "Papaya - Ripe (1 piece)", description: "Fresh ripe papaya, ready to eat, approximately 1-1.5kg", price: 60, category: "Fresh Fruits", stock: 200, images: [{url: "https://picsum.photos/seed/papaya/500/400"}], brand: "Tropical Fresh", ratings: 4.4, numOfReviews: 567 },
+    { _id: "30", name: "Watermelon - Whole (1 piece)", description: "Sweet red watermelon, perfect for summer, 4-5kg", price: 40, category: "Fresh Fruits", stock: 100, images: [{url: "https://picsum.photos/seed/watermelon/500/400"}], brand: "Farm Direct", ratings: 4.6, numOfReviews: 1234 },
+    { _id: "31", name: "Fresh Strawberries (250g)", description: "Premium strawberries from hill stations, sweet and juicy", price: 150, category: "Fresh Fruits", stock: 180, images: [{url: "https://picsum.photos/seed/strawberries/500/400"}], brand: "Berry Fresh", ratings: 4.8, numOfReviews: 789 },
+    { _id: "32", name: "Kiwi Fruit (6 pieces)", description: "Fresh green kiwi, vitamin rich, great for health", price: 200, category: "Fresh Fruits", stock: 250, images: [{url: "https://picsum.photos/seed/kiwi/500/400"}], brand: "Exotic Fresh", ratings: 4.7, numOfReviews: 456 },
+    { _id: "33", name: "Dragon Fruit - White (1 piece)", description: "Exotic dragon fruit, refreshing and nutritious", price: 80, category: "Fresh Fruits", stock: 150, images: [{url: "https://picsum.photos/seed/dragonfruit/500/400"}], brand: "Exotic Fresh", ratings: 4.5, numOfReviews: 345 },
+    { _id: "34", name: "Fresh Pineapple (1 piece)", description: "Sweet and tangy pineapple, vitamin rich, 1-1.5kg", price: 60, category: "Fresh Fruits", stock: 200, images: [{url: "https://picsum.photos/seed/pineapple/500/400"}], brand: "Tropical Fresh", ratings: 4.6, numOfReviews: 678 }
+];
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
@@ -17,33 +67,41 @@ window.addEventListener('DOMContentLoaded', () => {
     setupScrollEffects();
 });
 
-// Load products from API
+// Load products (with fallback to mock data)
 async function loadProducts() {
     try {
         document.getElementById('loading').style.display = 'block';
-        const response = await fetch(`${API_URL}/products`);
-        const data = await response.json();
         
-        if (data.success && data.products) {
-            allProducts = data.products;
-            displayProducts(data.products);
-            document.getElementById('productCount').textContent = `${data.products.length} Products Available`;
+        if (USE_MOCK_DATA) {
+            // Use mock data (standalone mode)
+            allProducts = mockProducts;
+            displayProducts(allProducts);
+            document.getElementById('productCount').textContent = `${allProducts.length} Products Available`;
+            document.getElementById('loading').style.display = 'none';
         } else {
-            showNoProducts();
+            // Try to fetch from backend
+            const response = await fetch(`${API_URL}/products`);
+            const data = await response.json();
+            
+            if (data.success && data.products) {
+                allProducts = data.products;
+                displayProducts(data.products);
+                document.getElementById('productCount').textContent = `${data.products.length} Products Available`;
+            } else {
+                // Fallback to mock data
+                allProducts = mockProducts;
+                displayProducts(allProducts);
+                document.getElementById('productCount').textContent = `${allProducts.length} Products Available (Demo Mode)`;
+            }
+            document.getElementById('loading').style.display = 'none';
         }
-        document.getElementById('loading').style.display = 'none';
     } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('loading').innerHTML = `
-            <div style="text-align: center; padding: 50px;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 20px;"></i>
-                <h3>Unable to Connect to Server</h3>
-                <p>Please make sure the backend is running at ${API_URL}</p>
-                <button onclick="location.reload()" class="btn-primary" style="margin-top: 20px;">
-                    <i class="fas fa-sync"></i> Retry
-                </button>
-            </div>
-        `;
+        console.log('Using mock data (standalone mode)');
+        // Use mock data as fallback
+        allProducts = mockProducts;
+        displayProducts(allProducts);
+        document.getElementById('productCount').textContent = `${allProducts.length} Products Available (Demo Mode)`;
+        document.getElementById('loading').style.display = 'none';
     }
 }
 
