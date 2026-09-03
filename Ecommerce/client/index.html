@@ -1,309 +1,526 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopEase - Professional Online Shopping Store</title>
-    <meta name="description" content="Shop the best products online at ShopEase. Electronics, Fashion, Home & Kitchen, Books, and more!">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEase – India's Best Online Store</title>
+  <meta name="description" content="ShopEase – Best deals on Electronics, Fashion, Home & Kitchen, Books, Sports and Fresh Fruits." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loader-content">
-            <div class="spinner"></div>
-            <h2>ShopEase</h2>
-            <p>Loading your shopping experience...</p>
-        </div>
+
+<!-- ══════════════════════ LOADING SCREEN ══════════════════════ -->
+<div id="loadingScreen" class="loading-screen">
+  <div class="loader-content">
+    <div class="loader-logo"><i class="fas fa-shopping-bag"></i> ShopEase</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <p>Loading your shopping experience…</p>
+  </div>
+</div>
+
+<!-- ══════════════════════ TOP STRIP ══════════════════════ -->
+<div class="top-strip">
+  <div class="wrap">
+    <div class="ts-left">
+      <span><i class="fas fa-map-marker-alt"></i> Deliver to <strong>India</strong></span>
+      <span class="sep">|</span>
+      <span><i class="fas fa-phone"></i> 1800-123-4567</span>
+      <span class="sep">|</span>
+      <span><i class="fas fa-envelope"></i> support@shopease.com</span>
+    </div>
+    <div class="ts-right">
+      <a href="#" onclick="showAuthModal('login')"><i class="fas fa-user"></i> Login</a>
+      <a href="#" onclick="showAuthModal('register')"><i class="fas fa-user-plus"></i> Register</a>
+      <a href="#" onclick="showSellPage()"><i class="fas fa-store"></i> Sell on ShopEase</a>
+      <a href="#" onclick="showHelpPage()"><i class="fas fa-question-circle"></i> Help</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ MAIN HEADER ══════════════════════ -->
+<header class="main-header" id="mainHeader">
+  <div class="wrap header-inner">
+
+    <!-- Logo -->
+    <a class="logo" href="#" onclick="loadHome()">
+      <span class="logo-icon"><i class="fas fa-shopping-bag"></i></span>
+      <span class="logo-text">Shop<em>Ease</em></span>
+    </a>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <select class="search-cat" id="searchCat">
+          <option value="">All</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Fashion">Fashion</option>
+          <option value="Home & Kitchen">Home</option>
+          <option value="Books">Books</option>
+          <option value="Sports & Fitness">Sports</option>
+          <option value="Fresh Fruits">Fruits</option>
+        </select>
+        <input type="text" id="mainSearch" placeholder="Search products, brands and more…" autocomplete="off" />
+        <button class="search-btn" onclick="performSearch()"><i class="fas fa-search"></i></button>
+      </div>
     </div>
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="container">
-            <div class="top-bar-content">
-                <div class="contact-info">
-                    <span><i class="fas fa-phone"></i> +91 1800-123-4567</span>
-                    <span><i class="fas fa-envelope"></i> support@shopease.com</span>
-                </div>
-                <div class="top-bar-links">
-                    <a href="#" onclick="showAuthModal('login')"><i class="fas fa-user"></i> Login</a>
-                    <a href="#" onclick="showAuthModal('register')"><i class="fas fa-user-plus"></i> Register</a>
-                    <a href="#"><i class="fas fa-heart"></i> Wishlist</a>
-                </div>
-            </div>
+    <!-- Actions -->
+    <div class="header-actions">
+      <div class="hact" onclick="showAuthModal('login')">
+        <i class="fas fa-user-circle"></i>
+        <div class="hact-txt">
+          <span class="hact-sub">Hello, Sign in</span>
+          <span class="hact-main">Account &amp; Lists <i class="fas fa-caret-down"></i></span>
         </div>
+      </div>
+      <div class="hact" onclick="showWishlist()">
+        <i class="fas fa-heart"></i>
+        <div class="hact-txt">
+          <span class="hact-sub">Your</span>
+          <span class="hact-main">Wishlist <span class="hbadge" id="wishlistCount">0</span></span>
+        </div>
+      </div>
+      <div class="hact cart-hact" onclick="showCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cartCount">0</span>
+        <div class="hact-txt">
+          <span class="hact-sub">Your</span>
+          <span class="hact-main">Cart</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Main Header -->
-    <header class="main-header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <h1><i class="fas fa-shopping-bag"></i> ShopEase</h1>
-                    <p class="tagline">Your Trusted Shopping Partner</p>
-                </div>
-                
-                <div class="search-bar-container">
-                    <div class="search-bar">
-                        <input type="text" id="mainSearch" placeholder="Search for products, brands, and more...">
-                        <button onclick="performSearch()"><i class="fas fa-search"></i> Search</button>
-                    </div>
-                </div>
+  </div>
+</header>
 
-                <div class="header-actions">
-                    <div class="header-action-btn" onclick="showWishlist()">
-                        <i class="fas fa-heart"></i>
-                        <span class="badge" id="wishlistCount">0</span>
-                        <span class="label">Wishlist</span>
-                    </div>
-                    <div class="header-action-btn" onclick="showCart()">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="badge" id="cartCount">0</span>
-                        <span class="label">Cart</span>
-                    </div>
-                    <div class="header-action-btn" onclick="showUserMenu()">
-                        <i class="fas fa-user-circle"></i>
-                        <span class="label">Account</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
+<!-- ══════════════════════ NAVBAR ══════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-item all-menu" onclick="loadHome()">
+      <i class="fas fa-bars"></i> All Categories
+    </a>
+    <a href="#" class="nav-item" onclick="loadHome()"><i class="fas fa-home"></i> Home</a>
+    <a href="#" class="nav-item hot" onclick="showDeals()"><i class="fas fa-bolt"></i> Today's Deals</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Electronics')"><i class="fas fa-laptop"></i> Electronics</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Fashion')"><i class="fas fa-tshirt"></i> Fashion</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Home & Kitchen')"><i class="fas fa-couch"></i> Home &amp; Kitchen</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Books')"><i class="fas fa-book"></i> Books</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Sports & Fitness')"><i class="fas fa-dumbbell"></i> Sports</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Fresh Fruits')"><i class="fas fa-apple-alt"></i> Fresh Fruits</a>
+    <a href="#" class="nav-item" onclick="showAuthModal('login')"><i class="fas fa-tag"></i> New Customer? Register Free</a>
+  </div>
+</nav>
 
-    <!-- Navigation -->
-    <nav class="main-nav">
-        <div class="container">
-            <ul class="nav-links">
-                <li><a href="#" onclick="loadHome()"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#" onclick="filterByCategory('Electronics')"><i class="fas fa-laptop"></i> Electronics</a></li>
-                <li><a href="#" onclick="filterByCategory('Fashion')"><i class="fas fa-tshirt"></i> Fashion</a></li>
-                <li><a href="#" onclick="filterByCategory('Home & Kitchen')"><i class="fas fa-couch"></i> Home & Kitchen</a></li>
-                <li><a href="#" onclick="filterByCategory('Books')"><i class="fas fa-book"></i> Books</a></li>
-                <li><a href="#" onclick="filterByCategory('Sports & Fitness')"><i class="fas fa-dumbbell"></i> Sports</a></li>
-                <li><a href="#" onclick="filterByCategory('Fresh Fruits')"><i class="fas fa-apple-alt"></i> Fresh Fruits</a></li>
-                <li class="deals-link"><a href="#" onclick="showDeals()"><i class="fas fa-fire"></i> Today's Deals</a></li>
-            </ul>
-        </div>
-    </nav>
+<!-- ══════════════════════ HERO BANNER SLIDER ══════════════════════ -->
+<section class="hero-section">
+  <div class="wrap hero-wrap">
+    <div class="hero-slider" id="heroSlider">
 
-    <!-- Hero Banner -->
-    <section class="hero-banner">
-        <div class="container">
-            <div class="hero-slider">
-                <div class="hero-slide active">
-                    <div class="hero-content">
-                        <h2 class="hero-title">Big Sale Alert!</h2>
-                        <p class="hero-subtitle">Up to 50% OFF on Electronics</p>
-                        <button class="btn-hero" onclick="filterByCategory('Electronics')">Shop Now <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                </div>
-            </div>
+      <!-- Slide 1 -->
+      <div class="hero-slide active" style="background: linear-gradient(120deg,#0f2027,#203a43,#2c5364);">
+        <div class="slide-content">
+          <span class="slide-tag">🔥 Big Sale Alert</span>
+          <h1>Electronics <span>50% OFF</span></h1>
+          <p>iPhone, MacBook, Samsung & more – limited time only</p>
+          <div class="slide-btns">
+            <button class="btn-slide-primary" onclick="filterByCategory('Electronics')">Shop Electronics <i class="fas fa-arrow-right"></i></button>
+            <button class="btn-slide-secondary" onclick="showDeals()">View All Deals</button>
+          </div>
+          <div class="slide-badges">
+            <span><i class="fas fa-truck"></i> Free Delivery</span>
+            <span><i class="fas fa-undo"></i> Easy Returns</span>
+            <span><i class="fas fa-shield-alt"></i> Secure Pay</span>
+          </div>
         </div>
-    </section>
+        <div class="slide-img">
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=420&fit=crop" alt="Electronics Sale" />
+        </div>
+      </div>
 
-    <!-- Filter Section -->
-    <section class="filter-section">
-        <div class="container">
-            <div class="filter-controls">
-                <div class="filter-group">
-                    <label><i class="fas fa-filter"></i> Category:</label>
-                    <select id="categoryFilter" onchange="applyFilters()">
-                        <option value="">All Categories</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Home & Kitchen">Home & Kitchen</option>
-                        <option value="Books">Books</option>
-                        <option value="Sports & Fitness">Sports & Fitness</option>
-                        <option value="Fresh Fruits">Fresh Fruits</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-rupee-sign"></i> Price Range:</label>
-                    <select id="priceFilter" onchange="applyFilters()">
-                        <option value="">All Prices</option>
-                        <option value="0-500">Under ₹500</option>
-                        <option value="500-2000">₹500 - ₹2,000</option>
-                        <option value="2000-10000">₹2,000 - ₹10,000</option>
-                        <option value="10000-50000">₹10,000 - ₹50,000</option>
-                        <option value="50000-">Above ₹50,000</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-sort"></i> Sort By:</label>
-                    <select id="sortFilter" onchange="applyFilters()">
-                        <option value="popularity">Popularity</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="rating">Customer Rating</option>
-                        <option value="newest">Newest First</option>
-                    </select>
-                </div>
-                <button class="btn-clear-filters" onclick="clearFilters()">
-                    <i class="fas fa-redo"></i> Clear All
-                </button>
-            </div>
+      <!-- Slide 2 -->
+      <div class="hero-slide" style="background: linear-gradient(120deg,#f7971e,#ffd200);">
+        <div class="slide-content dark">
+          <span class="slide-tag">👗 Fashion Week</span>
+          <h1>Trending <span>Fashion</span></h1>
+          <p>Nike, Adidas, Levi's &amp; top Indian brands at unbeatable prices</p>
+          <div class="slide-btns">
+            <button class="btn-slide-primary" onclick="filterByCategory('Fashion')">Shop Fashion <i class="fas fa-arrow-right"></i></button>
+            <button class="btn-slide-secondary" onclick="showDeals()">View All Deals</button>
+          </div>
+          <div class="slide-badges dark">
+            <span><i class="fas fa-percent"></i> Up to 40% off</span>
+            <span><i class="fas fa-star"></i> Top Rated</span>
+          </div>
         </div>
-    </section>
+        <div class="slide-img">
+          <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600&h=420&fit=crop" alt="Fashion Week" />
+        </div>
+      </div>
 
-    <!-- Products Section -->
-    <section class="products-section">
-        <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-shopping-bag"></i> Featured Products</h2>
-                <p id="productCount">Loading products...</p>
-            </div>
-            
-            <div id="loading" class="loading-indicator">
-                <div class="spinner"></div>
-                <p>Loading amazing products for you...</p>
-            </div>
-            
-            <div id="productsGrid" class="products-grid"></div>
-            
-            <div id="noProducts" class="no-products" style="display: none;">
-                <i class="fas fa-search"></i>
-                <h3>No Products Found</h3>
-                <p>Try adjusting your filters or search terms</p>
-                <button class="btn-primary" onclick="clearFilters()">Clear Filters</button>
-            </div>
+      <!-- Slide 3 -->
+      <div class="hero-slide" style="background: linear-gradient(120deg,#134e5e,#71b280);">
+        <div class="slide-content">
+          <span class="slide-tag">🍎 Farm Fresh</span>
+          <h1>Fresh Fruits <span>Daily Delivery</span></h1>
+          <p>Organic produce delivered to your door every morning</p>
+          <div class="slide-btns">
+            <button class="btn-slide-primary" onclick="filterByCategory('Fresh Fruits')">Shop Fresh <i class="fas fa-arrow-right"></i></button>
+            <button class="btn-slide-secondary" onclick="loadHome()">Browse All</button>
+          </div>
+          <div class="slide-badges">
+            <span><i class="fas fa-leaf"></i> 100% Organic</span>
+            <span><i class="fas fa-clock"></i> Same Day</span>
+          </div>
         </div>
-    </section>
+        <div class="slide-img">
+          <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&h=420&fit=crop" alt="Fresh Fruits" />
+        </div>
+      </div>
 
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-shipping-fast"></i>
-                    <h3>Free Shipping</h3>
-                    <p>On orders above ₹499</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-undo"></i>
-                    <h3>Easy Returns</h3>
-                    <p>7-day return policy</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-lock"></i>
-                    <h3>Secure Payment</h3>
-                    <p>100% secure transactions</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-headset"></i>
-                    <h3>24/7 Support</h3>
-                    <p>Dedicated customer service</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Auth Modal -->
-    <div id="authModal" class="modal">
-        <div class="modal-content auth-modal">
-            <span class="close" onclick="closeAuthModal()">&times;</span>
-            <div id="authContent"></div>
-        </div>
     </div>
 
-    <!-- Product Modal -->
-    <div id="productModal" class="modal">
-        <div class="modal-content product-modal">
-            <span class="close" onclick="closeModal('productModal')">&times;</span>
-            <div id="modalBody"></div>
+    <!-- Slider Controls -->
+    <button class="slider-prev" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+    <button class="slider-next" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></button>
+    <div class="slider-dots" id="sliderDots">
+      <span class="dot active" onclick="goToSlide(0)"></span>
+      <span class="dot" onclick="goToSlide(1)"></span>
+      <span class="dot" onclick="goToSlide(2)"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ CATEGORY ICON STRIP ══════════════════════ -->
+<section class="cat-strip-section">
+  <div class="wrap">
+    <div class="cat-strip">
+      <div class="cat-item" onclick="loadHome()">
+        <div class="cat-icon" style="background:#fff3e0;"><i class="fas fa-th" style="color:#ff6f00;"></i></div>
+        <span>All</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Electronics')">
+        <div class="cat-icon" style="background:#e3f2fd;"><i class="fas fa-laptop" style="color:#1565c0;"></i></div>
+        <span>Electronics</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Fashion')">
+        <div class="cat-icon" style="background:#fce4ec;"><i class="fas fa-tshirt" style="color:#c62828;"></i></div>
+        <span>Fashion</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Home & Kitchen')">
+        <div class="cat-icon" style="background:#e8f5e9;"><i class="fas fa-couch" style="color:#2e7d32;"></i></div>
+        <span>Home</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Books')">
+        <div class="cat-icon" style="background:#fff8e1;"><i class="fas fa-book" style="color:#f57f17;"></i></div>
+        <span>Books</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Sports & Fitness')">
+        <div class="cat-icon" style="background:#f3e5f5;"><i class="fas fa-dumbbell" style="color:#6a1b9a;"></i></div>
+        <span>Sports</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Fresh Fruits')">
+        <div class="cat-icon" style="background:#e8f5e9;"><i class="fas fa-apple-alt" style="color:#388e3c;"></i></div>
+        <span>Fresh Fruits</span>
+      </div>
+      <div class="cat-item" onclick="showDeals()">
+        <div class="cat-icon" style="background:#ffebee;"><i class="fas fa-fire" style="color:#d32f2f;"></i></div>
+        <span>Deals</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ DEAL OF THE DAY STRIP ══════════════════════ -->
+<section class="deal-strip">
+  <div class="wrap deal-strip-inner">
+    <div class="deal-label">
+      <i class="fas fa-bolt"></i>
+      <div>
+        <span class="dl-title">Deal of the Day</span>
+        <span class="dl-sub">Ends in</span>
+      </div>
+      <div class="countdown" id="countdown">
+        <div class="cnt-box"><span id="cntH">08</span><small>HRS</small></div>
+        <span class="cnt-sep">:</span>
+        <div class="cnt-box"><span id="cntM">45</span><small>MIN</small></div>
+        <span class="cnt-sep">:</span>
+        <div class="cnt-box"><span id="cntS">00</span><small>SEC</small></div>
+      </div>
+    </div>
+    <div class="deal-cards" id="dealCards"></div>
+    <button class="deal-more" onclick="showDeals()">See All Deals <i class="fas fa-arrow-right"></i></button>
+  </div>
+</section>
+
+<!-- ══════════════════════ TRUST BADGES ══════════════════════ -->
+<section class="trust-section">
+  <div class="wrap trust-grid">
+    <div class="trust-item">
+      <i class="fas fa-shipping-fast"></i>
+      <div><strong>Free Delivery</strong><span>Orders above ₹499</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-undo-alt"></i>
+      <div><strong>Easy Returns</strong><span>7-day return policy</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-shield-alt"></i>
+      <div><strong>Secure Payment</strong><span>256-bit SSL encryption</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-headset"></i>
+      <div><strong>24/7 Support</strong><span>Dedicated customer care</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-certificate"></i>
+      <div><strong>100% Authentic</strong><span>Genuine products only</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ FILTER + PRODUCTS ══════════════════════ -->
+<section class="shop-section">
+  <div class="wrap shop-layout">
+
+    <!-- Sidebar Filters -->
+    <aside class="sidebar">
+      <div class="sb-card">
+        <div class="sb-title"><i class="fas fa-filter"></i> Filters</div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Category</div>
+          <label class="sb-check"><input type="radio" name="sbCat" value="" onchange="applyFilters()" checked /> All Categories</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Electronics" onchange="applyFilters()" /> Electronics</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Fashion" onchange="applyFilters()" /> Fashion</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Home & Kitchen" onchange="applyFilters()" /> Home &amp; Kitchen</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Books" onchange="applyFilters()" /> Books</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Sports & Fitness" onchange="applyFilters()" /> Sports &amp; Fitness</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Fresh Fruits" onchange="applyFilters()" /> Fresh Fruits</label>
         </div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Price Range</div>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="" onchange="applyFilters()" checked /> Any Price</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="0-500" onchange="applyFilters()" /> Under ₹500</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="500-2000" onchange="applyFilters()" /> ₹500 – ₹2,000</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="2000-10000" onchange="applyFilters()" /> ₹2,000 – ₹10,000</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="10000-50000" onchange="applyFilters()" /> ₹10,000 – ₹50,000</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="50000-" onchange="applyFilters()" /> Above ₹50,000</label>
+        </div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Customer Rating</div>
+          <label class="sb-check"><input type="radio" name="sbRating" value="" onchange="applyFilters()" checked /> All Ratings</label>
+          <label class="sb-check"><input type="radio" name="sbRating" value="4" onchange="applyFilters()" /> ⭐⭐⭐⭐ &amp; above</label>
+          <label class="sb-check"><input type="radio" name="sbRating" value="3" onchange="applyFilters()" /> ⭐⭐⭐ &amp; above</label>
+        </div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Availability</div>
+          <label class="sb-check"><input type="checkbox" id="sbInStock" onchange="applyFilters()" /> In Stock Only</label>
+        </div>
+
+        <button class="sb-clear" onclick="clearFilters()"><i class="fas fa-redo"></i> Clear All Filters</button>
+      </div>
+    </aside>
+
+    <!-- Products Area -->
+    <div class="products-area">
+
+      <!-- Sort Bar -->
+      <div class="sort-bar">
+        <div class="sort-info">
+          <span id="productCount">Loading…</span>
+        </div>
+        <div class="sort-controls">
+          <span>Sort by:</span>
+          <button class="sort-btn active" data-sort="popularity" onclick="setSortActive(this,'popularity')">Popularity</button>
+          <button class="sort-btn" data-sort="price-low" onclick="setSortActive(this,'price-low')">Price ↑</button>
+          <button class="sort-btn" data-sort="price-high" onclick="setSortActive(this,'price-high')">Price ↓</button>
+          <button class="sort-btn" data-sort="rating" onclick="setSortActive(this,'rating')">Rating</button>
+          <button class="sort-btn" data-sort="newest" onclick="setSortActive(this,'newest')">Newest</button>
+        </div>
+      </div>
+
+      <div id="loading" class="loading-indicator">
+        <div class="spin-ring"></div>
+        <p>Finding amazing deals…</p>
+      </div>
+
+      <div id="productsGrid" class="products-grid"></div>
+
+      <div id="noProducts" class="no-products" style="display:none;">
+        <img src="https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=200&h=200&fit=crop" alt="No results" style="border-radius:50%;opacity:.6;margin-bottom:20px;" />
+        <h3>No Products Found</h3>
+        <p>Try adjusting your filters or search terms</p>
+        <button class="btn-primary" onclick="clearFilters()">Clear Filters</button>
+      </div>
     </div>
 
-    <!-- Cart Modal -->
-    <div id="cartModal" class="modal">
-        <div class="modal-content cart-modal">
-            <span class="close" onclick="closeModal('cartModal')">&times;</span>
-            <div class="cart-header">
-                <h2><i class="fas fa-shopping-cart"></i> Shopping Cart</h2>
-            </div>
-            <div id="cartItems" class="cart-items"></div>
-            <div class="cart-summary">
-                <div class="summary-row">
-                    <span>Subtotal:</span>
-                    <span>₹<span id="cartSubtotal">0</span></span>
-                </div>
-                <div class="summary-row">
-                    <span>Shipping:</span>
-                    <span class="text-success">FREE</span>
-                </div>
-                <div class="summary-row total">
-                    <span>Total:</span>
-                    <span>₹<span id="cartTotal">0</span></span>
-                </div>
-                <button class="btn-checkout" onclick="proceedToCheckout()">
-                    <i class="fas fa-lock"></i> Proceed to Checkout
-                </button>
-                <button class="btn-continue-shopping" onclick="closeModal('cartModal')">
-                    Continue Shopping
-                </button>
-            </div>
-        </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PROMO BANNER ══════════════════════ -->
+<section class="promo-section">
+  <div class="wrap promo-grid">
+    <div class="promo-card" onclick="filterByCategory('Electronics')" style="background:linear-gradient(135deg,#0f2027,#2c5364);">
+      <div class="promo-text">
+        <span class="promo-tag">Electronics</span>
+        <h3>Upto 50% OFF</h3>
+        <p>Top brands at lowest prices</p>
+        <span class="promo-cta">Shop Now <i class="fas fa-arrow-right"></i></span>
+      </div>
+      <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=200&h=150&fit=crop" alt="Electronics" />
     </div>
+    <div class="promo-card" onclick="filterByCategory('Fashion')" style="background:linear-gradient(135deg,#f7971e,#ffd200);">
+      <div class="promo-text dark">
+        <span class="promo-tag">Fashion</span>
+        <h3>New Arrivals</h3>
+        <p>Latest styles & trends</p>
+        <span class="promo-cta">Explore <i class="fas fa-arrow-right"></i></span>
+      </div>
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=150&fit=crop" alt="Fashion" />
+    </div>
+    <div class="promo-card" onclick="filterByCategory('Fresh Fruits')" style="background:linear-gradient(135deg,#134e5e,#71b280);">
+      <div class="promo-text">
+        <span class="promo-tag">Fresh</span>
+        <h3>Farm to Door</h3>
+        <p>Organic, fresh, daily</p>
+        <span class="promo-cta">Order Now <i class="fas fa-arrow-right"></i></span>
+      </div>
+      <img src="https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?w=200&h=150&fit=crop" alt="Fresh Fruits" />
+    </div>
+  </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h3>About ShopEase</h3>
-                    <p>Your trusted online shopping destination for quality products at the best prices.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Track Order</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Categories</h3>
-                    <ul>
-                        <li><a href="#" onclick="filterByCategory('Electronics')">Electronics</a></li>
-                        <li><a href="#" onclick="filterByCategory('Fashion')">Fashion</a></li>
-                        <li><a href="#" onclick="filterByCategory('Home & Kitchen')">Home & Kitchen</a></li>
-                        <li><a href="#" onclick="filterByCategory('Books')">Books</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Payment Methods</h3>
-                    <div class="payment-methods">
-                        <i class="fas fa-credit-card"></i>
-                        <i class="fab fa-cc-visa"></i>
-                        <i class="fab fa-cc-mastercard"></i>
-                        <i class="fas fa-mobile-alt"></i>
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <p style="margin-top: 15px;">💳 100% Secure Payments</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 ShopEase. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-            </div>
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer class="main-footer">
+  <div class="footer-top">
+    <div class="wrap footer-top-grid">
+      <div class="ft-col">
+        <div class="ft-logo"><i class="fas fa-shopping-bag"></i> Shop<em>Ease</em></div>
+        <p>India's trusted online shopping destination. Quality products, guaranteed delivery, and the best prices.</p>
+        <div class="ft-social">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
         </div>
-    </footer>
+      </div>
+      <div class="ft-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Affiliate Program</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Customer Service</h4>
+        <ul>
+          <li><a href="#">Track Your Order</a></li>
+          <li><a href="#">Return &amp; Refund Policy</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Shop By Category</h4>
+        <ul>
+          <li><a href="#" onclick="filterByCategory('Electronics')">Electronics</a></li>
+          <li><a href="#" onclick="filterByCategory('Fashion')">Fashion</a></li>
+          <li><a href="#" onclick="filterByCategory('Home & Kitchen')">Home &amp; Kitchen</a></li>
+          <li><a href="#" onclick="filterByCategory('Books')">Books</a></li>
+          <li><a href="#" onclick="filterByCategory('Sports & Fitness')">Sports &amp; Fitness</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Download App</h4>
+        <p style="font-size:.85rem;margin-bottom:12px;">Get exclusive app-only deals</p>
+        <div class="app-btns">
+          <a href="#" class="app-btn"><i class="fab fa-google-play"></i><div><small>Get it on</small><strong>Google Play</strong></div></a>
+          <a href="#" class="app-btn"><i class="fab fa-apple"></i><div><small>Download on</small><strong>App Store</strong></div></a>
+        </div>
+        <h4 style="margin-top:20px;">We Accept</h4>
+        <div class="pay-icons">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-cc-amex"></i>
+          <i class="fas fa-mobile-alt"></i>
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="wrap fb-inner">
+      <p>© 2026 ShopEase Pvt. Ltd. All rights reserved.</p>
+      <div class="fb-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Grievance Redressal</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
-    <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+<!-- ══════════════════════ MODALS ══════════════════════ -->
 
-    <!-- Notification Container -->
-    <div id="notificationContainer"></div>
+<!-- Auth Modal -->
+<div id="authModal" class="modal">
+  <div class="modal-content auth-modal">
+    <button class="modal-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+    <div id="authContent"></div>
+  </div>
+</div>
 
-    <script src="app.js"></script>
+<!-- Product Modal -->
+<div id="productModal" class="modal">
+  <div class="modal-content product-modal">
+    <button class="modal-close" onclick="closeModal('productModal')"><i class="fas fa-times"></i></button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Cart Modal -->
+<div id="cartModal" class="modal">
+  <div class="modal-content cart-modal">
+    <button class="modal-close" onclick="closeModal('cartModal')"><i class="fas fa-times"></i></button>
+    <div class="cart-header">
+      <h2><i class="fas fa-shopping-cart"></i> My Cart</h2>
+    </div>
+    <div class="cart-body">
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-summary">
+        <div class="sum-row"><span>Subtotal</span><span>₹<span id="cartSubtotal">0</span></span></div>
+        <div class="sum-row"><span>Delivery Charges</span><span class="green">FREE</span></div>
+        <div class="sum-row disc" id="cartDiscountRow" style="display:none;"><span>Discount</span><span class="green">- ₹<span id="cartDiscount">0</span></span></div>
+        <div class="sum-row total"><span>Total Amount</span><span>₹<span id="cartTotal">0</span></span></div>
+        <p class="sum-note"><i class="fas fa-tag"></i> You are saving <strong>₹<span id="cartSavings">0</span></strong> on this order!</p>
+        <button class="btn-checkout" onclick="proceedToCheckout()">
+          <i class="fas fa-lock"></i> Proceed to Checkout
+        </button>
+        <button class="btn-cont" onclick="closeModal('cartModal')">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<button class="back-top" id="backToTop" onclick="scrollToTop()" title="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Notification Container -->
+<div id="notificationContainer"></div>
+
+<script src="app.js"></script>
 </body>
 </html>
