@@ -114,7 +114,9 @@ const mockProducts = [
    INIT
    ═══════════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 1800);
+  setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 1500);
+  initExponentialCanvas();
+  initTheme();
   loadProducts();
   updateCartCount();
   updateWishlistCount();
@@ -123,6 +125,89 @@ window.addEventListener('DOMContentLoaded', () => {
   setupScrollEffects();
   setupSearchEnter();
 });
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPONENTIAL CANVAS & THEME ENGINE
+   ═══════════════════════════════════════════════════════════════ */
+function initTheme() {
+  const saved = localStorage.getItem('shopease_theme') || 'exponential-dark';
+  changeTheme(saved);
+}
+
+function changeTheme(themeName) {
+  document.documentElement.setAttribute('data-theme', themeName);
+  localStorage.setItem('shopease_theme', themeName);
+  const sel = document.getElementById('themeSelect');
+  if (sel) sel.value = themeName;
+}
+
+function initExponentialCanvas() {
+  const canvas = document.getElementById('expBgCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  const numParticles = Math.min(Math.floor((width * height) / 18000), 65);
+  const particles = [];
+
+  for (let i = 0; i < numParticles; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      radius: Math.random() * 2 + 1,
+      alpha: Math.random() * 0.5 + 0.2
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0 || p.x > width) p.vx *= -1;
+      if (p.y < 0 || p.y > height) p.vy *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(99, 102, 241, ' + p.alpha + ')';
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#6366f1';
+      ctx.fill();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const p2 = particles[j];
+        const dx = p.x - p2.x;
+        const dy = p.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 130) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          const lineAlpha = (1 - dist / 130) * 0.2;
+          ctx.strokeStyle = 'rgba(99, 102, 241, ' + lineAlpha + ')';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+}
 
 /* ═══════════════════════════════════════════════════════════════
    HERO SLIDER
@@ -254,40 +339,38 @@ function displayProducts(products) {
     const inStock    = product.stock > 0;
     const inWish     = wishlist.some(w => w._id === product._id);
     const hasDisc    = product.discount && product.originalPrice;
-    const stars      = Math.round(product.ratings || 0);
 
     card.innerHTML = `
       <div class="pc-img-wrap">
-        <img src="${imageUrl}" alt="${product.name}" class="product-image" loading="lazy"
+        <img src="${imageUrl}" alt="${product.name}" loading="lazy"
              onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=400&fit=crop'" />
-        ${hasDisc ? `<span class="pc-badge">${product.discount}% OFF</span>` : (inStock ? `<span class="pc-badge sale">In Stock</span>` : '')}
-        <button class="wishlist-btn ${inWish ? 'active' : ''}"
+        ${hasDisc ? `<span class="pc-badge">${product.discount}% OFF</span>` : (inStock ? `<span class="pc-badge" style="background:linear-gradient(135deg,var(--accent-emerald),var(--primary));">In Stock</span>` : '')}
+        <button class="pc-wishlist ${inWish ? 'active' : ''}"
                 onclick="event.stopPropagation(); toggleWishlist('${product._id}')">
           <i class="fas fa-heart"></i>
         </button>
+        <button class="pc-quickview" onclick="event.stopPropagation(); showProductDetails(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+          <i class="fas fa-eye"></i> Quick View
+        </button>
       </div>
       <div class="pc-body">
-        <span class="product-category">${product.category}</span>
-        <div class="product-name">${product.name}</div>
-        <div class="pc-price-row">
-          <span class="pc-price">₹${product.price.toLocaleString('en-IN')}</span>
-          ${hasDisc ? `<span class="pc-mrp">₹${product.originalPrice.toLocaleString('en-IN')}</span>
-                       <span class="pc-save">${product.discount}% off</span>` : ''}
+        <div>
+          <div class="pc-cat">${product.category}</div>
+          <div class="pc-title">${product.name}</div>
+          <div class="pc-rating">
+            <span class="stars"><i class="fas fa-star"></i> ${product.ratings || 0}</span>
+            <span class="rcount">(${(product.numOfReviews || 0).toLocaleString()})</span>
+          </div>
         </div>
-        <div class="pc-rating">
-          <span class="rating-pill">
-            ${product.ratings || 0} <i class="fas fa-star"></i>
-          </span>
-          <span class="rating-count">(${(product.numOfReviews || 0).toLocaleString()})</span>
+        <div class="pc-footer">
+          <div class="pc-price-wrap">
+            <span class="pc-price">₹${product.price.toLocaleString('en-IN')}</span>
+            ${hasDisc ? `<span class="pc-old-price">₹${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
+          </div>
+          <button class="pc-add-btn" onclick="event.stopPropagation(); addToCart('${product._id}')" ${!inStock ? 'disabled style="opacity:0.5;"' : ''}>
+            <i class="fas fa-shopping-bag"></i> ${inStock ? 'Add' : 'Sold'}
+          </button>
         </div>
-        <div class="pc-stock ${inStock ? 'instock' : 'outstock'}">
-          ${inStock ? `<i class="fas fa-check-circle"></i> In Stock (${product.stock})` : '<i class="fas fa-times-circle"></i> Out of Stock'}
-        </div>
-        <button class="btn-add-cart" onclick="event.stopPropagation(); addToCart('${product._id}')"
-                ${!inStock ? 'disabled' : ''}>
-          <i class="fas fa-shopping-cart"></i>
-          ${inStock ? 'Add to Cart' : 'Out of Stock'}
-        </button>
       </div>
     `;
 
@@ -352,7 +435,10 @@ function showProductDetails(product) {
     </div>
   `;
 
-  modal.style.display = 'block';
+  if (modal) {
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -388,13 +474,14 @@ function showCart() {
 
   if (!cart.length) {
     itemsEl.innerHTML = `
-      <div style="text-align:center;padding:60px 20px;color:#999;">
-        <i class="fas fa-shopping-cart" style="font-size:4rem;margin-bottom:20px;color:#e0e0e0;"></i>
-        <h3 style="margin-bottom:8px;color:#555;">Your cart is empty</h3>
-        <p style="font-size:.9rem;">Add products to get started</p>
+      <div style="text-align:center;padding:60px 20px;color:var(--txt3);">
+        <i class="fas fa-shopping-bag" style="font-size:4rem;margin-bottom:20px;color:var(--primary);"></i>
+        <h3 style="margin-bottom:8px;color:var(--txt1);">Your cart is empty</h3>
+        <p style="font-size:.9rem;color:var(--txt2);">Add products to get started</p>
       </div>`;
-    subtotal.textContent = '0'; totalEl.textContent = '0';
-    savingsEl.textContent = '0';
+    if (subtotal) subtotal.textContent = '0';
+    if (totalEl) totalEl.textContent = '0';
+    if (savingsEl) savingsEl.textContent = '0';
     if (discRow) discRow.style.display = 'none';
   } else {
     let total = 0, totalSavings = 0;
@@ -408,36 +495,28 @@ function showCart() {
       const div = document.createElement('div');
       div.className = 'cart-item';
       div.innerHTML = `
-        <img src="${item.images?.[0]?.url || ''}" alt="${item.name}" class="cart-item-img"
+        <img src="${item.images?.[0]?.url || ''}" alt="${item.name}"
              onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=90&h=90&fit=crop'" />
-        <div class="ci-info">
-          <div class="ci-name">${item.name}</div>
-          <div class="ci-brand">${item.brand || ''}</div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span class="ci-price">₹${item.price.toLocaleString('en-IN')}</span>
-            ${item.originalPrice ? `<span class="ci-mrp">₹${item.originalPrice.toLocaleString('en-IN')}</span>
-              <span class="ci-disc">${item.discount}% off</span>` : ''}
-          </div>
+        <div class="ci-details">
+          <div class="ci-title">${item.name}</div>
+          <div class="ci-price">₹${item.price.toLocaleString('en-IN')}</div>
           <div class="ci-qty">
-            <button class="qty-btn" onclick="updateQuantity(${idx},-1)"><i class="fas fa-minus"></i></button>
-            <span class="qty-val">${item.quantity}</span>
-            <button class="qty-btn" onclick="updateQuantity(${idx},1)"><i class="fas fa-plus"></i></button>
+            <button onclick="updateQuantity(${idx},-1)">-</button>
+            <span>${item.quantity}</span>
+            <button onclick="updateQuantity(${idx},1)">+</button>
           </div>
         </div>
-        <div class="ci-actions">
-          <span class="ci-total">₹${lineTotal.toLocaleString('en-IN')}</span>
-          <button class="btn-remove" onclick="removeFromCart(${idx})"><i class="fas fa-trash"></i> Remove</button>
-        </div>
+        <i class="fas fa-trash ci-remove" onclick="removeFromCart(${idx})"></i>
       `;
       itemsEl.appendChild(div);
     });
-    subtotal.textContent = total.toLocaleString('en-IN');
-    totalEl.textContent  = total.toLocaleString('en-IN');
-    savingsEl.textContent = totalSavings.toLocaleString('en-IN');
+    if (subtotal) subtotal.textContent = total.toLocaleString('en-IN');
+    if (totalEl) totalEl.textContent  = total.toLocaleString('en-IN');
+    if (savingsEl) savingsEl.textContent = totalSavings.toLocaleString('en-IN');
     if (discountEl) discountEl.textContent = totalSavings.toLocaleString('en-IN');
     if (discRow) discRow.style.display = totalSavings > 0 ? 'flex' : 'none';
   }
-  modal.style.display = 'block';
+  if (modal) modal.classList.add('active');
 }
 
 function updateQuantity(index, change) {
@@ -745,13 +824,22 @@ function saveCart()     { localStorage.setItem('shopease_cart',     JSON.stringi
 function saveWishlist() { localStorage.setItem('shopease_wishlist', JSON.stringify(wishlist)); }
 
 function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.remove('active');
+    el.style.display = 'none';
+  }
+}
+
+function closeAuthModal() {
+  closeModal('authModal');
 }
 
 function setupScrollEffects() {
   const btn = document.getElementById('backToTop');
+  if (!btn) return;
   window.addEventListener('scroll', () => {
-    btn.classList.toggle('show', window.pageYOffset > 400);
+    btn.style.display = window.pageYOffset > 400 ? 'flex' : 'none';
   });
 }
 
@@ -759,10 +847,21 @@ function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 function showNotification(msg, type = 'success') {
   const container = document.getElementById('notificationContainer');
+  if (!container) return;
   const el = document.createElement('div');
   el.className = `notification ${type}`;
+  el.style.background = 'var(--surface-solid)';
+  el.style.border = '1px solid var(--border-glow)';
+  el.style.color = 'var(--txt1)';
+  el.style.padding = '12px 18px';
+  el.style.borderRadius = 'var(--radius-md)';
+  el.style.boxShadow = 'var(--shadow-neon)';
+  el.style.display = 'flex';
+  el.style.alignItems = 'center';
+  el.style.gap = '10px';
+  el.style.transition = 'all 0.3s var(--ease)';
   el.innerHTML = `
-    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}" style="color:var(--primary);"></i>
     <span>${msg}</span>`;
   container.appendChild(el);
   setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
@@ -772,7 +871,10 @@ function showNotification(msg, type = 'success') {
 window.addEventListener('click', e => {
   ['authModal','productModal','cartModal'].forEach(id => {
     const el = document.getElementById(id);
-    if (e.target === el) el.style.display = 'none';
+    if (e.target === el) {
+      el.classList.remove('active');
+      el.style.display = 'none';
+    }
   });
 });
 
