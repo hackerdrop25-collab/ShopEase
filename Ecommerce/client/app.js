@@ -450,7 +450,6 @@ function showProductDetails(product) {
 
   if (modal) {
     modal.classList.add('active');
-    modal.style.display = 'flex';
   }
 }
 
@@ -548,7 +547,9 @@ function showCart() {
     if (discountEl) discountEl.textContent = totalSavings.toLocaleString('en-IN');
     if (discRow) discRow.style.display = totalSavings > 0 ? 'flex' : 'none';
   }
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.classList.add('active');
+  }
 }
 
 function updateQuantity(index, change) {
@@ -792,7 +793,8 @@ function showAuthModal(type) {
         </button>
       </div>`;
   }
-  modal.style.display = 'block';
+  // Always show the modal regardless of which type was requested
+  modal.classList.add('active');
 }
 
 function handleLogin(e) {
@@ -829,7 +831,10 @@ function handleLogout() {
   setTimeout(() => showAuthModal('login'), 300);
 }
 
-function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+function closeAuthModal() {
+  const m = document.getElementById('authModal');
+  if (m) { m.classList.remove('active'); }
+}
 function showUserMenu()   { showAuthModal(currentUser ? 'profile' : 'login'); }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -876,7 +881,7 @@ function showCheckoutPage() {
     <button onclick="placeOrder()" style="width:100%;padding:14px;background:#ff6f00;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;">
       <i class="fas fa-lock"></i> Place Order — ₹${total.toLocaleString('en-IN')}
     </button>`;
-  modal.style.display = 'block';
+  modal.classList.add('active');
 }
 
 function placeOrder() {
@@ -906,10 +911,6 @@ function closeModal(id) {
     el.classList.remove('active');
     el.style.display = 'none';
   }
-}
-
-function closeAuthModal() {
-  closeModal('authModal');
 }
 
 function setupScrollEffects() {
