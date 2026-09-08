@@ -45,8 +45,6 @@ const importProducts = async () => {
 
     console.log('\n💰 Total Products Value: ₹' + 
       products.reduce((sum, p) => sum + p.price, 0).toLocaleString('en-IN'));
-    
-    process.exit(0);
   } catch (error) {
     console.error('❌ Error importing products:', error.message);
     process.exit(1);
@@ -58,7 +56,6 @@ const deleteProducts = async () => {
   try {
     await Product.deleteMany();
     console.log('🗑️  All products deleted successfully!');
-    process.exit(0);
   } catch (error) {
     console.error('❌ Error deleting products:', error.message);
     process.exit(1);
@@ -102,6 +99,7 @@ const run = async () => {
     await importProducts();
     await createAdminUser();
   }
+  process.exit(0);
 };
 
 run();
