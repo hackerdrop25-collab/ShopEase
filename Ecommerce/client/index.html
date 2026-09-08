@@ -80,11 +80,11 @@
 
     <!-- Actions -->
     <div class="header-actions">
-      <div class="hact" onclick="showAuthModal('login')">
+      <div class="hact" id="userAccountBtn" onclick="showUserMenu()">
         <i class="fas fa-user-circle"></i>
         <div class="hact-txt">
-          <span class="hact-sub">Welcome</span>
-          <span class="hact-main">Sign In <i class="fas fa-chevron-down" style="font-size:.7rem;"></i></span>
+          <span class="hact-sub" id="userAccountSub">Welcome</span>
+          <span class="hact-main" id="userAccountMain">Sign In <i class="fas fa-chevron-down" style="font-size:.7rem;"></i></span>
         </div>
       </div>
       <div class="hact" onclick="showWishlist()">

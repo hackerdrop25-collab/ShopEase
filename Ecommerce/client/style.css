@@ -740,6 +740,22 @@ input, select, textarea { font-family: inherit; }
   box-shadow: 0 0 15px var(--primary); transform: scale(1.03);
 }
 
+.pc-btn-group {
+  display: flex; align-items: center; gap: 6px;
+}
+
+.pc-buy-btn {
+  padding: 10px 12px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #ff6f00, #ff9100);
+  color: #fff; font-weight: 700; font-size: .9rem;
+  transition: var(--trans); display: flex; align-items: center; justify-content: center;
+  border: none; cursor: pointer;
+}
+.pc-buy-btn:hover {
+  background: linear-gradient(135deg, #e65100, #ff6f00);
+  box-shadow: 0 0 15px rgba(255, 111, 0, 0.5); transform: scale(1.05);
+}
+
 .no-products {
   text-align: center; padding: 60px 20px; color: var(--txt2);
   background: var(--surface-card); border-radius: var(--radius-xl); border: 1px solid var(--border);

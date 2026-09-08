@@ -114,12 +114,20 @@ const mockProducts = [
    INIT
    ═══════════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 1500);
+  setTimeout(() => {
+    const loader = document.getElementById('loadingScreen');
+    if (loader) loader.classList.add('hidden');
+    // Prompt sign in first on app startup if user is not signed in
+    if (!currentUser) {
+      showAuthModal('login');
+    }
+  }, 1500);
   initExponentialCanvas();
   initTheme();
   loadProducts();
   updateCartCount();
   updateWishlistCount();
+  updateUserUI();
   initSlider();
   initCountdown();
   setupScrollEffects();
@@ -367,9 +375,14 @@ function displayProducts(products) {
             <span class="pc-price">₹${product.price.toLocaleString('en-IN')}</span>
             ${hasDisc ? `<span class="pc-old-price">₹${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
           </div>
-          <button class="pc-add-btn" onclick="event.stopPropagation(); addToCart('${product._id}')" ${!inStock ? 'disabled style="opacity:0.5;"' : ''}>
-            <i class="fas fa-shopping-bag"></i> ${inStock ? 'Add' : 'Sold'}
-          </button>
+          <div class="pc-btn-group">
+            <button class="pc-add-btn" onclick="event.stopPropagation(); addToCart('${product._id}', true)" ${!inStock ? 'disabled style="opacity:0.5;"' : ''} title="Add to Cart & View Cart">
+              <i class="fas fa-shopping-bag"></i> ${inStock ? 'Add' : 'Sold'}
+            </button>
+            ${inStock ? `<button class="pc-buy-btn" onclick="event.stopPropagation(); buyNow('${product._id}')" title="Buy Now — 1 click checkout">
+              <i class="fas fa-bolt"></i>
+            </button>` : ''}
+          </div>
         </div>
       </div>
     `;
@@ -444,7 +457,7 @@ function showProductDetails(product) {
 /* ═══════════════════════════════════════════════════════════════
    CART
    ═══════════════════════════════════════════════════════════════ */
-function addToCart(productId) {
+function addToCart(productId, autoShowCart = false) {
   const product = allProducts.find(p => p._id === productId);
   if (!product) return;
   const existing = cart.find(i => i._id === productId);
@@ -461,6 +474,25 @@ function addToCart(productId) {
   }
   saveCart();
   updateCartCount();
+  // Auto-open cart drawer so user can immediately proceed to checkout
+  if (autoShowCart) {
+    setTimeout(() => showCart(), 200);
+  }
+}
+
+function buyNow(productId) {
+  const product = allProducts.find(p => p._id === productId);
+  if (!product || product.stock <= 0) { showNotification('This product is out of stock!', 'error'); return; }
+  // Add to cart if not already there
+  const existing = cart.find(i => i._id === productId);
+  if (!existing) {
+    cart.push({ ...product, quantity: 1 });
+  }
+  saveCart();
+  updateCartCount();
+  showNotification(`Proceeding to checkout for ${product.name}`, 'success');
+  // Go directly to checkout — 1 click purchase
+  setTimeout(() => showCheckoutPage(), 200);
 }
 
 function showCart() {
@@ -668,6 +700,19 @@ function setupSearchEnter() {
 /* ═══════════════════════════════════════════════════════════════
    AUTH MODAL
    ═══════════════════════════════════════════════════════════════ */
+function updateUserUI() {
+  const subEl  = document.getElementById('userAccountSub');
+  const mainEl = document.getElementById('userAccountMain');
+  if (!subEl || !mainEl) return;
+  if (currentUser) {
+    subEl.textContent = 'Account';
+    mainEl.innerHTML = `Hi, ${currentUser.name || 'User'} <i class="fas fa-chevron-down" style="font-size:.7rem;"></i>`;
+  } else {
+    subEl.textContent = 'Welcome';
+    mainEl.innerHTML = `Sign In <i class="fas fa-chevron-down" style="font-size:.7rem;"></i>`;
+  }
+}
+
 function showAuthModal(type) {
   const modal   = document.getElementById('authModal');
   const content = document.getElementById('authContent');
@@ -675,9 +720,9 @@ function showAuthModal(type) {
   if (type === 'login') {
     content.innerHTML = `
       <div style="text-align:center;margin-bottom:24px;">
-        <div style="font-size:2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-user-circle"></i></div>
-        <h2 style="font-size:1.4rem;font-weight:800;">Welcome Back!</h2>
-        <p style="color:#888;font-size:.88rem;">Sign in to your ShopEase account</p>
+        <div style="font-size:2.2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-user-circle"></i></div>
+        <h2 style="font-size:1.4rem;font-weight:800;">Welcome to ShopEase!</h2>
+        <p style="color:#888;font-size:.88rem;">Please sign in to access the home page and start shopping</p>
       </div>
       <form onsubmit="handleLogin(event)">
         <div style="margin-bottom:16px;">
@@ -693,18 +738,18 @@ function showAuthModal(type) {
                  onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
         </div>
         <button type="submit" style="width:100%;padding:13px;background:#2874f0;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;">
-          Sign In
+          Sign In & Go to Home Page
         </button>
         <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#888;">
           New to ShopEase? <a href="#" onclick="showAuthModal('register')" style="color:#2874f0;font-weight:700;">Create Account</a>
         </p>
       </form>`;
-  } else {
+  } else if (type === 'register') {
     content.innerHTML = `
       <div style="text-align:center;margin-bottom:24px;">
-        <div style="font-size:2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-user-plus"></i></div>
+        <div style="font-size:2.2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-user-plus"></i></div>
         <h2 style="font-size:1.4rem;font-weight:800;">Create Account</h2>
-        <p style="color:#888;font-size:.88rem;">Join millions of happy shoppers</p>
+        <p style="color:#888;font-size:.88rem;">Join millions of happy shoppers on ShopEase</p>
       </div>
       <form onsubmit="handleRegister(event)">
         <div style="margin-bottom:14px;">
@@ -723,12 +768,29 @@ function showAuthModal(type) {
                  style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;" />
         </div>
         <button type="submit" style="width:100%;padding:13px;background:#ff6f00;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;">
-          Create Free Account
+          Create Account & Go to Home Page
         </button>
         <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#888;">
           Already have an account? <a href="#" onclick="showAuthModal('login')" style="color:#2874f0;font-weight:700;">Sign In</a>
         </p>
       </form>`;
+  } else if (type === 'profile') {
+    content.innerHTML = `
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="width:70px;height:70px;background:linear-gradient(135deg,#2874f0,#7c4dff);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#fff;font-size:2rem;">
+          <i class="fas fa-user"></i>
+        </div>
+        <h2 style="font-size:1.4rem;font-weight:800;margin-bottom:4px;">${currentUser ? currentUser.name : 'ShopEase User'}</h2>
+        <p style="color:#888;font-size:.88rem;">${currentUser ? currentUser.email : ''}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <button onclick="closeAuthModal(); loadHome();" style="width:100%;padding:12px;background:#2874f0;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;">
+          <i class="fas fa-home" style="margin-right:8px;"></i> Go to Home Page
+        </button>
+        <button onclick="handleLogout()" style="width:100%;padding:12px;background:#fff;color:#d32f2f;border:1.5px solid #d32f2f;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;">
+          <i class="fas fa-sign-out-alt" style="margin-right:8px;"></i> Sign Out
+        </button>
+      </div>`;
   }
   modal.style.display = 'block';
 }
@@ -736,10 +798,14 @@ function showAuthModal(type) {
 function handleLogin(e) {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
-  currentUser = { email, name: email.split('@')[0] };
+  const rawName = email.split('@')[0];
+  const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+  currentUser = { email, name: formattedName };
   localStorage.setItem('shopease_user', JSON.stringify(currentUser));
+  updateUserUI();
   closeAuthModal();
-  showNotification(`Welcome back, ${currentUser.name}!`, 'success');
+  loadHome();
+  showNotification(`Welcome back, ${currentUser.name}! You are now signed in.`, 'success');
 }
 
 function handleRegister(e) {
@@ -748,8 +814,19 @@ function handleRegister(e) {
   const email = document.getElementById('regEmail').value;
   currentUser = { name, email };
   localStorage.setItem('shopease_user', JSON.stringify(currentUser));
+  updateUserUI();
   closeAuthModal();
-  showNotification(`Account created! Welcome, ${name}!`, 'success');
+  loadHome();
+  showNotification(`Account created! Welcome to ShopEase, ${name}!`, 'success');
+}
+
+function handleLogout() {
+  currentUser = null;
+  localStorage.removeItem('shopease_user');
+  updateUserUI();
+  closeAuthModal();
+  showNotification('You have signed out of ShopEase.', 'success');
+  setTimeout(() => showAuthModal('login'), 300);
 }
 
 function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
