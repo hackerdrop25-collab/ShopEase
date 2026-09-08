@@ -31,7 +31,7 @@ const mockProducts = [
   { _id:"41", name:"JBL Charge 5 Bluetooth Speaker",description:"Waterproof IP67, 20hr playtime, USB-C power bank, PartyBoost multi-speaker pairing",               price:9999,   originalPrice:13999,  discount:29, category:"Electronics",     brand:"JBL",            ratings:4.6, numOfReviews:2456, stock:120, images:[{url:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=400&fit=crop"}] },
   { _id:"42", name:"Logitech MX Master 3S Mouse",   description:"8000 DPI laser sensor, quiet clicks, USB-C fast charge, ergonomic design, multi-device",           price:8995,   originalPrice:11995,  discount:25, category:"Electronics",     brand:"Logitech",       ratings:4.8, numOfReviews:1890, stock:90,  images:[{url:"https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=400&fit=crop"}] },
   { _id:"43", name:"PlayStation 5 Slim Console",    description:"4K gaming, ray tracing, DualSense controller, 1TB SSD, Ultra HD Blu-ray disc drive",               price:44990,  originalPrice:54990,  discount:18, category:"Electronics",     brand:"Sony",           ratings:4.9, numOfReviews:3456, stock:15,  images:[{url:"https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500&h=400&fit=crop"}] },
-  { _id:"44", name:"Kindle Paperwhite 16GB",        description:"6.8\" glare-free display, adjustable warm light, 10-week battery, waterproof, USB-C",              price:12999,  originalPrice:16999,  discount:24, category:"Electronics",     brand:"Amazon",         ratings:4.7, numOfReviews:5678, stock:200, images:[{url:"https://images.unsplash.com/photo-1592359114411-e8f45450b1e7?w=500&h=400&fit=crop"}] },
+  { _id:"44", name:"Kindle Paperwhite 16GB",        description:"6.8\" glare-free display, adjustable warm light, 10-week battery, waterproof, USB-C",              price:12999,  originalPrice:16999,  discount:24, category:"Electronics",     brand:"Amazon",         ratings:4.7, numOfReviews:5678, stock:200, images:[{url:"https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500&h=400&fit=crop"}] },
 
   // ── FASHION (15 products) ──────────────────────────────────────────────────
   { _id:"6",  name:"Levi's 511 Slim Fit Jeans",     description:"Classic slim fit, 98% cotton 2% elastane, dark indigo wash, comfortable all-day stretch",           price:3499,   category:"Fashion",          brand:"Levi's",         ratings:4.5, numOfReviews:1234, stock:250, images:[{url:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=400&fit=crop"}] },
@@ -57,13 +57,13 @@ const mockProducts = [
   { _id:"13", name:"Milton Thermosteel Bottle 1L",   description:"18/8 stainless steel double wall, 24hr cold & 12hr hot, leak-proof lid, BPA-free",                  price:699,    category:"Home & Kitchen",   brand:"Milton",         ratings:4.5, numOfReviews:2345, stock:500, images:[{url:"https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=400&fit=crop"}] },
   { _id:"14", name:"Bajaj Mixer Grinder 750W",       description:"3 stainless steel jars (1.5L+1L+0.4L), 750W copper motor, overload protection, 2yr warranty",      price:4499,   category:"Home & Kitchen",   brand:"Bajaj",          ratings:4.5, numOfReviews:890,  stock:120, images:[{url:"https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop"}] },
   { _id:"56", name:"Instant Pot Duo 7-in-1 Cooker",  description:"Pressure cooker, slow cooker, rice cooker, steamer, sauté, yogurt maker & food warmer, 6L",        price:9999,   originalPrice:13999,  discount:29, category:"Home & Kitchen",   brand:"Instant Pot",    ratings:4.8, numOfReviews:3210, stock:60,  images:[{url:"https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&h=400&fit=crop&hue=200"}] },
-  { _id:"57", name:"Godrej Refrigerator 265L",       description:"Frost-free, 3-star energy rating, toughened glass shelves, large vegetable tray, crisper",          price:28999,  originalPrice:36999,  discount:22, category:"Home & Kitchen",   brand:"Godrej",         ratings:4.5, numOfReviews:1450, stock:25,  images:[{url:"https://images.unsplash.com/photo-1584568694244-14fbbc5cef21?w=500&h=400&fit=crop"}] },
+  { _id:"57", name:"Godrej Refrigerator 265L",       description:"Frost-free, 3-star energy rating, toughened glass shelves, large vegetable tray, crisper",          price:28999,  originalPrice:36999,  discount:22, category:"Home & Kitchen",   brand:"Godrej",         ratings:4.5, numOfReviews:1450, stock:25,  images:[{url:"https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=500&h=400&fit=crop"}] },
   { _id:"58", name:"IFB Front Load Washing Machine", description:"6kg capacity, 6 motion wash, silver nano technology, in-built heater, 2yr warranty",               price:31999,  originalPrice:42999,  discount:26, category:"Home & Kitchen",   brand:"IFB",            ratings:4.6, numOfReviews:987,  stock:20,  images:[{url:"https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=500&h=400&fit=crop"}] },
   { _id:"59", name:"Bosch Dishwasher 12 Place",      description:"12 place settings, 5 programs, half load function, auto door open drying, energy-efficient",        price:34999,  originalPrice:44999,  discount:22, category:"Home & Kitchen",   brand:"Bosch",          ratings:4.7, numOfReviews:654,  stock:15,  images:[{url:"https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&h=400&fit=crop"}] },
   { _id:"60", name:"Havells Ceiling Fan 1200mm",     description:"BLDC motor, 5-star energy rated, remote control, 52W power consumption, anti-dust blade",           price:3499,   originalPrice:4999,   discount:30, category:"Home & Kitchen",   brand:"Havells",        ratings:4.5, numOfReviews:2345, stock:180, images:[{url:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=400&fit=crop"}] },
-  { _id:"61", name:"Dyson V12 Detect Slim Vacuum",   description:"Laser dust detection, HEPA filtration, 60-min runtime, LCD screen, lightweight 2.2kg",             price:42900,  originalPrice:54900,  discount:22, category:"Home & Kitchen",   brand:"Dyson",          ratings:4.8, numOfReviews:876,  stock:30,  images:[{url:"https://images.unsplash.com/photo-1586473219010-2ffc57f37da6?w=500&h=400&fit=crop"}] },
+  { _id:"61", name:"Dyson V12 Detect Slim Vacuum",   description:"Laser dust detection, HEPA filtration, 60-min runtime, LCD screen, lightweight 2.2kg",             price:42900,  originalPrice:54900,  discount:22, category:"Home & Kitchen",   brand:"Dyson",          ratings:4.8, numOfReviews:876,  stock:30,  images:[{url:"https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500&h=400&fit=crop"}] },
   { _id:"62", name:"Nonstick Cookware Set 5-Piece",  description:"Hard anodised aluminium, PFOA-free coating, induction-compatible, glass lids, 2yr warranty",       price:3999,   originalPrice:5999,   discount:33, category:"Home & Kitchen",   brand:"Prestige",       ratings:4.5, numOfReviews:1890, stock:140, images:[{url:"https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500&h=400&fit=crop"}] },
-  { _id:"63", name:"Borosil Glass Lunch Box 3-Tier", description:"Borosilicate glass, microwave & oven safe, airtight steel clips, leak-proof, 320ml each tier",     price:1199,   originalPrice:1799,   discount:33, category:"Home & Kitchen",   brand:"Borosil",        ratings:4.4, numOfReviews:1123, stock:300, images:[{url:"https://images.unsplash.com/photo-1585737049022-ed6b02462ede?w=500&h=400&fit=crop"}] },
+  { _id:"63", name:"Borosil Glass Lunch Box 3-Tier", description:"Borosilicate glass, microwave & oven safe, airtight steel clips, leak-proof, 320ml each tier",     price:1199,   originalPrice:1799,   discount:33, category:"Home & Kitchen",   brand:"Borosil",        ratings:4.4, numOfReviews:1123, stock:300, images:[{url:"https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=400&fit=crop"}] },
   { _id:"64", name:"Philips Hand Blender 650W",      description:"Turbo boost button, stainless steel blending shaft, detachable for easy cleaning, BPA-free jar",    price:2499,   originalPrice:3499,   discount:29, category:"Home & Kitchen",   brand:"Philips",        ratings:4.6, numOfReviews:987,  stock:100, images:[{url:"https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop&hue=60"}] },
   { _id:"65", name:"Solimo Cotton Bed Sheet King",   description:"400 thread count, 100% cotton, king size, 1 flat sheet + 2 pillow covers, machine washable",       price:1499,   originalPrice:2299,   discount:35, category:"Home & Kitchen",   brand:"Amazon Basics",  ratings:4.3, numOfReviews:2345, stock:250, images:[{url:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500&h=400&fit=crop"}] },
 
@@ -843,6 +843,7 @@ function showUserMenu()   { showAuthModal(currentUser ? 'profile' : 'login'); }
 function showCheckoutPage() {
   const total    = cart.reduce((s, i) => s + i.price * i.quantity, 0);
   const savings  = cart.reduce((s, i) => s + (i.originalPrice ? (i.originalPrice - i.price) * i.quantity : 0), 0);
+  const customerName = currentUser?.name || '';
   const modal    = document.getElementById('authModal');
   const content  = document.getElementById('authContent');
 
@@ -853,12 +854,30 @@ function showCheckoutPage() {
     </div>
     <div style="margin-bottom:16px;">
       <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Full Name</label>
-      <input type="text" placeholder="Your full name" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+      <input type="text" id="checkoutName" value="${customerName}" required autocomplete="name" placeholder="Your full name" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Phone Number</label>
+      <input type="tel" id="checkoutPhone" required autocomplete="tel" inputmode="numeric" pattern="[0-9]{10}" placeholder="10-digit phone number" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
     </div>
     <div style="margin-bottom:16px;">
       <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Delivery Address</label>
-      <textarea rows="3" placeholder="House/Flat No., Street, Area, City, State, PIN"
+      <textarea id="checkoutAddress" rows="3" required autocomplete="street-address" placeholder="House/Flat No., Street, Area"
                 style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;resize:none;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div>
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">City</label>
+        <input type="text" id="checkoutCity" required autocomplete="address-level2" placeholder="City" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+      </div>
+      <div>
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">State</label>
+        <input type="text" id="checkoutState" required autocomplete="address-level1" placeholder="State" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+      </div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">PIN Code</label>
+      <input type="text" id="checkoutPincode" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{6}" placeholder="6-digit PIN code" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
     </div>
     <div style="margin-bottom:20px;">
       <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:8px;color:#555;">Payment Method</label>
@@ -885,6 +904,30 @@ function showCheckoutPage() {
 }
 
 function placeOrder() {
+  const shippingAddress = {
+    fullName: document.getElementById('checkoutName')?.value.trim(),
+    phone: document.getElementById('checkoutPhone')?.value.trim(),
+    address: document.getElementById('checkoutAddress')?.value.trim(),
+    city: document.getElementById('checkoutCity')?.value.trim(),
+    state: document.getElementById('checkoutState')?.value.trim(),
+    pincode: document.getElementById('checkoutPincode')?.value.trim(),
+    country: 'India'
+  };
+  const missingField = Object.entries(shippingAddress).find(([field, value]) => field !== 'country' && !value);
+  if (missingField) {
+    showNotification('Please complete your name and delivery address.', 'error');
+    const fieldIds = { fullName: 'checkoutName', phone: 'checkoutPhone', address: 'checkoutAddress', city: 'checkoutCity', state: 'checkoutState', pincode: 'checkoutPincode' };
+    document.getElementById(fieldIds[missingField[0]])?.focus();
+    return;
+  }
+  if (!/^\d{10}$/.test(shippingAddress.phone) || !/^\d{6}$/.test(shippingAddress.pincode)) {
+    showNotification('Enter a valid 10-digit phone number and 6-digit PIN code.', 'error');
+    return;
+  }
+  const paymentMethod = document.querySelector('input[name="payMethod"]:checked')?.parentElement.textContent.trim() || 'COD';
+  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+  orders.unshift({ id: `ORD-${Date.now()}`, items: cart, shippingAddress, paymentMethod, total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0), placedAt: new Date().toISOString() });
+  localStorage.setItem('shopease_orders', JSON.stringify(orders));
   cart = []; saveCart(); updateCartCount();
   closeAuthModal();
   showNotification('🎉 Order placed successfully! You will receive a confirmation soon.', 'success');
