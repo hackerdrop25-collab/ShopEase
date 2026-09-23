@@ -86,9 +86,6 @@ const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-module.exports = { protect };
-
-
 /**
  * authorize - Restricts access to specific roles (admin, user, etc.)
  * Use after protect middleware to check user role.

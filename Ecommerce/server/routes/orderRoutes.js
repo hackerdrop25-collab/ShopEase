@@ -1,15 +1,22 @@
 /**
- * ShopEase - Order Routes (Placeholder)
+ * ShopEase - Order Routes
+ * Base path: /api/orders
  */
 
 const express = require('express');
 const router = express.Router();
+const { protect } = require('../middleware/auth');
+const {
+  createOrder,
+  getMyOrders,
+  getOrderById
+} = require('../controllers/orderController');
 
-router.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Order routes - Coming soon'
-  });
-});
+// All order routes require authentication
+router.use(protect);
+
+router.post('/', createOrder);
+router.get('/my', getMyOrders);
+router.get('/:id', getOrderById);
 
 module.exports = router;

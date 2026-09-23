@@ -2,112 +2,119 @@
    ShopEase — Professional E-Commerce App (Standalone Mode)
    ═══════════════════════════════════════════════════════════════ */
 
-const API_URL      = 'http://localhost:5000/api';
+const API_URL = 'http://localhost:5000/api';
 const USE_MOCK_DATA = true;
 
-let cart        = JSON.parse(localStorage.getItem('shopease_cart'))     || [];
-let wishlist    = JSON.parse(localStorage.getItem('shopease_wishlist')) || [];
+let cart = JSON.parse(localStorage.getItem('shopease_cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('shopease_wishlist')) || [];
 let allProducts = [];
-let currentUser = JSON.parse(localStorage.getItem('shopease_user'))     || null;
-let activeSortKey   = 'popularity';
+let currentUser = JSON.parse(localStorage.getItem('shopease_user')) || null;
+let activeSortKey = 'popularity';
 let countdownTarget = null;
+
+// Helper: build Authorization header from stored JWT token
+function getAuthHeaders() {
+  const token = localStorage.getItem('shopease_token');
+  return token ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+               : { 'Content-Type': 'application/json' };
+}
 
 /* ═══════════════════════════════════════════════════════════════
    PRODUCT DATA
    ═══════════════════════════════════════════════════════════════ */
 const mockProducts = [
   // ── ELECTRONICS (15 products — 50% OFF sale) ────────────────────────────────
-  { _id:"1",  name:"Apple iPhone 15 Pro Max",       description:"A17 Pro chip, 256GB Titanium, 48MP ProRAW camera, 5x optical zoom, USB-C",                           price:79950,  originalPrice:159900, discount:50, category:"Electronics",     brand:"Apple",          ratings:4.9, numOfReviews:1245, stock:25,  images:[{url:"https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&h=400&fit=crop"}] },
-  { _id:"2",  name:"Samsung Galaxy S24 Ultra",      description:"200MP camera, Snapdragon 8 Gen 3, 12GB RAM, 512GB, built-in S Pen, 6.8\" QHD+",                     price:65000,  originalPrice:129999, discount:50, category:"Electronics",     brand:"Samsung",        ratings:4.8, numOfReviews:892,  stock:30,  images:[{url:"https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500&h=400&fit=crop"}] },
-  { _id:"3",  name:"Dell XPS 15 Laptop",            description:"Intel Core i7-13700H, 16GB RAM, 512GB NVMe SSD, 15.6\" 4K OLED, NVIDIA RTX 4050",                  price:77500,  originalPrice:154999, discount:50, category:"Electronics",     brand:"Dell",           ratings:4.7, numOfReviews:456,  stock:15,  images:[{url:"https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500&h=400&fit=crop"}] },
-  { _id:"4",  name:"MacBook Air M3",                description:"Apple M3 chip, 16GB unified memory, 512GB SSD, 13.6\" Liquid Retina, 18hr battery",                 price:67450,  originalPrice:134900, discount:50, category:"Electronics",     brand:"Apple",          ratings:4.9, numOfReviews:678,  stock:20,  images:[{url:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&h=400&fit=crop"}] },
-  { _id:"5",  name:"Sony WH-1000XM5 Headphones",   description:"Industry-leading ANC, 30hr battery, multipoint connection, Hi-Res Audio certified",                  price:14995,  originalPrice:29990,  discount:50, category:"Electronics",     brand:"Sony",           ratings:4.8, numOfReviews:1234, stock:80,  images:[{url:"https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500&h=400&fit=crop"}] },
-  { _id:"35", name:"OnePlus 12 5G",                 description:"Snapdragon 8 Gen 3, 50MP Hasselblad triple camera, 5400mAh, 100W SuperVOOC charging",               price:49999,  originalPrice:64999,  discount:23, category:"Electronics",     brand:"OnePlus",        ratings:4.7, numOfReviews:2341, stock:45,  images:[{url:"https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500&h=400&fit=crop"}] },
-  { _id:"36", name:"iPad Air M2 (10.9\")",          description:"Apple M2 chip, 64GB, 10.9\" Liquid Retina, Touch ID, USB-C, compatible with Apple Pencil",          price:59900,  originalPrice:74900,  discount:20, category:"Electronics",     brand:"Apple",          ratings:4.8, numOfReviews:987,  stock:35,  images:[{url:"https://images.unsplash.com/photo-1561154464-82e9adf32764?w=500&h=400&fit=crop"}] },
-  { _id:"37", name:"Samsung 55\" QLED 4K Smart TV", description:"Quantum Dot technology, HDR10+, Tizen OS, Alexa built-in, 3 HDMI, ultra-slim design",              price:54999,  originalPrice:79999,  discount:31, category:"Electronics",     brand:"Samsung",        ratings:4.6, numOfReviews:1567, stock:20,  images:[{url:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&h=400&fit=crop"}] },
-  { _id:"38", name:"Apple AirPods Pro (2nd Gen)",   description:"H2 chip, Active Noise Cancellation, Adaptive Transparency, USB-C MagSafe case",                    price:19900,  originalPrice:26900,  discount:26, category:"Electronics",     brand:"Apple",          ratings:4.7, numOfReviews:3210, stock:100, images:[{url:"https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=500&h=400&fit=crop"}] },
-  { _id:"39", name:"Lenovo IdeaPad Slim 5 Laptop",  description:"AMD Ryzen 5 7530U, 16GB RAM, 512GB SSD, 15.6\" FHD IPS display, backlit keyboard",                 price:52999,  originalPrice:69999,  discount:24, category:"Electronics",     brand:"Lenovo",         ratings:4.5, numOfReviews:1123, stock:28,  images:[{url:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=400&fit=crop"}] },
-  { _id:"40", name:"Canon EOS R50 Camera",          description:"24.2MP APS-C sensor, 4K video, dual AF, beginner-friendly mirrorless, Wi-Fi & Bluetooth",          price:57990,  originalPrice:74990,  discount:23, category:"Electronics",     brand:"Canon",          ratings:4.8, numOfReviews:678,  stock:18,  images:[{url:"https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500&h=400&fit=crop"}] },
-  { _id:"41", name:"JBL Charge 5 Bluetooth Speaker",description:"Waterproof IP67, 20hr playtime, USB-C power bank, PartyBoost multi-speaker pairing",               price:9999,   originalPrice:13999,  discount:29, category:"Electronics",     brand:"JBL",            ratings:4.6, numOfReviews:2456, stock:120, images:[{url:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=400&fit=crop"}] },
-  { _id:"42", name:"Logitech MX Master 3S Mouse",   description:"8000 DPI laser sensor, quiet clicks, USB-C fast charge, ergonomic design, multi-device",           price:8995,   originalPrice:11995,  discount:25, category:"Electronics",     brand:"Logitech",       ratings:4.8, numOfReviews:1890, stock:90,  images:[{url:"https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=400&fit=crop"}] },
-  { _id:"43", name:"PlayStation 5 Slim Console",    description:"4K gaming, ray tracing, DualSense controller, 1TB SSD, Ultra HD Blu-ray disc drive",               price:44990,  originalPrice:54990,  discount:18, category:"Electronics",     brand:"Sony",           ratings:4.9, numOfReviews:3456, stock:15,  images:[{url:"https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500&h=400&fit=crop"}] },
-  { _id:"44", name:"Kindle Paperwhite 16GB",        description:"6.8\" glare-free display, adjustable warm light, 10-week battery, waterproof, USB-C",              price:12999,  originalPrice:16999,  discount:24, category:"Electronics",     brand:"Amazon",         ratings:4.7, numOfReviews:5678, stock:200, images:[{url:"https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500&h=400&fit=crop"}] },
+  { _id: "1", name: "Apple iPhone 15 Pro Max", description: "A17 Pro chip, 256GB Titanium, 48MP ProRAW camera, 5x optical zoom, USB-C", price: 79950, originalPrice: 159900, discount: 50, category: "Electronics", brand: "Apple", ratings: 4.9, numOfReviews: 1245, stock: 25, images: [{ url: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&h=400&fit=crop" }] },
+  { _id: "2", name: "Samsung Galaxy S24 Ultra", description: "200MP camera, Snapdragon 8 Gen 3, 12GB RAM, 512GB, built-in S Pen, 6.8\" QHD+", price: 65000, originalPrice: 129999, discount: 50, category: "Electronics", brand: "Samsung", ratings: 4.8, numOfReviews: 892, stock: 30, images: [{ url: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500&h=400&fit=crop" }] },
+  { _id: "3", name: "Dell XPS 15 Laptop", description: "Intel Core i7-13700H, 16GB RAM, 512GB NVMe SSD, 15.6\" 4K OLED, NVIDIA RTX 4050", price: 77500, originalPrice: 154999, discount: 50, category: "Electronics", brand: "Dell", ratings: 4.7, numOfReviews: 456, stock: 15, images: [{ url: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500&h=400&fit=crop" }] },
+  { _id: "4", name: "MacBook Air M3", description: "Apple M3 chip, 16GB unified memory, 512GB SSD, 13.6\" Liquid Retina, 18hr battery", price: 67450, originalPrice: 134900, discount: 50, category: "Electronics", brand: "Apple", ratings: 4.9, numOfReviews: 678, stock: 20, images: [{ url: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&h=400&fit=crop" }] },
+  { _id: "5", name: "Sony WH-1000XM5 Headphones", description: "Industry-leading ANC, 30hr battery, multipoint connection, Hi-Res Audio certified", price: 14995, originalPrice: 29990, discount: 50, category: "Electronics", brand: "Sony", ratings: 4.8, numOfReviews: 1234, stock: 80, images: [{ url: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500&h=400&fit=crop" }] },
+  { _id: "35", name: "OnePlus 12 5G", description: "Snapdragon 8 Gen 3, 50MP Hasselblad triple camera, 5400mAh, 100W SuperVOOC charging", price: 49999, originalPrice: 64999, discount: 23, category: "Electronics", brand: "OnePlus", ratings: 4.7, numOfReviews: 2341, stock: 45, images: [{ url: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500&h=400&fit=crop" }] },
+  { _id: "36", name: "iPad Air M2 (10.9\")", description: "Apple M2 chip, 64GB, 10.9\" Liquid Retina, Touch ID, USB-C, compatible with Apple Pencil", price: 59900, originalPrice: 74900, discount: 20, category: "Electronics", brand: "Apple", ratings: 4.8, numOfReviews: 987, stock: 35, images: [{ url: "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=500&h=400&fit=crop" }] },
+  { _id: "37", name: "Samsung 55\" QLED 4K Smart TV", description: "Quantum Dot technology, HDR10+, Tizen OS, Alexa built-in, 3 HDMI, ultra-slim design", price: 54999, originalPrice: 79999, discount: 31, category: "Electronics", brand: "Samsung", ratings: 4.6, numOfReviews: 1567, stock: 20, images: [{ url: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&h=400&fit=crop" }] },
+  { _id: "38", name: "Apple AirPods Pro (2nd Gen)", description: "H2 chip, Active Noise Cancellation, Adaptive Transparency, USB-C MagSafe case", price: 19900, originalPrice: 26900, discount: 26, category: "Electronics", brand: "Apple", ratings: 4.7, numOfReviews: 3210, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=500&h=400&fit=crop" }] },
+  { _id: "39", name: "Lenovo IdeaPad Slim 5 Laptop", description: "AMD Ryzen 5 7530U, 16GB RAM, 512GB SSD, 15.6\" FHD IPS display, backlit keyboard", price: 52999, originalPrice: 69999, discount: 24, category: "Electronics", brand: "Lenovo", ratings: 4.5, numOfReviews: 1123, stock: 28, images: [{ url: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=400&fit=crop" }] },
+  { _id: "40", name: "Canon EOS R50 Camera", description: "24.2MP APS-C sensor, 4K video, dual AF, beginner-friendly mirrorless, Wi-Fi & Bluetooth", price: 57990, originalPrice: 74990, discount: 23, category: "Electronics", brand: "Canon", ratings: 4.8, numOfReviews: 678, stock: 18, images: [{ url: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500&h=400&fit=crop" }] },
+  { _id: "41", name: "JBL Charge 5 Bluetooth Speaker", description: "Waterproof IP67, 20hr playtime, USB-C power bank, PartyBoost multi-speaker pairing", price: 9999, originalPrice: 13999, discount: 29, category: "Electronics", brand: "JBL", ratings: 4.6, numOfReviews: 2456, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=400&fit=crop" }] },
+  { _id: "42", name: "Logitech MX Master 3S Mouse", description: "8000 DPI laser sensor, quiet clicks, USB-C fast charge, ergonomic design, multi-device", price: 8995, originalPrice: 11995, discount: 25, category: "Electronics", brand: "Logitech", ratings: 4.8, numOfReviews: 1890, stock: 90, images: [{ url: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=400&fit=crop" }] },
+  { _id: "43", name: "PlayStation 5 Slim Console", description: "4K gaming, ray tracing, DualSense controller, 1TB SSD, Ultra HD Blu-ray disc drive", price: 44990, originalPrice: 54990, discount: 18, category: "Electronics", brand: "Sony", ratings: 4.9, numOfReviews: 3456, stock: 15, images: [{ url: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500&h=400&fit=crop" }] },
+  { _id: "44", name: "Kindle Paperwhite 16GB", description: "6.8\" glare-free display, adjustable warm light, 10-week battery, waterproof, USB-C", price: 12999, originalPrice: 16999, discount: 24, category: "Electronics", brand: "Amazon", ratings: 4.7, numOfReviews: 5678, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500&h=400&fit=crop" }] },
 
   // ── FASHION (15 products) ──────────────────────────────────────────────────
-  { _id:"6",  name:"Levi's 511 Slim Fit Jeans",     description:"Classic slim fit, 98% cotton 2% elastane, dark indigo wash, comfortable all-day stretch",           price:3499,   category:"Fashion",          brand:"Levi's",         ratings:4.5, numOfReviews:1234, stock:250, images:[{url:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=400&fit=crop"}] },
-  { _id:"7",  name:"Nike Air Max 270",               description:"Max Air 270° heel unit, breathable mesh upper, foam midsole, durable rubber outsole",               price:12999,  category:"Fashion",          brand:"Nike",           ratings:4.7, numOfReviews:2456, stock:180, images:[{url:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop"}] },
-  { _id:"8",  name:"Adidas Originals Hoodie",        description:"70% cotton 30% polyester, iconic Trefoil logo, kangaroo pocket, ribbed cuffs and hem",             price:4999,   category:"Fashion",          brand:"Adidas",         ratings:4.6, numOfReviews:890,  stock:200, images:[{url:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=400&fit=crop"}] },
-  { _id:"9",  name:"Women's Designer Kurti",         description:"Elegant floral print, 100% soft cotton, 3/4 sleeves, knee length, available in 6 sizes",           price:1299,   category:"Fashion",          brand:"Biba",           ratings:4.6, numOfReviews:1567, stock:350, images:[{url:"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&h=400&fit=crop"}] },
-  { _id:"10", name:"Ray-Ban Aviator Sunglasses",     description:"Classic gold metal frame, polarized UV400 green lens, iconic teardrop shape since 1937",            price:7999,   category:"Fashion",          brand:"Ray-Ban",        ratings:4.8, numOfReviews:2345, stock:150, images:[{url:"https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=400&fit=crop"}] },
-  { _id:"45", name:"Puma Training T-Shirt",          description:"Moisture-wicking DryCELL fabric, slim fit, anti-odour, perfect for gym or casual wear",            price:1299,   originalPrice:1799,   discount:28, category:"Fashion",          brand:"Puma",           ratings:4.5, numOfReviews:2100, stock:300, images:[{url:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=400&fit=crop"}] },
-  { _id:"46", name:"Men's Formal Shirt – White",     description:"100% premium cotton, slim fit, spread collar, wrinkle-resistant, available sizes S–XXL",            price:1599,   originalPrice:2499,   discount:36, category:"Fashion",          brand:"Van Heusen",     ratings:4.4, numOfReviews:1890, stock:280, images:[{url:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&h=400&fit=crop"}] },
-  { _id:"47", name:"Women's Floral Summer Dress",    description:"Lightweight chiffon, flowy silhouette, V-neck, sleeveless, knee-length, 6 colour options",          price:1999,   originalPrice:2999,   discount:33, category:"Fashion",          brand:"Zara",           ratings:4.7, numOfReviews:1456, stock:220, images:[{url:"https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=500&h=400&fit=crop"}] },
-  { _id:"48", name:"Woodland Leather Casual Shoes",  description:"Full-grain leather upper, rubber lug sole, memory foam insole, water-resistant",                    price:3499,   originalPrice:4999,   discount:30, category:"Fashion",          brand:"Woodland",       ratings:4.6, numOfReviews:1234, stock:160, images:[{url:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop&sat=-100"}] },
-  { _id:"49", name:"Women's Leather Handbag",        description:"Genuine PU leather, spacious interior, 3 compartments, gold-tone hardware, detachable strap",       price:2999,   originalPrice:4499,   discount:33, category:"Fashion",          brand:"Baggit",         ratings:4.7, numOfReviews:987,  stock:120, images:[{url:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&h=400&fit=crop"}] },
-  { _id:"50", name:"Titan Analog Watch – Black",     description:"Stainless steel case, sapphire crystal glass, 100m water resistance, leather strap",                price:4999,   originalPrice:7499,   discount:33, category:"Fashion",          brand:"Titan",          ratings:4.6, numOfReviews:2340, stock:180, images:[{url:"https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500&h=400&fit=crop"}] },
-  { _id:"51", name:"Men's Winter Puffer Jacket",     description:"Water-repellent shell, 400-fill power down insulation, packable, 4 zip pockets",                    price:4999,   originalPrice:7999,   discount:38, category:"Fashion",          brand:"The North Face",  ratings:4.8, numOfReviews:876,  stock:140, images:[{url:"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&h=400&fit=crop"}] },
-  { _id:"52", name:"Wildcraft 40L Hiking Backpack",  description:"Water-resistant 600D polyester, padded shoulder straps, laptop sleeve, rain cover included",        price:2499,   originalPrice:3999,   discount:38, category:"Fashion",          brand:"Wildcraft",      ratings:4.5, numOfReviews:1123, stock:200, images:[{url:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=400&fit=crop"}] },
-  { _id:"53", name:"Women's High-Waist Yoga Pants",  description:"4-way stretch, squat-proof, moisture-wicking, high waist, 7/8 length, 5 pockets",                  price:1499,   originalPrice:2299,   discount:35, category:"Fashion",          brand:"Decathlon",      ratings:4.6, numOfReviews:2890, stock:250, images:[{url:"https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&h=400&fit=crop"}] },
-  { _id:"54", name:"Fastrack Neon Digital Watch",    description:"Resin case, digital display with backlight, stopwatch, alarm, water-resistant 50m",                  price:1299,   originalPrice:1999,   discount:35, category:"Fashion",          brand:"Fastrack",       ratings:4.3, numOfReviews:1567, stock:320, images:[{url:"https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&h=400&fit=crop"}] },
-  { _id:"55", name:"Men's Cargo Shorts",             description:"100% cotton twill, 6 pockets including cargo pockets, belt loops, relaxed fit",                     price:999,    originalPrice:1499,   discount:33, category:"Fashion",          brand:"Roadster",       ratings:4.4, numOfReviews:1890, stock:300, images:[{url:"https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500&h=400&fit=crop"}] },
+  { _id: "6", name: "Levi's 511 Slim Fit Jeans", description: "Classic slim fit, 98% cotton 2% elastane, dark indigo wash, comfortable all-day stretch", price: 3499, category: "Fashion", brand: "Levi's", ratings: 4.5, numOfReviews: 1234, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=400&fit=crop" }] },
+  { _id: "7", name: "Nike Air Max 270", description: "Max Air 270° heel unit, breathable mesh upper, foam midsole, durable rubber outsole", price: 12999, category: "Fashion", brand: "Nike", ratings: 4.7, numOfReviews: 2456, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop" }] },
+  { _id: "8", name: "Adidas Originals Hoodie", description: "70% cotton 30% polyester, iconic Trefoil logo, kangaroo pocket, ribbed cuffs and hem", price: 4999, category: "Fashion", brand: "Adidas", ratings: 4.6, numOfReviews: 890, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=400&fit=crop" }] },
+  { _id: "9", name: "Women's Designer Kurti", description: "Elegant floral print, 100% soft cotton, 3/4 sleeves, knee length, available in 6 sizes", price: 1299, category: "Fashion", brand: "Biba", ratings: 4.6, numOfReviews: 1567, stock: 350, images: [{ url: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&h=400&fit=crop" }] },
+  { _id: "10", name: "Ray-Ban Aviator Sunglasses", description: "Classic gold metal frame, polarized UV400 green lens, iconic teardrop shape since 1937", price: 7999, category: "Fashion", brand: "Ray-Ban", ratings: 4.8, numOfReviews: 2345, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=400&fit=crop" }] },
+  { _id: "45", name: "Puma Training T-Shirt", description: "Moisture-wicking DryCELL fabric, slim fit, anti-odour, perfect for gym or casual wear", price: 1299, originalPrice: 1799, discount: 28, category: "Fashion", brand: "Puma", ratings: 4.5, numOfReviews: 2100, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=400&fit=crop" }] },
+  { _id: "46", name: "Men's Formal Shirt – White", description: "100% premium cotton, slim fit, spread collar, wrinkle-resistant, available sizes S–XXL", price: 1599, originalPrice: 2499, discount: 36, category: "Fashion", brand: "Van Heusen", ratings: 4.4, numOfReviews: 1890, stock: 280, images: [{ url: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&h=400&fit=crop" }] },
+  { _id: "47", name: "Women's Floral Summer Dress", description: "Lightweight chiffon, flowy silhouette, V-neck, sleeveless, knee-length, 6 colour options", price: 1999, originalPrice: 2999, discount: 33, category: "Fashion", brand: "Zara", ratings: 4.7, numOfReviews: 1456, stock: 220, images: [{ url: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=500&h=400&fit=crop" }] },
+  { _id: "48", name: "Woodland Leather Casual Shoes", description: "Full-grain leather upper, rubber lug sole, memory foam insole, water-resistant", price: 3499, originalPrice: 4999, discount: 30, category: "Fashion", brand: "Woodland", ratings: 4.6, numOfReviews: 1234, stock: 160, images: [{ url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop&sat=-100" }] },
+  { _id: "49", name: "Women's Leather Handbag", description: "Genuine PU leather, spacious interior, 3 compartments, gold-tone hardware, detachable strap", price: 2999, originalPrice: 4499, discount: 33, category: "Fashion", brand: "Baggit", ratings: 4.7, numOfReviews: 987, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&h=400&fit=crop" }] },
+  { _id: "50", name: "Titan Analog Watch – Black", description: "Stainless steel case, sapphire crystal glass, 100m water resistance, leather strap", price: 4999, originalPrice: 7499, discount: 33, category: "Fashion", brand: "Titan", ratings: 4.6, numOfReviews: 2340, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500&h=400&fit=crop" }] },
+  { _id: "51", name: "Men's Winter Puffer Jacket", description: "Water-repellent shell, 400-fill power down insulation, packable, 4 zip pockets", price: 4999, originalPrice: 7999, discount: 38, category: "Fashion", brand: "The North Face", ratings: 4.8, numOfReviews: 876, stock: 140, images: [{ url: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&h=400&fit=crop" }] },
+  { _id: "52", name: "Wildcraft 40L Hiking Backpack", description: "Water-resistant 600D polyester, padded shoulder straps, laptop sleeve, rain cover included", price: 2499, originalPrice: 3999, discount: 38, category: "Fashion", brand: "Wildcraft", ratings: 4.5, numOfReviews: 1123, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=400&fit=crop" }] },
+  { _id: "53", name: "Women's High-Waist Yoga Pants", description: "4-way stretch, squat-proof, moisture-wicking, high waist, 7/8 length, 5 pockets", price: 1499, originalPrice: 2299, discount: 35, category: "Fashion", brand: "Decathlon", ratings: 4.6, numOfReviews: 2890, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&h=400&fit=crop" }] },
+  { _id: "54", name: "Fastrack Neon Digital Watch", description: "Resin case, digital display with backlight, stopwatch, alarm, water-resistant 50m", price: 1299, originalPrice: 1999, discount: 35, category: "Fashion", brand: "Fastrack", ratings: 4.3, numOfReviews: 1567, stock: 320, images: [{ url: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&h=400&fit=crop" }] },
+  { _id: "55", name: "Men's Cargo Shorts", description: "100% cotton twill, 6 pockets including cargo pockets, belt loops, relaxed fit", price: 999, originalPrice: 1499, discount: 33, category: "Fashion", brand: "Roadster", ratings: 4.4, numOfReviews: 1890, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500&h=400&fit=crop" }] },
 
   // ── HOME & KITCHEN (14 products) ──────────────────────────────────────────
-  { _id:"11", name:"Philips Air Fryer HD9252",       description:"Rapid Air technology, 4.1L, 7 digital presets, touchscreen, dishwasher-safe basket",                price:12999,  category:"Home & Kitchen",   brand:"Philips",        ratings:4.6, numOfReviews:1234, stock:80,  images:[{url:"https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&h=400&fit=crop"}] },
-  { _id:"12", name:"Prestige Induction Cooktop",     description:"2000W, feather-touch panel, 8 preset menus, child-lock, auto-shutoff, ISI certified",               price:3299,   category:"Home & Kitchen",   brand:"Prestige",       ratings:4.4, numOfReviews:890,  stock:150, images:[{url:"https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=500&h=400&fit=crop"}] },
-  { _id:"13", name:"Milton Thermosteel Bottle 1L",   description:"18/8 stainless steel double wall, 24hr cold & 12hr hot, leak-proof lid, BPA-free",                  price:699,    category:"Home & Kitchen",   brand:"Milton",         ratings:4.5, numOfReviews:2345, stock:500, images:[{url:"https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=400&fit=crop"}] },
-  { _id:"14", name:"Bajaj Mixer Grinder 750W",       description:"3 stainless steel jars (1.5L+1L+0.4L), 750W copper motor, overload protection, 2yr warranty",      price:4499,   category:"Home & Kitchen",   brand:"Bajaj",          ratings:4.5, numOfReviews:890,  stock:120, images:[{url:"https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop"}] },
-  { _id:"56", name:"Instant Pot Duo 7-in-1 Cooker",  description:"Pressure cooker, slow cooker, rice cooker, steamer, sauté, yogurt maker & food warmer, 6L",        price:9999,   originalPrice:13999,  discount:29, category:"Home & Kitchen",   brand:"Instant Pot",    ratings:4.8, numOfReviews:3210, stock:60,  images:[{url:"https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&h=400&fit=crop&hue=200"}] },
-  { _id:"57", name:"Godrej Refrigerator 265L",       description:"Frost-free, 3-star energy rating, toughened glass shelves, large vegetable tray, crisper",          price:28999,  originalPrice:36999,  discount:22, category:"Home & Kitchen",   brand:"Godrej",         ratings:4.5, numOfReviews:1450, stock:25,  images:[{url:"https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=500&h=400&fit=crop"}] },
-  { _id:"58", name:"IFB Front Load Washing Machine", description:"6kg capacity, 6 motion wash, silver nano technology, in-built heater, 2yr warranty",               price:31999,  originalPrice:42999,  discount:26, category:"Home & Kitchen",   brand:"IFB",            ratings:4.6, numOfReviews:987,  stock:20,  images:[{url:"https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=500&h=400&fit=crop"}] },
-  { _id:"59", name:"Bosch Dishwasher 12 Place",      description:"12 place settings, 5 programs, half load function, auto door open drying, energy-efficient",        price:34999,  originalPrice:44999,  discount:22, category:"Home & Kitchen",   brand:"Bosch",          ratings:4.7, numOfReviews:654,  stock:15,  images:[{url:"https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&h=400&fit=crop"}] },
-  { _id:"60", name:"Havells Ceiling Fan 1200mm",     description:"BLDC motor, 5-star energy rated, remote control, 52W power consumption, anti-dust blade",           price:3499,   originalPrice:4999,   discount:30, category:"Home & Kitchen",   brand:"Havells",        ratings:4.5, numOfReviews:2345, stock:180, images:[{url:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=400&fit=crop"}] },
-  { _id:"61", name:"Dyson V12 Detect Slim Vacuum",   description:"Laser dust detection, HEPA filtration, 60-min runtime, LCD screen, lightweight 2.2kg",             price:42900,  originalPrice:54900,  discount:22, category:"Home & Kitchen",   brand:"Dyson",          ratings:4.8, numOfReviews:876,  stock:30,  images:[{url:"https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500&h=400&fit=crop"}] },
-  { _id:"62", name:"Nonstick Cookware Set 5-Piece",  description:"Hard anodised aluminium, PFOA-free coating, induction-compatible, glass lids, 2yr warranty",       price:3999,   originalPrice:5999,   discount:33, category:"Home & Kitchen",   brand:"Prestige",       ratings:4.5, numOfReviews:1890, stock:140, images:[{url:"https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500&h=400&fit=crop"}] },
-  { _id:"63", name:"Borosil Glass Lunch Box 3-Tier", description:"Borosilicate glass, microwave & oven safe, airtight steel clips, leak-proof, 320ml each tier",     price:1199,   originalPrice:1799,   discount:33, category:"Home & Kitchen",   brand:"Borosil",        ratings:4.4, numOfReviews:1123, stock:300, images:[{url:"https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=400&fit=crop"}] },
-  { _id:"64", name:"Philips Hand Blender 650W",      description:"Turbo boost button, stainless steel blending shaft, detachable for easy cleaning, BPA-free jar",    price:2499,   originalPrice:3499,   discount:29, category:"Home & Kitchen",   brand:"Philips",        ratings:4.6, numOfReviews:987,  stock:100, images:[{url:"https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop&hue=60"}] },
-  { _id:"65", name:"Solimo Cotton Bed Sheet King",   description:"400 thread count, 100% cotton, king size, 1 flat sheet + 2 pillow covers, machine washable",       price:1499,   originalPrice:2299,   discount:35, category:"Home & Kitchen",   brand:"Amazon Basics",  ratings:4.3, numOfReviews:2345, stock:250, images:[{url:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500&h=400&fit=crop"}] },
+  { _id: "11", name: "Philips Air Fryer HD9252", description: "Rapid Air technology, 4.1L, 7 digital presets, touchscreen, dishwasher-safe basket", price: 12999, category: "Home & Kitchen", brand: "Philips", ratings: 4.6, numOfReviews: 1234, stock: 80, images: [{ url: "https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&h=400&fit=crop" }] },
+  { _id: "12", name: "Prestige Induction Cooktop", description: "2000W, feather-touch panel, 8 preset menus, child-lock, auto-shutoff, ISI certified", price: 3299, category: "Home & Kitchen", brand: "Prestige", ratings: 4.4, numOfReviews: 890, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=500&h=400&fit=crop" }] },
+  { _id: "13", name: "Milton Thermosteel Bottle 1L", description: "18/8 stainless steel double wall, 24hr cold & 12hr hot, leak-proof lid, BPA-free", price: 699, category: "Home & Kitchen", brand: "Milton", ratings: 4.5, numOfReviews: 2345, stock: 500, images: [{ url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=400&fit=crop" }] },
+  { _id: "14", name: "Bajaj Mixer Grinder 750W", description: "3 stainless steel jars (1.5L+1L+0.4L), 750W copper motor, overload protection, 2yr warranty", price: 4499, category: "Home & Kitchen", brand: "Bajaj", ratings: 4.5, numOfReviews: 890, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop" }] },
+  { _id: "56", name: "Instant Pot Duo 7-in-1 Cooker", description: "Pressure cooker, slow cooker, rice cooker, steamer, sauté, yogurt maker & food warmer, 6L", price: 9999, originalPrice: 13999, discount: 29, category: "Home & Kitchen", brand: "Instant Pot", ratings: 4.8, numOfReviews: 3210, stock: 60, images: [{ url: "https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&h=400&fit=crop&hue=200" }] },
+  { _id: "57", name: "Godrej Refrigerator 265L", description: "Frost-free, 3-star energy rating, toughened glass shelves, large vegetable tray, crisper", price: 28999, originalPrice: 36999, discount: 22, category: "Home & Kitchen", brand: "Godrej", ratings: 4.5, numOfReviews: 1450, stock: 25, images: [{ url: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=500&h=400&fit=crop" }] },
+  { _id: "58", name: "IFB Front Load Washing Machine", description: "6kg capacity, 6 motion wash, silver nano technology, in-built heater, 2yr warranty", price: 31999, originalPrice: 42999, discount: 26, category: "Home & Kitchen", brand: "IFB", ratings: 4.6, numOfReviews: 987, stock: 20, images: [{ url: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=500&h=400&fit=crop" }] },
+  { _id: "59", name: "Bosch Dishwasher 12 Place", description: "12 place settings, 5 programs, half load function, auto door open drying, energy-efficient", price: 34999, originalPrice: 44999, discount: 22, category: "Home & Kitchen", brand: "Bosch", ratings: 4.7, numOfReviews: 654, stock: 15, images: [{ url: "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&h=400&fit=crop" }] },
+  { _id: "60", name: "Havells Ceiling Fan 1200mm", description: "BLDC motor, 5-star energy rated, remote control, 52W power consumption, anti-dust blade", price: 3499, originalPrice: 4999, discount: 30, category: "Home & Kitchen", brand: "Havells", ratings: 4.5, numOfReviews: 2345, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=400&fit=crop" }] },
+  { _id: "61", name: "Dyson V12 Detect Slim Vacuum", description: "Laser dust detection, HEPA filtration, 60-min runtime, LCD screen, lightweight 2.2kg", price: 42900, originalPrice: 54900, discount: 22, category: "Home & Kitchen", brand: "Dyson", ratings: 4.8, numOfReviews: 876, stock: 30, images: [{ url: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500&h=400&fit=crop" }] },
+  { _id: "62", name: "Nonstick Cookware Set 5-Piece", description: "Hard anodised aluminium, PFOA-free coating, induction-compatible, glass lids, 2yr warranty", price: 3999, originalPrice: 5999, discount: 33, category: "Home & Kitchen", brand: "Prestige", ratings: 4.5, numOfReviews: 1890, stock: 140, images: [{ url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500&h=400&fit=crop" }] },
+  { _id: "63", name: "Borosil Glass Lunch Box 3-Tier", description: "Borosilicate glass, microwave & oven safe, airtight steel clips, leak-proof, 320ml each tier", price: 1199, originalPrice: 1799, discount: 33, category: "Home & Kitchen", brand: "Borosil", ratings: 4.4, numOfReviews: 1123, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=400&fit=crop" }] },
+  { _id: "64", name: "Philips Hand Blender 650W", description: "Turbo boost button, stainless steel blending shaft, detachable for easy cleaning, BPA-free jar", price: 2499, originalPrice: 3499, discount: 29, category: "Home & Kitchen", brand: "Philips", ratings: 4.6, numOfReviews: 987, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop&hue=60" }] },
+  { _id: "65", name: "Solimo Cotton Bed Sheet King", description: "400 thread count, 100% cotton, king size, 1 flat sheet + 2 pillow covers, machine washable", price: 1499, originalPrice: 2299, discount: 35, category: "Home & Kitchen", brand: "Amazon Basics", ratings: 4.3, numOfReviews: 2345, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500&h=400&fit=crop" }] },
 
   // ── BOOKS (12 products) ────────────────────────────────────────────────────
-  { _id:"15", name:"Rich Dad Poor Dad",              description:"Robert Kiyosaki's revolutionary guide to financial intelligence and building lasting wealth",        price:399,    category:"Books",            brand:"Penguin",        ratings:4.8, numOfReviews:3456, stock:300, images:[{url:"https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500&h=400&fit=crop"}] },
-  { _id:"16", name:"Atomic Habits",                  description:"James Clear's proven framework for building good habits, breaking bad ones, mastering tiny behaviors",price:499,   category:"Books",            brand:"Penguin",        ratings:4.9, numOfReviews:4567, stock:280, images:[{url:"https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500&h=400&fit=crop"}] },
-  { _id:"17", name:"The Alchemist",                  description:"Paulo Coelho's global bestseller — Santiago's magical journey following his dream across the desert", price:350,   category:"Books",            brand:"Harper Collins", ratings:4.7, numOfReviews:5678, stock:320, images:[{url:"https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500&h=400&fit=crop"}] },
-  { _id:"18", name:"Sapiens",                        description:"Yuval Noah Harari's sweeping narrative of humankind from Stone Age caves to 21st century labs",     price:599,    category:"Books",            brand:"Harper",         ratings:4.8, numOfReviews:2890, stock:220, images:[{url:"https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500&h=400&fit=crop"}] },
-  { _id:"66", name:"The Psychology of Money",        description:"Morgan Housel's 19 timeless lessons on wealth, greed, and happiness from a behavioural lens",       price:349,    originalPrice:499,    discount:30, category:"Books",            brand:"Jaico",          ratings:4.8, numOfReviews:3100, stock:280, images:[{url:"https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500&h=400&fit=crop"}] },
-  { _id:"67", name:"Think and Grow Rich",            description:"Napoleon Hill's timeless classic — 13 principles of personal success distilled from 500 rich men",  price:299,    originalPrice:449,    discount:33, category:"Books",            brand:"Rupa",           ratings:4.7, numOfReviews:2678, stock:350, images:[{url:"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&h=400&fit=crop"}] },
-  { _id:"68", name:"Deep Work – Cal Newport",        description:"Rules for focused success in a distracted world — the superpower of the 21st century economy",      price:450,    originalPrice:599,    discount:25, category:"Books",            brand:"Grand Central",  ratings:4.6, numOfReviews:1890, stock:200, images:[{url:"https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=500&h=400&fit=crop"}] },
-  { _id:"69", name:"Harry Potter Box Set (7 Books)", description:"Complete J.K. Rowling collection in a collector's box — Philosopher's Stone to Deathly Hallows",   price:3999,   originalPrice:5999,   discount:33, category:"Books",            brand:"Bloomsbury",     ratings:4.9, numOfReviews:7890, stock:80,  images:[{url:"https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=500&h=400&fit=crop"}] },
-  { _id:"70", name:"Zero to One – Peter Thiel",      description:"Notes on startups and how to build the future — essential reading for every entrepreneur",          price:499,    originalPrice:699,    discount:29, category:"Books",            brand:"Currency",       ratings:4.7, numOfReviews:2100, stock:230, images:[{url:"https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=500&h=400&fit=crop"}] },
-  { _id:"71", name:"The 5 AM Club – Robin Sharma",   description:"Own your morning, elevate your life — the 20/20/20 formula for peak performance",                  price:399,    originalPrice:599,    discount:33, category:"Books",            brand:"Harper Thorsons", ratings:4.5, numOfReviews:1456, stock:260, images:[{url:"https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500&h=400&fit=crop"}] },
-  { _id:"72", name:"Ikigai – Japanese Life Philosophy",description:"Discover your reason for being — the Japanese concept for a long, happy, meaningful life",       price:299,    originalPrice:399,    discount:25, category:"Books",            brand:"Arrow",          ratings:4.6, numOfReviews:2345, stock:310, images:[{url:"https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=500&h=400&fit=crop"}] },
-  { _id:"73", name:"Wings of Fire – A.P.J. Kalam",   description:"The inspiring autobiography of India's Missile Man and beloved former President",                  price:199,    originalPrice:299,    discount:33, category:"Books",            brand:"Universities Press", ratings:4.9, numOfReviews:6789, stock:400, images:[{url:"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&h=400&fit=crop"}] },
+  { _id: "15", name: "Rich Dad Poor Dad", description: "Robert Kiyosaki's revolutionary guide to financial intelligence and building lasting wealth", price: 399, category: "Books", brand: "Penguin", ratings: 4.8, numOfReviews: 3456, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500&h=400&fit=crop" }] },
+  { _id: "16", name: "Atomic Habits", description: "James Clear's proven framework for building good habits, breaking bad ones, mastering tiny behaviors", price: 499, category: "Books", brand: "Penguin", ratings: 4.9, numOfReviews: 4567, stock: 280, images: [{ url: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500&h=400&fit=crop" }] },
+  { _id: "17", name: "The Alchemist", description: "Paulo Coelho's global bestseller — Santiago's magical journey following his dream across the desert", price: 350, category: "Books", brand: "Harper Collins", ratings: 4.7, numOfReviews: 5678, stock: 320, images: [{ url: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500&h=400&fit=crop" }] },
+  { _id: "18", name: "Sapiens", description: "Yuval Noah Harari's sweeping narrative of humankind from Stone Age caves to 21st century labs", price: 599, category: "Books", brand: "Harper", ratings: 4.8, numOfReviews: 2890, stock: 220, images: [{ url: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500&h=400&fit=crop" }] },
+  { _id: "66", name: "The Psychology of Money", description: "Morgan Housel's 19 timeless lessons on wealth, greed, and happiness from a behavioural lens", price: 349, originalPrice: 499, discount: 30, category: "Books", brand: "Jaico", ratings: 4.8, numOfReviews: 3100, stock: 280, images: [{ url: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500&h=400&fit=crop" }] },
+  { _id: "67", name: "Think and Grow Rich", description: "Napoleon Hill's timeless classic — 13 principles of personal success distilled from 500 rich men", price: 299, originalPrice: 449, discount: 33, category: "Books", brand: "Rupa", ratings: 4.7, numOfReviews: 2678, stock: 350, images: [{ url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&h=400&fit=crop" }] },
+  { _id: "68", name: "Deep Work – Cal Newport", description: "Rules for focused success in a distracted world — the superpower of the 21st century economy", price: 450, originalPrice: 599, discount: 25, category: "Books", brand: "Grand Central", ratings: 4.6, numOfReviews: 1890, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=500&h=400&fit=crop" }] },
+  { _id: "69", name: "Harry Potter Box Set (7 Books)", description: "Complete J.K. Rowling collection in a collector's box — Philosopher's Stone to Deathly Hallows", price: 3999, originalPrice: 5999, discount: 33, category: "Books", brand: "Bloomsbury", ratings: 4.9, numOfReviews: 7890, stock: 80, images: [{ url: "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=500&h=400&fit=crop" }] },
+  { _id: "70", name: "Zero to One – Peter Thiel", description: "Notes on startups and how to build the future — essential reading for every entrepreneur", price: 499, originalPrice: 699, discount: 29, category: "Books", brand: "Currency", ratings: 4.7, numOfReviews: 2100, stock: 230, images: [{ url: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=500&h=400&fit=crop" }] },
+  { _id: "71", name: "The 5 AM Club – Robin Sharma", description: "Own your morning, elevate your life — the 20/20/20 formula for peak performance", price: 399, originalPrice: 599, discount: 33, category: "Books", brand: "Harper Thorsons", ratings: 4.5, numOfReviews: 1456, stock: 260, images: [{ url: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500&h=400&fit=crop" }] },
+  { _id: "72", name: "Ikigai – Japanese Life Philosophy", description: "Discover your reason for being — the Japanese concept for a long, happy, meaningful life", price: 299, originalPrice: 399, discount: 25, category: "Books", brand: "Arrow", ratings: 4.6, numOfReviews: 2345, stock: 310, images: [{ url: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=500&h=400&fit=crop" }] },
+  { _id: "73", name: "Wings of Fire – A.P.J. Kalam", description: "The inspiring autobiography of India's Missile Man and beloved former President", price: 199, originalPrice: 299, discount: 33, category: "Books", brand: "Universities Press", ratings: 4.9, numOfReviews: 6789, stock: 400, images: [{ url: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&h=400&fit=crop" }] },
 
   // ── SPORTS & FITNESS (12 products) ───────────────────────────────────────
-  { _id:"19", name:"Yoga Mat Premium 6mm",           description:"Anti-slip TPE surface, eco-friendly, dual-texture reversible design, includes carry strap bag",     price:999,    category:"Sports & Fitness", brand:"Strauss",        ratings:4.4, numOfReviews:890,  stock:200, images:[{url:"https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500&h=400&fit=crop"}] },
-  { _id:"20", name:"Dumbbells Set 10kg",             description:"Rubber-coated hexagonal, anti-roll design, chrome handle, pair of 2×5kg, home gym essential",       price:1899,   category:"Sports & Fitness", brand:"Kore",           ratings:4.6, numOfReviews:567,  stock:150, images:[{url:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=400&fit=crop"}] },
-  { _id:"21", name:"Cricket Bat Kashmir Willow",     description:"Full size Grade-1 Kashmir willow, pre-knocked blade, toe guard, rubber grip, net-practice ready",   price:1499,   category:"Sports & Fitness", brand:"Cosco",          ratings:4.2, numOfReviews:456,  stock:100, images:[{url:"https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&h=400&fit=crop"}] },
-  { _id:"22", name:"Football Size 5",               description:"FIFA-quality PU construction, butyl inner bladder, 32-panel stitched design, match grade",          price:899,    category:"Sports & Fitness", brand:"Nivia",          ratings:4.4, numOfReviews:789,  stock:180, images:[{url:"https://images.unsplash.com/photo-1552318965-6e6be7484ada?w=500&h=400&fit=crop"}] },
-  { _id:"74", name:"Resistance Bands Set (5 Bands)", description:"Latex loop bands, 5 resistance levels, includes handles, door anchor, ankle straps & carry bag",   price:699,    originalPrice:999,    discount:30, category:"Sports & Fitness", brand:"Boldfit",        ratings:4.3, numOfReviews:1890, stock:250, images:[{url:"https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=500&h=400&fit=crop"}] },
-  { _id:"75", name:"Yonex Nanoflare 001 Racket",    description:"Carbon nanotube frame, slim shaft, super-light 77g, fast swing speed, with full cover",             price:2999,   originalPrice:3999,   discount:25, category:"Sports & Fitness", brand:"Yonex",          ratings:4.7, numOfReviews:1234, stock:90,  images:[{url:"https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500&h=400&fit=crop"}] },
-  { _id:"76", name:"Adjustable Skipping Rope",       description:"Ball-bearing PVC rope, foam ergonomic handles, digital counter display, adjustable length",         price:349,    originalPrice:599,    discount:42, category:"Sports & Fitness", brand:"Cockatoo",       ratings:4.2, numOfReviews:2100, stock:300, images:[{url:"https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=500&h=400&fit=crop"}] },
-  { _id:"77", name:"Adidas Running Shoes – Lite",   description:"Litestrike EVA midsole, Cloudfoam comfort, breathable mesh upper, everyday training shoe",         price:3499,   originalPrice:4999,   discount:30, category:"Sports & Fitness", brand:"Adidas",         ratings:4.6, numOfReviews:2890, stock:160, images:[{url:"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=400&fit=crop"}] },
-  { _id:"78", name:"Protein Shaker Bottle 700ml",   description:"BPA-free Tritan plastic, leak-proof flip cap, mixing ball, graduated markings, dishwasher safe",    price:499,    originalPrice:799,    discount:38, category:"Sports & Fitness", brand:"Boldfit",        ratings:4.5, numOfReviews:3456, stock:400, images:[{url:"https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=500&h=400&fit=crop"}] },
-  { _id:"79", name:"Pull-Up Bar Doorframe",          description:"No-screw steel doorframe bar, 150kg max load, telescopic 70–100cm, foam grips, with resistance band",price:1299,  originalPrice:1999,   discount:35, category:"Sports & Fitness", brand:"Kore",           ratings:4.4, numOfReviews:987,  stock:120, images:[{url:"https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500&h=400&fit=crop"}] },
-  { _id:"80", name:"Nivia Storm Basketball Size 7",  description:"Full-grain rubber, deep channel design, excellent grip, ideal for indoor & outdoor courts",          price:1299,   originalPrice:1799,   discount:28, category:"Sports & Fitness", brand:"Nivia",          ratings:4.5, numOfReviews:876,  stock:140, images:[{url:"https://images.unsplash.com/photo-1546519638-68e109498ffc?w=500&h=400&fit=crop"}] },
-  { _id:"81", name:"Gym Duffle Bag 40L",             description:"1680D nylon, separate shoe compartment, wet pocket, adjustable strap, reflective strip",            price:1499,   originalPrice:2199,   discount:32, category:"Sports & Fitness", brand:"Puma",           ratings:4.5, numOfReviews:1234, stock:180, images:[{url:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=400&fit=crop"}] },
+  { _id: "19", name: "Yoga Mat Premium 6mm", description: "Anti-slip TPE surface, eco-friendly, dual-texture reversible design, includes carry strap bag", price: 999, category: "Sports & Fitness", brand: "Strauss", ratings: 4.4, numOfReviews: 890, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500&h=400&fit=crop" }] },
+  { _id: "20", name: "Dumbbells Set 10kg", description: "Rubber-coated hexagonal, anti-roll design, chrome handle, pair of 2×5kg, home gym essential", price: 1899, category: "Sports & Fitness", brand: "Kore", ratings: 4.6, numOfReviews: 567, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=400&fit=crop" }] },
+  { _id: "21", name: "Cricket Bat Kashmir Willow", description: "Full size Grade-1 Kashmir willow, pre-knocked blade, toe guard, rubber grip, net-practice ready", price: 1499, category: "Sports & Fitness", brand: "Cosco", ratings: 4.2, numOfReviews: 456, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&h=400&fit=crop" }] },
+  { _id: "22", name: "Football Size 5", description: "FIFA-quality PU construction, butyl inner bladder, 32-panel stitched design, match grade", price: 899, category: "Sports & Fitness", brand: "Nivia", ratings: 4.4, numOfReviews: 789, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1552318965-6e6be7484ada?w=500&h=400&fit=crop" }] },
+  { _id: "74", name: "Resistance Bands Set (5 Bands)", description: "Latex loop bands, 5 resistance levels, includes handles, door anchor, ankle straps & carry bag", price: 699, originalPrice: 999, discount: 30, category: "Sports & Fitness", brand: "Boldfit", ratings: 4.3, numOfReviews: 1890, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=500&h=400&fit=crop" }] },
+  { _id: "75", name: "Yonex Nanoflare 001 Racket", description: "Carbon nanotube frame, slim shaft, super-light 77g, fast swing speed, with full cover", price: 2999, originalPrice: 3999, discount: 25, category: "Sports & Fitness", brand: "Yonex", ratings: 4.7, numOfReviews: 1234, stock: 90, images: [{ url: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500&h=400&fit=crop" }] },
+  { _id: "76", name: "Adjustable Skipping Rope", description: "Ball-bearing PVC rope, foam ergonomic handles, digital counter display, adjustable length", price: 349, originalPrice: 599, discount: 42, category: "Sports & Fitness", brand: "Cockatoo", ratings: 4.2, numOfReviews: 2100, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=500&h=400&fit=crop" }] },
+  { _id: "77", name: "Adidas Running Shoes – Lite", description: "Litestrike EVA midsole, Cloudfoam comfort, breathable mesh upper, everyday training shoe", price: 3499, originalPrice: 4999, discount: 30, category: "Sports & Fitness", brand: "Adidas", ratings: 4.6, numOfReviews: 2890, stock: 160, images: [{ url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=400&fit=crop" }] },
+  { _id: "78", name: "Protein Shaker Bottle 700ml", description: "BPA-free Tritan plastic, leak-proof flip cap, mixing ball, graduated markings, dishwasher safe", price: 499, originalPrice: 799, discount: 38, category: "Sports & Fitness", brand: "Boldfit", ratings: 4.5, numOfReviews: 3456, stock: 400, images: [{ url: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=500&h=400&fit=crop" }] },
+  { _id: "79", name: "Pull-Up Bar Doorframe", description: "No-screw steel doorframe bar, 150kg max load, telescopic 70–100cm, foam grips, with resistance band", price: 1299, originalPrice: 1999, discount: 35, category: "Sports & Fitness", brand: "Kore", ratings: 4.4, numOfReviews: 987, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500&h=400&fit=crop" }] },
+  { _id: "80", name: "Nivia Storm Basketball Size 7", description: "Full-grain rubber, deep channel design, excellent grip, ideal for indoor & outdoor courts", price: 1299, originalPrice: 1799, discount: 28, category: "Sports & Fitness", brand: "Nivia", ratings: 4.5, numOfReviews: 876, stock: 140, images: [{ url: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=500&h=400&fit=crop" }] },
+  { _id: "81", name: "Gym Duffle Bag 40L", description: "1680D nylon, separate shoe compartment, wet pocket, adjustable strap, reflective strip", price: 1499, originalPrice: 2199, discount: 32, category: "Sports & Fitness", brand: "Puma", ratings: 4.5, numOfReviews: 1234, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=400&fit=crop" }] },
 
   // ── FRESH FRUITS (12 products) ────────────────────────────────────────────
-  { _id:"23", name:"Fresh Apples – Shimla (1kg)",    description:"Hand-picked Himachal orchards, crisp sweet-tart flavour, rich in dietary fibre & antioxidants",     price:180,    category:"Fresh Fruits",     brand:"Fresh Farm",     ratings:4.7, numOfReviews:1234, stock:500, images:[{url:"https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&h=400&fit=crop"}] },
-  { _id:"24", name:"Alphonso Mangoes (1 Dozen)",      description:"GI-tagged Ratnagiri Alphonso, naturally ripened, zero carbide, golden flesh, divine sweetness",     price:1200,   category:"Fresh Fruits",     brand:"Farm Fresh",     ratings:4.9, numOfReviews:2456, stock:150, images:[{url:"https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&h=400&fit=crop"}] },
-  { _id:"25", name:"Bananas – Robusta (1 Dozen)",     description:"Farm-fresh Robusta, rich in potassium & vitamin B6, energy-dense, sourced directly from farms",    price:60,     category:"Fresh Fruits",     brand:"Fresh Farm",     ratings:4.6, numOfReviews:890,  stock:800, images:[{url:"https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&h=400&fit=crop"}] },
-  { _id:"26", name:"Fresh Oranges – Nagpur (1kg)",    description:"Famous Nagpur Santra, vitamin C powerhouse, thin skin, juicy segments, tangy-sweet flavour",       price:80,     category:"Fresh Fruits",     brand:"Citrus Fresh",   ratings:4.5, numOfReviews:678,  stock:600, images:[{url:"https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=500&h=400&fit=crop"}] },
-  { _id:"27", name:"Green Grapes – Seedless (500g)",  description:"Nashik vineyard seedless table grapes, plump, sweet, perfectly hydrating, zero seeds",             price:120,    category:"Fresh Fruits",     brand:"Valley Fresh",   ratings:4.7, numOfReviews:1123, stock:400, images:[{url:"https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=500&h=400&fit=crop"}] },
-  { _id:"28", name:"Fresh Pomegranate (1kg)",         description:"Deep-red antioxidant-rich arils, premium quality, polyphenol-dense, sourced from Solapur farms",   price:200,    category:"Fresh Fruits",     brand:"Fruit Basket",   ratings:4.8, numOfReviews:890,  stock:300, images:[{url:"https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&h=400&fit=crop"}] },
-  { _id:"29", name:"Papaya – Ripe (1 piece)",         description:"Golden ripe ~1.2kg papaya, ready-to-eat, high vitamin C & digestive papain enzymes",               price:60,     category:"Fresh Fruits",     brand:"Tropical Fresh", ratings:4.4, numOfReviews:567,  stock:200, images:[{url:"https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=500&h=400&fit=crop"}] },
-  { _id:"30", name:"Watermelon – Whole (1 piece)",    description:"Seedless sweet red flesh, summer staple, ~4–5kg, 92% water, naturally cooling & hydrating",        price:40,     category:"Fresh Fruits",     brand:"Farm Direct",    ratings:4.6, numOfReviews:1234, stock:100, images:[{url:"https://images.unsplash.com/photo-1563114773-84221bd62daa?w=500&h=400&fit=crop"}] },
-  { _id:"31", name:"Fresh Strawberries (250g)",       description:"Mahabaleshwar hill-station berries, deep red, sweet-tart, harvested at peak morning freshness",    price:150,    category:"Fresh Fruits",     brand:"Berry Fresh",    ratings:4.8, numOfReviews:789,  stock:180, images:[{url:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500&h=400&fit=crop"}] },
-  { _id:"32", name:"Kiwi Fruit (6 pieces)",           description:"Fresh imported kiwi, vitamin K & C rich, tangy-sweet, great for smoothies, salads & desserts",    price:200,    category:"Fresh Fruits",     brand:"Exotic Fresh",   ratings:4.7, numOfReviews:456,  stock:250, images:[{url:"https://images.unsplash.com/photo-1585059895524-72359e06133a?w=500&h=400&fit=crop"}] },
-  { _id:"33", name:"Dragon Fruit – White (1 piece)",  description:"Exotic pitaya ~300g, mild sweet kiwi-like flavour, magnesium, fibre & vitamin C rich",             price:80,     category:"Fresh Fruits",     brand:"Exotic Fresh",   ratings:4.5, numOfReviews:345,  stock:150, images:[{url:"https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=500&h=400&fit=crop"}] },
-  { _id:"34", name:"Fresh Pineapple (1 piece)",       description:"Sweet-tangy tropical pineapple ~1.2kg, vitamin C & bromelain rich, farm-fresh daily delivery",     price:60,     category:"Fresh Fruits",     brand:"Tropical Fresh", ratings:4.6, numOfReviews:678,  stock:200, images:[{url:"https://images.unsplash.com/photo-1490885578174-acda8905c2c6?w=500&h=400&fit=crop"}] }
+  { _id: "23", name: "Fresh Apples – Shimla (1kg)", description: "Hand-picked Himachal orchards, crisp sweet-tart flavour, rich in dietary fibre & antioxidants", price: 180, category: "Fresh Fruits", brand: "Fresh Farm", ratings: 4.7, numOfReviews: 1234, stock: 500, images: [{ url: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&h=400&fit=crop" }] },
+  { _id: "24", name: "Alphonso Mangoes (1 Dozen)", description: "GI-tagged Ratnagiri Alphonso, naturally ripened, zero carbide, golden flesh, divine sweetness", price: 1200, category: "Fresh Fruits", brand: "Farm Fresh", ratings: 4.9, numOfReviews: 2456, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&h=400&fit=crop" }] },
+  { _id: "25", name: "Bananas – Robusta (1 Dozen)", description: "Farm-fresh Robusta, rich in potassium & vitamin B6, energy-dense, sourced directly from farms", price: 60, category: "Fresh Fruits", brand: "Fresh Farm", ratings: 4.6, numOfReviews: 890, stock: 800, images: [{ url: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&h=400&fit=crop" }] },
+  { _id: "26", name: "Fresh Oranges – Nagpur (1kg)", description: "Famous Nagpur Santra, vitamin C powerhouse, thin skin, juicy segments, tangy-sweet flavour", price: 80, category: "Fresh Fruits", brand: "Citrus Fresh", ratings: 4.5, numOfReviews: 678, stock: 600, images: [{ url: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=500&h=400&fit=crop" }] },
+  { _id: "27", name: "Green Grapes – Seedless (500g)", description: "Nashik vineyard seedless table grapes, plump, sweet, perfectly hydrating, zero seeds", price: 120, category: "Fresh Fruits", brand: "Valley Fresh", ratings: 4.7, numOfReviews: 1123, stock: 400, images: [{ url: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=500&h=400&fit=crop" }] },
+  { _id: "28", name: "Fresh Pomegranate (1kg)", description: "Deep-red antioxidant-rich arils, premium quality, polyphenol-dense, sourced from Solapur farms", price: 200, category: "Fresh Fruits", brand: "Fruit Basket", ratings: 4.8, numOfReviews: 890, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&h=400&fit=crop" }] },
+  { _id: "29", name: "Papaya – Ripe (1 piece)", description: "Golden ripe ~1.2kg papaya, ready-to-eat, high vitamin C & digestive papain enzymes", price: 60, category: "Fresh Fruits", brand: "Tropical Fresh", ratings: 4.4, numOfReviews: 567, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=500&h=400&fit=crop" }] },
+  { _id: "30", name: "Watermelon – Whole (1 piece)", description: "Seedless sweet red flesh, summer staple, ~4–5kg, 92% water, naturally cooling & hydrating", price: 40, category: "Fresh Fruits", brand: "Farm Direct", ratings: 4.6, numOfReviews: 1234, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1563114773-84221bd62daa?w=500&h=400&fit=crop" }] },
+  { _id: "31", name: "Fresh Strawberries (250g)", description: "Mahabaleshwar hill-station berries, deep red, sweet-tart, harvested at peak morning freshness", price: 150, category: "Fresh Fruits", brand: "Berry Fresh", ratings: 4.8, numOfReviews: 789, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500&h=400&fit=crop" }] },
+  { _id: "32", name: "Kiwi Fruit (6 pieces)", description: "Fresh imported kiwi, vitamin K & C rich, tangy-sweet, great for smoothies, salads & desserts", price: 200, category: "Fresh Fruits", brand: "Exotic Fresh", ratings: 4.7, numOfReviews: 456, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1585059895524-72359e06133a?w=500&h=400&fit=crop" }] },
+  { _id: "33", name: "Dragon Fruit – White (1 piece)", description: "Exotic pitaya ~300g, mild sweet kiwi-like flavour, magnesium, fibre & vitamin C rich", price: 80, category: "Fresh Fruits", brand: "Exotic Fresh", ratings: 4.5, numOfReviews: 345, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=500&h=400&fit=crop" }] },
+  { _id: "34", name: "Fresh Pineapple (1 piece)", description: "Sweet-tangy tropical pineapple ~1.2kg, vitamin C & bromelain rich, farm-fresh daily delivery", price: 60, category: "Fresh Fruits", brand: "Tropical Fresh", ratings: 4.6, numOfReviews: 678, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1490885578174-acda8905c2c6?w=500&h=400&fit=crop" }] }
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -220,8 +227,8 @@ function initExponentialCanvas() {
 /* ═══════════════════════════════════════════════════════════════
    HERO SLIDER
    ═══════════════════════════════════════════════════════════════ */
-let slideIndex   = 0;
-let slideTimer   = null;
+let slideIndex = 0;
+let slideTimer = null;
 const SLIDE_INTERVAL = 4500;
 
 function initSlider() {
@@ -235,7 +242,7 @@ function startSlideTimer() {
 
 function changeSlide(dir) {
   const slides = document.querySelectorAll('.hero-slide');
-  const dots   = document.querySelectorAll('.dot');
+  const dots = document.querySelectorAll('.dot');
   slides[slideIndex].classList.remove('active');
   dots[slideIndex].classList.remove('active');
   slideIndex = (slideIndex + dir + slides.length) % slides.length;
@@ -246,7 +253,7 @@ function changeSlide(dir) {
 
 function goToSlide(n) {
   const slides = document.querySelectorAll('.hero-slide');
-  const dots   = document.querySelectorAll('.dot');
+  const dots = document.querySelectorAll('.dot');
   slides[slideIndex].classList.remove('active');
   dots[slideIndex].classList.remove('active');
   slideIndex = n;
@@ -259,8 +266,8 @@ function goToSlide(n) {
    DEAL-OF-DAY COUNTDOWN
    ═══════════════════════════════════════════════════════════════ */
 function initCountdown() {
-  const now    = new Date();
-  const end    = new Date(now);
+  const now = new Date();
+  const end = new Date(now);
   end.setHours(23, 59, 59, 999);
   countdownTarget = end.getTime();
   tickCountdown();
@@ -285,7 +292,7 @@ function tickCountdown() {
 }
 
 function renderDealCards() {
-  const deals   = mockProducts.filter(p => p.discount).slice(0, 8);
+  const deals = mockProducts.filter(p => p.discount).slice(0, 8);
   const container = document.getElementById('dealCards');
   if (!container) return;
   container.innerHTML = deals.map(p => `
@@ -308,7 +315,7 @@ async function loadProducts() {
     if (USE_MOCK_DATA) {
       allProducts = mockProducts;
     } else {
-      const res  = await fetch(`${API_URL}/products`);
+      const res = await fetch(`${API_URL}/products`);
       const data = await res.json();
       allProducts = (data.success && data.products) ? data.products : mockProducts;
     }
@@ -327,7 +334,7 @@ async function loadProducts() {
    DISPLAY PRODUCTS
    ═══════════════════════════════════════════════════════════════ */
 function displayProducts(products) {
-  const grid       = document.getElementById('productsGrid');
+  const grid = document.getElementById('productsGrid');
   const noProducts = document.getElementById('noProducts');
 
   if (!products.length) {
@@ -339,14 +346,14 @@ function displayProducts(products) {
   grid.innerHTML = '';
 
   products.forEach((product, index) => {
-    const card       = document.createElement('div');
-    card.className   = 'product-card';
+    const card = document.createElement('div');
+    card.className = 'product-card';
     card.style.animationDelay = `${index * 0.04}s`;
 
-    const imageUrl   = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=400&fit=crop';
-    const inStock    = product.stock > 0;
-    const inWish     = wishlist.some(w => w._id === product._id);
-    const hasDisc    = product.discount && product.originalPrice;
+    const imageUrl = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=400&fit=crop';
+    const inStock = product.stock > 0;
+    const inWish = wishlist.some(w => w._id === product._id);
+    const hasDisc = product.discount && product.originalPrice;
 
     card.innerHTML = `
       <div class="pc-img-wrap">
@@ -396,12 +403,12 @@ function displayProducts(products) {
    PRODUCT DETAIL MODAL
    ═══════════════════════════════════════════════════════════════ */
 function showProductDetails(product) {
-  const modal    = document.getElementById('productModal');
-  const body     = document.getElementById('modalBody');
+  const modal = document.getElementById('productModal');
+  const body = document.getElementById('modalBody');
   const imageUrl = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=500&fit=crop';
-  const inStock  = product.stock > 0;
-  const hasDisc  = product.discount && product.originalPrice;
-  const inWish   = wishlist.some(w => w._id === product._id);
+  const inStock = product.stock > 0;
+  const hasDisc = product.discount && product.originalPrice;
+  const inWish = wishlist.some(w => w._id === product._id);
 
   body.innerHTML = `
     <div class="pd-wrap">
@@ -495,13 +502,13 @@ function buyNow(productId) {
 }
 
 function showCart() {
-  const modal    = document.getElementById('cartModal');
-  const itemsEl  = document.getElementById('cartItems');
+  const modal = document.getElementById('cartModal');
+  const itemsEl = document.getElementById('cartItems');
   const subtotal = document.getElementById('cartSubtotal');
-  const totalEl  = document.getElementById('cartTotal');
+  const totalEl = document.getElementById('cartTotal');
   const savingsEl = document.getElementById('cartSavings');
   const discountEl = document.getElementById('cartDiscount');
-  const discRow  = document.getElementById('cartDiscountRow');
+  const discRow = document.getElementById('cartDiscountRow');
 
   if (!cart.length) {
     itemsEl.innerHTML = `
@@ -542,7 +549,7 @@ function showCart() {
       itemsEl.appendChild(div);
     });
     if (subtotal) subtotal.textContent = total.toLocaleString('en-IN');
-    if (totalEl) totalEl.textContent  = total.toLocaleString('en-IN');
+    if (totalEl) totalEl.textContent = total.toLocaleString('en-IN');
     if (savingsEl) savingsEl.textContent = totalSavings.toLocaleString('en-IN');
     if (discountEl) discountEl.textContent = totalSavings.toLocaleString('en-IN');
     if (discRow) discRow.style.display = totalSavings > 0 ? 'flex' : 'none';
@@ -553,7 +560,7 @@ function showCart() {
 }
 
 function updateQuantity(index, change) {
-  const item    = cart[index];
+  const item = cart[index];
   const product = allProducts.find(p => p._id === item._id);
   if (!product) return;
   const newQty = item.quantity + change;
@@ -603,25 +610,25 @@ function showWishlist() {
    ═══════════════════════════════════════════════════════════════ */
 function applyFilters() {
   // Sidebar radio values
-  const catEl    = document.querySelector('input[name="sbCat"]:checked');
-  const priceEl  = document.querySelector('input[name="sbPrice"]:checked');
+  const catEl = document.querySelector('input[name="sbCat"]:checked');
+  const priceEl = document.querySelector('input[name="sbPrice"]:checked');
   const ratingEl = document.querySelector('input[name="sbRating"]:checked');
   const inStockEl = document.getElementById('sbInStock');
 
-  const category  = catEl    ? catEl.value    : '';
-  const priceRange = priceEl ? priceEl.value  : '';
-  const minRating  = ratingEl ? parseFloat(ratingEl.value || 0) : 0;
-  const onlyStock  = inStockEl ? inStockEl.checked : false;
+  const category = catEl ? catEl.value : '';
+  const priceRange = priceEl ? priceEl.value : '';
+  const minRating = ratingEl ? parseFloat(ratingEl.value || 0) : 0;
+  const onlyStock = inStockEl ? inStockEl.checked : false;
 
   let filtered = [...allProducts];
 
-  if (category)   filtered = filtered.filter(p => p.category === category);
+  if (category) filtered = filtered.filter(p => p.category === category);
   if (priceRange) {
     const [min, max] = priceRange.split('-').map(n => n === '' ? Infinity : parseInt(n));
     filtered = filtered.filter(p => p.price >= min && p.price <= (max || Infinity));
   }
-  if (minRating)  filtered = filtered.filter(p => (p.ratings || 0) >= minRating);
-  if (onlyStock)  filtered = filtered.filter(p => p.stock > 0);
+  if (minRating) filtered = filtered.filter(p => (p.ratings || 0) >= minRating);
+  if (onlyStock) filtered = filtered.filter(p => p.stock > 0);
 
   sortProducts(filtered);
   document.getElementById('productCount').textContent = `${filtered.length} Products Found`;
@@ -636,10 +643,10 @@ function setSortActive(btn, key) {
 
 function sortProducts(list) {
   const sorted = [...list];
-  if (activeSortKey === 'price-low')  sorted.sort((a,b) => a.price - b.price);
-  if (activeSortKey === 'price-high') sorted.sort((a,b) => b.price - a.price);
-  if (activeSortKey === 'rating')     sorted.sort((a,b) => (b.ratings||0) - (a.ratings||0));
-  if (activeSortKey === 'newest')     sorted.sort((a,b) => parseInt(b._id) - parseInt(a._id));
+  if (activeSortKey === 'price-low') sorted.sort((a, b) => a.price - b.price);
+  if (activeSortKey === 'price-high') sorted.sort((a, b) => b.price - a.price);
+  if (activeSortKey === 'rating') sorted.sort((a, b) => (b.ratings || 0) - (a.ratings || 0));
+  if (activeSortKey === 'newest') sorted.sort((a, b) => parseInt(b._id) - parseInt(a._id));
   displayProducts(sorted);
 }
 
@@ -684,8 +691,8 @@ function performSearch() {
   const catFilter = document.getElementById('searchCat').value;
   let results = allProducts.filter(p =>
     (p.name.toLowerCase().includes(kw) ||
-     (p.description && p.description.toLowerCase().includes(kw)) ||
-     (p.brand && p.brand.toLowerCase().includes(kw))) &&
+      (p.description && p.description.toLowerCase().includes(kw)) ||
+      (p.brand && p.brand.toLowerCase().includes(kw))) &&
     (!catFilter || p.category === catFilter)
   );
   displayProducts(results);
@@ -702,7 +709,7 @@ function setupSearchEnter() {
    AUTH MODAL
    ═══════════════════════════════════════════════════════════════ */
 function updateUserUI() {
-  const subEl  = document.getElementById('userAccountSub');
+  const subEl = document.getElementById('userAccountSub');
   const mainEl = document.getElementById('userAccountMain');
   if (!subEl || !mainEl) return;
   if (currentUser) {
@@ -715,31 +722,40 @@ function updateUserUI() {
 }
 
 function showAuthModal(type) {
-  const modal   = document.getElementById('authModal');
+  const modal = document.getElementById('authModal');
   const content = document.getElementById('authContent');
 
   if (type === 'login') {
     content.innerHTML = `
       <div style="text-align:center;margin-bottom:24px;">
         <div style="font-size:2.2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-user-circle"></i></div>
-        <h2 style="font-size:1.4rem;font-weight:800;">Welcome to ShopEase!</h2>
-        <p style="color:#888;font-size:.88rem;">Please sign in to access the home page and start shopping</p>
+        <h2 style="font-size:1.4rem;font-weight:800;">Welcome Back to ShopEase!</h2>
+        <p style="color:#888;font-size:.88rem;">Please sign in to access your account and start shopping</p>
       </div>
       <form onsubmit="handleLogin(event)">
         <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Email Address</label>
+          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Email Address *</label>
           <input type="email" id="loginEmail" required placeholder="you@example.com"
                  style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
                  onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
         </div>
         <div style="margin-bottom:22px;">
-          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Password</label>
-          <input type="password" id="loginPassword" required placeholder="Enter your password"
-                 style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
-                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Password *</label>
+          <div style="position:relative;">
+            <input type="password" id="loginPassword" required placeholder="Enter your password"
+                   style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                   onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+            <button type="button" onclick="togglePasswordVisibility('loginPassword')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#2874f0;font-size:.9rem;">
+              <i class="fas fa-eye" id="loginPasswordToggle"></i>
+            </button>
+          </div>
+          <div style="text-align:right;margin-top:8px;">
+            <a href="#" onclick="showForgotPasswordModal()" style="font-size:.8rem;color:#2874f0;text-decoration:none;font-weight:600;">Forgot password?</a>
+          </div>
         </div>
-        <button type="submit" style="width:100%;padding:13px;background:#2874f0;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;">
-          Sign In & Go to Home Page
+        <button type="submit" style="width:100%;padding:13px;background:#2874f0;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;"
+                onmouseover="this.style.background='#1e53e5'" onmouseout="this.style.background='#2874f0'">
+          <i class="fas fa-sign-in-alt" style="margin-right:8px;"></i> Sign In
         </button>
         <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#888;">
           New to ShopEase? <a href="#" onclick="showAuthModal('register')" style="color:#2874f0;font-weight:700;">Create Account</a>
@@ -749,27 +765,49 @@ function showAuthModal(type) {
     content.innerHTML = `
       <div style="text-align:center;margin-bottom:24px;">
         <div style="font-size:2.2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-user-plus"></i></div>
-        <h2 style="font-size:1.4rem;font-weight:800;">Create Account</h2>
+        <h2 style="font-size:1.4rem;font-weight:800;">Create Your Account</h2>
         <p style="color:#888;font-size:.88rem;">Join millions of happy shoppers on ShopEase</p>
       </div>
       <form onsubmit="handleRegister(event)">
         <div style="margin-bottom:14px;">
-          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Full Name</label>
+          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Full Name *</label>
           <input type="text" id="regName" required placeholder="Your full name"
-                 style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;" />
+                 style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
         </div>
         <div style="margin-bottom:14px;">
-          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Email Address</label>
+          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Email Address *</label>
           <input type="email" id="regEmail" required placeholder="you@example.com"
-                 style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;" />
+                 style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Phone Number (Optional)</label>
+          <input type="tel" id="regPhone" placeholder="10-digit Indian mobile number"
+                 style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
         </div>
         <div style="margin-bottom:22px;">
-          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Password</label>
-          <input type="password" id="regPassword" required placeholder="Min 6 characters"
-                 style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;" />
+          <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Password *</label>
+          <div style="position:relative;">
+            <input type="password" id="regPassword" required placeholder="Min 8 characters (uppercase, lowercase, number)"
+                   style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                   onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'"
+                   oninput="updatePasswordStrength()" />
+            <button type="button" onclick="togglePasswordVisibility('regPassword')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#2874f0;font-size:.9rem;">
+              <i class="fas fa-eye" id="regPasswordToggle"></i>
+            </button>
+          </div>
+          <div id="passwordStrength" style="margin-top:8px;font-size:.75rem;display:none;">
+            <div style="height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden;">
+              <div id="strengthBar" style="height:100%;background:#ff9800;width:0%;transition:width .3s,background .3s;"></div>
+            </div>
+            <p id="strengthText" style="margin-top:4px;color:#ff9800;">Weak password</p>
+          </div>
         </div>
-        <button type="submit" style="width:100%;padding:13px;background:#ff6f00;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;">
-          Create Account & Go to Home Page
+        <button type="submit" style="width:100%;padding:13px;background:#ff6f00;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;"
+                onmouseover="this.style.background='#e65100'" onmouseout="this.style.background='#ff6f00'">
+          Create Account & Sign In
         </button>
         <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#888;">
           Already have an account? <a href="#" onclick="showAuthModal('login')" style="color:#2874f0;font-weight:700;">Sign In</a>
@@ -797,55 +835,344 @@ function showAuthModal(type) {
   modal.classList.add('active');
 }
 
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('loginEmail').value;
-  const rawName = email.split('@')[0];
-  const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
-  currentUser = { email, name: formattedName };
-  localStorage.setItem('shopease_user', JSON.stringify(currentUser));
-  updateUserUI();
-  closeAuthModal();
-  loadHome();
-  showNotification(`Welcome back, ${currentUser.name}! You are now signed in.`, 'success');
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const loginForm = e.target;
+  const loginBtn = loginForm.querySelector('button[type="submit"]');
+
+  // Frontend validation
+  if (!email || !password) {
+    showNotification('Email and password are required.', 'error');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showNotification('Please enter a valid email address.', 'error');
+    return;
+  }
+
+  try {
+    // Show loading state
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Signing in...';
+
+    // Call backend API
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Important: Send cookies with the request
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed. Please check your credentials.');
+    }
+
+    // Store user data from backend response (API returns flat { success, token, user })
+    currentUser = data.user;
+    localStorage.setItem('shopease_user', JSON.stringify(currentUser));
+    if (data.token) localStorage.setItem('shopease_token', data.token);
+
+    updateUserUI();
+    closeAuthModal();
+    loadHome();
+    showNotification(`Welcome back, ${currentUser.name}! 🎉`, 'success');
+
+  } catch (error) {
+    console.error('Login error:', error);
+    showNotification(error.message || 'Login failed. Please try again.', 'error');
+  } finally {
+    if (loginBtn) {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Sign In';
+    }
+  }
 }
 
-function handleRegister(e) {
+async function handleRegister(e) {
   e.preventDefault();
-  const name  = document.getElementById('regName').value;
-  const email = document.getElementById('regEmail').value;
-  currentUser = { name, email };
-  localStorage.setItem('shopease_user', JSON.stringify(currentUser));
-  updateUserUI();
-  closeAuthModal();
-  loadHome();
-  showNotification(`Account created! Welcome to ShopEase, ${name}!`, 'success');
+
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const phone = document.getElementById('regPhone')?.value.trim() || '';
+
+  // Frontend validation
+  const validation = validateRegistration(name, email, password, phone);
+  if (!validation.valid) {
+    showNotification(validation.message, 'error');
+    return;
+  }
+
+  try {
+    // Show loading state
+    const registerBtn = event.target.querySelector('button');
+    const originalText = registerBtn.textContent;
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Creating Account...';
+
+    // Call backend API
+    const response = await fetch(`${API_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ name, email, password, phone }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Registration failed.');
+    }
+
+    // Store user data from backend response (API returns flat { success, token, user })
+    currentUser = data.user;
+    localStorage.setItem('shopease_user', JSON.stringify(currentUser));
+    if (data.token) localStorage.setItem('shopease_token', data.token);
+
+    updateUserUI();
+    closeAuthModal();
+    loadHome();
+    showNotification(`Welcome to ShopEase, ${currentUser.name}! 🚀 Please verify your email.`, 'success');
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    showNotification(error.message || 'Registration failed. Please try again.', 'error');
+  } finally {
+    const registerBtn = event.target.querySelector('button');
+    if (registerBtn) {
+      registerBtn.disabled = false;
+      registerBtn.textContent = 'Create Account';
+    }
+  }
 }
 
-function handleLogout() {
+async function handleLogout() {
+  try {
+    // Call backend logout API to clear httpOnly cookie
+    await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (error) {
+    console.warn('Logout API call failed:', error);
+  }
+
+  // Clear local state
   currentUser = null;
   localStorage.removeItem('shopease_user');
+  localStorage.removeItem('shopease_token');
+  localStorage.removeItem('shopease_cart');
+  localStorage.removeItem('shopease_wishlist');
+
   updateUserUI();
   closeAuthModal();
-  showNotification('You have signed out of ShopEase.', 'success');
-  setTimeout(() => showAuthModal('login'), 300);
+  loadHome();
+  showNotification('You have been signed out. See you soon! 👋', 'success');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Authentication Helper Functions
+// ─────────────────────────────────────────────────────────────────────────────
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function validateRegistration(name, email, password, phone) {
+  // Name validation
+  if (!name || name.length < 2 || name.length > 50) {
+    return { valid: false, message: 'Name must be between 2 and 50 characters.' };
+  }
+
+  // Email validation
+  if (!email || !isValidEmail(email)) {
+    return { valid: false, message: 'Please provide a valid email address.' };
+  }
+
+  // Password validation (min 8 chars, uppercase, lowercase, number)
+  if (!password || password.length < 8) {
+    return { valid: false, message: 'Password must be at least 8 characters.' };
+  }
+
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+
+  if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+    return {
+      valid: false,
+      message: 'Password must contain uppercase, lowercase, and number (e.g., Pass123).'
+    };
+  }
+
+  // Phone validation (optional, but if provided must be valid 10-digit Indian number)
+  if (phone && !/^[6-9]\d{9}$/.test(phone)) {
+    return { valid: false, message: 'Please provide a valid 10-digit Indian mobile number.' };
+  }
+
+  return { valid: true };
+}
+
+function updatePasswordStrength() {
+  const password = document.getElementById('regPassword')?.value || '';
+  const strengthDiv = document.getElementById('passwordStrength');
+  const strengthBar = document.getElementById('strengthBar');
+  const strengthText = document.getElementById('strengthText');
+
+  if (!strengthDiv || !password) return;
+
+  strengthDiv.style.display = 'block';
+
+  let strength = 0;
+  let message = 'Weak password';
+  let color = '#ff3b30';
+
+  // Length check
+  if (password.length >= 8) strength += 25;
+  if (password.length >= 12) strength += 10;
+
+  // Character variety
+  if (/[a-z]/.test(password)) strength += 15;
+  if (/[A-Z]/.test(password)) strength += 15;
+  if (/\d/.test(password)) strength += 15;
+  if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) strength += 20;
+
+  if (strength <= 30) {
+    message = '🔴 Weak - Add numbers & uppercase';
+    color = '#ff3b30';
+  } else if (strength <= 60) {
+    message = '🟡 Fair - Add special characters';
+    color = '#ff9800';
+  } else if (strength <= 85) {
+    message = '🟢 Good - Strong password';
+    color = '#4caf50';
+  } else {
+    message = '✅ Excellent - Very strong password';
+    color = '#00c853';
+  }
+
+  strengthBar.style.width = Math.min(strength, 100) + '%';
+  strengthBar.style.background = color;
+  strengthText.textContent = message;
+  strengthText.style.color = color;
+}
+
+function togglePasswordVisibility(fieldId) {
+  const field = document.getElementById(fieldId);
+  const toggleBtn = document.getElementById(fieldId + 'Toggle');
+
+  if (!field || !toggleBtn) return;
+
+  if (field.type === 'password') {
+    field.type = 'text';
+    toggleBtn.classList.remove('fa-eye');
+    toggleBtn.classList.add('fa-eye-slash');
+  } else {
+    field.type = 'password';
+    toggleBtn.classList.remove('fa-eye-slash');
+    toggleBtn.classList.add('fa-eye');
+  }
+}
+
+function showForgotPasswordModal() {
+  const modal = document.getElementById('authModal');
+  const content = document.getElementById('authContent');
+
+  content.innerHTML = `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:2.2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-key"></i></div>
+      <h2 style="font-size:1.4rem;font-weight:800;">Reset Password</h2>
+      <p style="color:#888;font-size:.88rem;">Enter your email and we'll send you a reset link</p>
+    </div>
+    <form onsubmit="handleForgotPassword(event)">
+      <div style="margin-bottom:22px;">
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Email Address *</label>
+        <input type="email" id="forgotEmail" required placeholder="you@example.com"
+               style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
+               onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+      </div>
+      <button type="submit" style="width:100%;padding:13px;background:#ff6f00;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;"
+              onmouseover="this.style.background='#e65100'" onmouseout="this.style.background='#ff6f00'">
+        Send Reset Link
+      </button>
+      <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#888;">
+        <a href="#" onclick="showAuthModal('login')" style="color:#2874f0;font-weight:700;">Back to Login</a>
+      </p>
+    </form>`;
+
+  modal.classList.add('active');
+}
+
+async function handleForgotPassword(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('forgotEmail')?.value.trim();
+
+  if (!email) {
+    showNotification('Please enter your email address.', 'error');
+    return;
+  }
+
+  try {
+    const btn = event.target.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to send reset link.');
+    }
+
+    showNotification('Reset link sent! Check your email. ✉️', 'success');
+    setTimeout(() => showAuthModal('login'), 2000);
+
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    showNotification(error.message || 'Failed to send reset link.', 'error');
+  } finally {
+    const btn = event.target.querySelector('button[type="submit"]');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Link';
+    }
+  }
 }
 
 function closeAuthModal() {
   const m = document.getElementById('authModal');
   if (m) { m.classList.remove('active'); }
 }
-function showUserMenu()   { showAuthModal(currentUser ? 'profile' : 'login'); }
+function showUserMenu() { showAuthModal(currentUser ? 'profile' : 'login'); }
 
 /* ═══════════════════════════════════════════════════════════════
    CHECKOUT PAGE (inline)
    ═══════════════════════════════════════════════════════════════ */
 function showCheckoutPage() {
-  const total    = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  const savings  = cart.reduce((s, i) => s + (i.originalPrice ? (i.originalPrice - i.price) * i.quantity : 0), 0);
+  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const savings = cart.reduce((s, i) => s + (i.originalPrice ? (i.originalPrice - i.price) * i.quantity : 0), 0);
   const customerName = currentUser?.name || '';
-  const modal    = document.getElementById('authModal');
-  const content  = document.getElementById('authContent');
+  const modal = document.getElementById('authModal');
+  const content = document.getElementById('authContent');
 
   content.innerHTML = `
     <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:20px;"><i class="fas fa-lock" style="color:#2874f0;margin-right:8px;"></i>Secure Checkout</h2>
@@ -882,9 +1209,9 @@ function showCheckoutPage() {
     <div style="margin-bottom:20px;">
       <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:8px;color:#555;">Payment Method</label>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        ${['UPI / PhonePe / GPay','Credit / Debit Card','Net Banking','Cash on Delivery'].map((m,i) => `
-          <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid ${i===0?'#2874f0':'#e0e0e0'};border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;">
-            <input type="radio" name="payMethod" ${i===0?'checked':''} style="accent-color:#2874f0;" />
+        ${['UPI / PhonePe / GPay', 'Credit / Debit Card', 'Net Banking', 'Cash on Delivery'].map((m, i) => `
+          <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid ${i === 0 ? '#2874f0' : '#e0e0e0'};border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;">
+            <input type="radio" name="payMethod" ${i === 0 ? 'checked' : ''} style="accent-color:#2874f0;" />
             ${m}
           </label>`).join('')}
       </div>
@@ -945,14 +1272,14 @@ function updateWishlistCount() {
   document.getElementById('wishlistCount').textContent = wishlist.length;
 }
 
-function saveCart()     { localStorage.setItem('shopease_cart',     JSON.stringify(cart));     }
+function saveCart() { localStorage.setItem('shopease_cart', JSON.stringify(cart)); }
 function saveWishlist() { localStorage.setItem('shopease_wishlist', JSON.stringify(wishlist)); }
 
 function closeModal(id) {
   const el = document.getElementById(id);
   if (el) {
     el.classList.remove('active');
-    el.style.display = 'none';
+    // Do NOT set style.display — modals are shown/hidden via CSS .active class only
   }
 }
 
@@ -990,11 +1317,10 @@ function showNotification(msg, type = 'success') {
 
 // Close modals when clicking backdrop
 window.addEventListener('click', e => {
-  ['authModal','productModal','cartModal'].forEach(id => {
+  ['authModal', 'productModal', 'cartModal'].forEach(id => {
     const el = document.getElementById(id);
     if (e.target === el) {
       el.classList.remove('active');
-      el.style.display = 'none';
     }
   });
 });
@@ -1003,7 +1329,7 @@ window.addEventListener('click', e => {
    SELL ON SHOPEASE PAGE
    ═══════════════════════════════════════════════════════════════ */
 function showSellPage() {
-  const modal   = document.getElementById('authModal');
+  const modal = document.getElementById('authModal');
   const content = document.getElementById('authContent');
 
   content.innerHTML = `
@@ -1022,10 +1348,10 @@ function showSellPage() {
       <!-- Stats -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;">
         ${[
-          ['2L+','Active Sellers'],
-          ['5Cr+','Happy Customers'],
-          ['₹0','Registration Fee']
-        ].map(([n,l]) => `
+      ['2L+', 'Active Sellers'],
+      ['5Cr+', 'Happy Customers'],
+      ['₹0', 'Registration Fee']
+    ].map(([n, l]) => `
           <div style="text-align:center;background:#f8f9ff;border-radius:12px;padding:16px 8px;">
             <div style="font-size:1.4rem;font-weight:800;color:#2874f0;">${n}</div>
             <div style="font-size:.75rem;color:#666;margin-top:4px;">${l}</div>
@@ -1037,13 +1363,13 @@ function showSellPage() {
         <div style="font-size:.8rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">Why sell with us?</div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           ${[
-            ['fa-rocket','Zero Registration','Sign up for free in under 5 minutes'],
-            ['fa-rupee-sign','Fast Payments','Get paid within 7 days of delivery'],
-            ['fa-chart-line','Powerful Dashboard','Track orders, sales & returns in real-time'],
-            ['fa-shield-alt','Seller Protection','Full support for genuine seller disputes'],
-            ['fa-truck','Logistics Support','We handle pickup & delivery pan-India'],
-            ['fa-headset','Dedicated Support','24/7 seller helpline & account manager'],
-          ].map(([ic,t,d]) => `
+      ['fa-rocket', 'Zero Registration', 'Sign up for free in under 5 minutes'],
+      ['fa-rupee-sign', 'Fast Payments', 'Get paid within 7 days of delivery'],
+      ['fa-chart-line', 'Powerful Dashboard', 'Track orders, sales & returns in real-time'],
+      ['fa-shield-alt', 'Seller Protection', 'Full support for genuine seller disputes'],
+      ['fa-truck', 'Logistics Support', 'We handle pickup & delivery pan-India'],
+      ['fa-headset', 'Dedicated Support', '24/7 seller helpline & account manager'],
+    ].map(([ic, t, d]) => `
             <div style="display:flex;align-items:center;gap:14px;padding:12px 14px;background:#fafafa;border-radius:10px;border:1px solid #f0f0f0;">
               <div style="width:36px;height:36px;border-radius:10px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <i class="fas ${ic}" style="color:#2874f0;font-size:.9rem;"></i>
@@ -1098,7 +1424,7 @@ function sellerSignup() {
    HELP PAGE
    ═══════════════════════════════════════════════════════════════ */
 function showHelpPage() {
-  const modal   = document.getElementById('authModal');
+  const modal = document.getElementById('authModal');
   const content = document.getElementById('authContent');
 
   content.innerHTML = `
@@ -1126,13 +1452,13 @@ function showHelpPage() {
       <!-- Quick Topics -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;">
         ${[
-          ['fa-box','Track My Order','Check live delivery status'],
-          ['fa-undo','Returns & Refunds','Easy 7-day return policy'],
-          ['fa-credit-card','Payment Issues','Failed payments, refund status'],
-          ['fa-tag','Cancel Order','Cancel before dispatch'],
-          ['fa-star','Product Reviews','Review & ratings guide'],
-          ['fa-user-cog','Account Help','Login, password, profile'],
-        ].map(([ic,t,d]) => `
+      ['fa-box', 'Track My Order', 'Check live delivery status'],
+      ['fa-undo', 'Returns & Refunds', 'Easy 7-day return policy'],
+      ['fa-credit-card', 'Payment Issues', 'Failed payments, refund status'],
+      ['fa-tag', 'Cancel Order', 'Cancel before dispatch'],
+      ['fa-star', 'Product Reviews', 'Review & ratings guide'],
+      ['fa-user-cog', 'Account Help', 'Login, password, profile'],
+    ].map(([ic, t, d]) => `
           <div onclick="showNotification('Opening: ${t}','success')"
                style="display:flex;align-items:center;gap:12px;padding:14px;background:#fafafa;border:1.5px solid #f0f0f0;
                       border-radius:12px;cursor:pointer;transition:all .2s;"
@@ -1153,13 +1479,13 @@ function showHelpPage() {
         <div style="font-size:.8rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">Frequently Asked Questions</div>
         <div id="faqList" style="display:flex;flex-direction:column;gap:8px;">
           ${[
-            ['How do I track my order?','Go to "My Orders" in your account and click "Track" next to your order. You\'ll see live GPS tracking once the package is dispatched.'],
-            ['What is ShopEase\'s return policy?','We offer a hassle-free 7-day return policy for most items. Electronics have a 10-day replacement guarantee.'],
-            ['How long does delivery take?','Standard delivery: 3–5 business days. Express delivery: 1–2 days (available in select cities).'],
-            ['Is Cash on Delivery available?','Yes! COD is available on orders up to ₹50,000 across 25,000+ pin codes in India.'],
-            ['How do I cancel my order?','You can cancel before the item is dispatched. Go to My Orders → Select Order → Cancel.'],
-            ['When will I get my refund?','Refunds are processed within 5–7 business days after the returned item is received.'],
-          ].map(([q,a],i) => `
+      ['How do I track my order?', 'Go to "My Orders" in your account and click "Track" next to your order. You\'ll see live GPS tracking once the package is dispatched.'],
+      ['What is ShopEase\'s return policy?', 'We offer a hassle-free 7-day return policy for most items. Electronics have a 10-day replacement guarantee.'],
+      ['How long does delivery take?', 'Standard delivery: 3–5 business days. Express delivery: 1–2 days (available in select cities).'],
+      ['Is Cash on Delivery available?', 'Yes! COD is available on orders up to ₹50,000 across 25,000+ pin codes in India.'],
+      ['How do I cancel my order?', 'You can cancel before the item is dispatched. Go to My Orders → Select Order → Cancel.'],
+      ['When will I get my refund?', 'Refunds are processed within 5–7 business days after the returned item is received.'],
+    ].map(([q, a], i) => `
             <div style="border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;">
               <div onclick="toggleFaq(${i})" style="padding:13px 16px;font-size:.88rem;font-weight:600;cursor:pointer;
                    display:flex;justify-content:space-between;align-items:center;background:#fff;"
@@ -1176,10 +1502,10 @@ function showHelpPage() {
       <div style="font-size:.8rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">Still need help? Contact us</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
         ${[
-          ['fa-phone','Call Us','1800-123-4567','Free 24/7','#26a541'],
-          ['fa-comment','Live Chat','Chat Now','Avg. 2 min wait','#2874f0'],
-          ['fa-envelope','Email','support@shopease.com','Reply in 4 hrs','#ff6f00'],
-        ].map(([ic,t,v,sub,col]) => `
+      ['fa-phone', 'Call Us', '1800-123-4567', 'Free 24/7', '#26a541'],
+      ['fa-comment', 'Live Chat', 'Chat Now', 'Avg. 2 min wait', '#2874f0'],
+      ['fa-envelope', 'Email', 'support@shopease.com', 'Reply in 4 hrs', '#ff6f00'],
+    ].map(([ic, t, v, sub, col]) => `
           <div onclick="showNotification('Connecting to ${t}...','success')"
                style="text-align:center;padding:16px 8px;border:1.5px solid #e8e8e8;border-radius:12px;cursor:pointer;transition:all .2s;"
                onmouseover="this.style.borderColor='${col}';this.style.background='#fafafa'"
@@ -1197,9 +1523,9 @@ function showHelpPage() {
 }
 
 function toggleFaq(i) {
-  const ans  = document.getElementById('faqA' + i);
+  const ans = document.getElementById('faqA' + i);
   const icon = document.getElementById('faqIcon' + i);
   const open = ans.style.display === 'block';
-  ans.style.display  = open ? 'none' : 'block';
+  ans.style.display = open ? 'none' : 'block';
   icon.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
 }
