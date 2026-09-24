@@ -50,10 +50,12 @@ router.post('/register', registerRules, validate, register);
 /** Login with email + password */
 router.post('/login', loginRules, validate, login);
 
-/** Request password reset email */
+/** Request password reset code */
 router.post('/forgot-password', forgotPasswordRules, validate, forgotPassword);
 
-/** Reset password using token from email */
+/** Reset password using 6-digit code or token */
+router.post('/reset-password', resetPassword);
+router.put('/reset-password', resetPassword);
 router.put('/reset-password/:token', resetPasswordRules, validate, resetPassword);
 
 /** Verify email address using token from email */

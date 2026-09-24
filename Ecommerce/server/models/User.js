@@ -172,6 +172,25 @@ userSchema.methods.changedPasswordAfter = function (jwtTimestamp) {
 };
 
 /**
+ * Generate a 6-digit numeric OTP code for password reset,
+ * store its SHA-256 hash in the DB, and set a 10-minute expiry.
+ *
+ * @returns {string} The 6-digit OTP code to send to user
+ */
+userSchema.methods.createPasswordResetCode = function () {
+  const rawCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(rawCode)
+    .digest('hex');
+
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  return rawCode;
+};
+
+/**
  * Generate a raw (plain) password reset token, store its SHA-256 hash
  * in the DB, and set a 10-minute expiry.
  *

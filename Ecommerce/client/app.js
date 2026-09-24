@@ -1085,33 +1085,39 @@ function togglePasswordVisibility(fieldId) {
   }
 }
 
-function showForgotPasswordModal() {
+function showForgotPasswordModal(initialEmail = '') {
   const modal = document.getElementById('authModal');
   const content = document.getElementById('authContent');
 
   content.innerHTML = `
     <div style="text-align:center;margin-bottom:24px;">
-      <div style="font-size:2.2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-key"></i></div>
-      <h2 style="font-size:1.4rem;font-weight:800;">Reset Password</h2>
-      <p style="color:#888;font-size:.88rem;">Enter your email and we'll send you a reset link</p>
+      <div style="font-size:2.2rem;color:#2874f0;margin-bottom:8px;"><i class="fas fa-shield-alt"></i></div>
+      <h2 style="font-size:1.4rem;font-weight:800;">Forgot Password</h2>
+      <p style="color:#888;font-size:.88rem;line-height:1.4;margin-top:4px;">
+        Enter your registered email address and we'll send a 6-digit verification code to reset your password.
+      </p>
     </div>
     <form onsubmit="handleForgotPassword(event)">
-      <div style="margin-bottom:22px;">
+      <div style="margin-bottom:20px;">
         <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Email Address *</label>
-        <input type="email" id="forgotEmail" required placeholder="you@example.com"
-               style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;"
-               onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+        <div style="position:relative;">
+          <i class="fas fa-envelope" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999;"></i>
+          <input type="email" id="forgotEmail" required placeholder="you@example.com" value="${initialEmail || ''}"
+                 style="width:100%;padding:12px 14px 12px 40px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;box-sizing:border-box;"
+                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+        </div>
       </div>
-      <button type="submit" style="width:100%;padding:13px;background:#ff6f00;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;"
-              onmouseover="this.style.background='#e65100'" onmouseout="this.style.background='#ff6f00'">
-        Send Reset Link
+      <button type="submit" id="forgotSubmitBtn" style="width:100%;padding:13px;background:#2874f0;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;"
+              onmouseover="this.style.background='#1e5bc6'" onmouseout="this.style.background='#2874f0'">
+        <i class="fas fa-paper-plane"></i> Send Verification Code
       </button>
       <p style="text-align:center;margin-top:16px;font-size:.85rem;color:#888;">
-        <a href="#" onclick="showAuthModal('login')" style="color:#2874f0;font-weight:700;">Back to Login</a>
+        Remembered password? <a href="#" onclick="showAuthModal('login')" style="color:#2874f0;font-weight:700;">Back to Sign In</a>
       </p>
     </form>`;
 
   modal.classList.add('active');
+  setTimeout(() => document.getElementById('forgotEmail')?.focus(), 100);
 }
 
 async function handleForgotPassword(event) {
@@ -1124,11 +1130,14 @@ async function handleForgotPassword(event) {
     return;
   }
 
+  const btn = document.getElementById('forgotSubmitBtn') || event.target.querySelector('button[type="submit"]');
+  const originalText = btn ? btn.innerHTML : 'Send Verification Code';
+
   try {
-    const btn = event.target.querySelector('button[type="submit"]');
-    const originalText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending Code...';
+    }
 
     const response = await fetch(`${API_URL}/auth/forgot-password`, {
       method: 'POST',
@@ -1140,20 +1149,165 @@ async function handleForgotPassword(event) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to send reset link.');
+      throw new Error(data.message || 'Failed to send verification code.');
     }
 
-    showNotification('Reset link sent! Check your email. ✉️', 'success');
-    setTimeout(() => showAuthModal('login'), 2000);
+    showNotification('6-digit verification code sent to your email! ✉️', 'success');
+    showResetWithCodeModal(email, data.resetCode || '');
 
   } catch (error) {
     console.error('Forgot password error:', error);
-    showNotification(error.message || 'Failed to send reset link.', 'error');
+    showNotification(error.message || 'Failed to send verification code.', 'error');
   } finally {
-    const btn = event.target.querySelector('button[type="submit"]');
     if (btn) {
       btn.disabled = false;
-      btn.textContent = 'Send Reset Link';
+      btn.innerHTML = originalText;
+    }
+  }
+}
+
+function showResetWithCodeModal(email, codeHint = '') {
+  const modal = document.getElementById('authModal');
+  const content = document.getElementById('authContent');
+
+  content.innerHTML = `
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:2.2rem;color:#2e7d32;margin-bottom:8px;"><i class="fas fa-unlock-alt"></i></div>
+      <h2 style="font-size:1.4rem;font-weight:800;">Enter Verification Code</h2>
+      <p style="color:#666;font-size:.85rem;line-height:1.4;margin-top:4px;">
+        A 6-digit code was sent to <strong style="color:#2874f0;">${email}</strong>
+      </p>
+    </div>
+
+    ${codeHint ? `
+      <div style="background:#f0f9ff;border:1px dashed #0284c7;border-radius:8px;padding:8px 12px;margin-bottom:16px;text-align:center;font-size:.85rem;color:#0369a1;cursor:pointer;"
+           onclick="document.getElementById('resetCode').value='${codeHint}'" title="Click to auto-fill code">
+        🔑 <strong>Dev OTP Code:</strong> <span style="font-family:monospace;font-weight:bold;letter-spacing:2px;">${codeHint}</span> <span style="font-size:.75rem;text-decoration:underline;margin-left:6px;">(Click to fill)</span>
+      </div>
+    ` : ''}
+
+    <form onsubmit="handleResetPasswordWithCode(event)">
+      <input type="hidden" id="resetEmail" value="${email}" />
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">6-Digit Verification Code *</label>
+        <div style="position:relative;">
+          <i class="fas fa-key" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999;"></i>
+          <input type="text" id="resetCode" required maxlength="6" pattern="[0-9]{6}" placeholder="123456" value="${codeHint || ''}"
+                 style="width:100%;padding:12px 14px 12px 40px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:1.1rem;letter-spacing:4px;font-weight:bold;text-align:center;outline:none;font-family:monospace;transition:border-color .2s;box-sizing:border-box;"
+                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">New Password *</label>
+        <div style="position:relative;">
+          <i class="fas fa-lock" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999;"></i>
+          <input type="password" id="resetNewPassword" required minlength="8" placeholder="At least 8 chars (letters + numbers)"
+                 style="width:100%;padding:12px 40px 12px 40px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;box-sizing:border-box;"
+                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'"
+                 oninput="checkPasswordStrength(this.value)" />
+          <i class="fas fa-eye" id="resetNewPasswordToggle" onclick="togglePasswordVisibility('resetNewPassword')"
+             style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#999;cursor:pointer;"></i>
+        </div>
+        <div class="password-strength" style="margin-top:6px;">
+          <div class="strength-bar" id="strengthBar"></div>
+        </div>
+        <div class="strength-text" id="strengthText"></div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Confirm New Password *</label>
+        <div style="position:relative;">
+          <i class="fas fa-lock" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999;"></i>
+          <input type="password" id="resetConfirmPassword" required minlength="8" placeholder="Confirm your new password"
+                 style="width:100%;padding:12px 40px 12px 40px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:border-color .2s;box-sizing:border-box;"
+                 onfocus="this.style.borderColor='#2874f0'" onblur="this.style.borderColor='#e0e0e0'" />
+          <i class="fas fa-eye" id="resetConfirmPasswordToggle" onclick="togglePasswordVisibility('resetConfirmPassword')"
+             style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#999;cursor:pointer;"></i>
+        </div>
+      </div>
+
+      <button type="submit" id="resetSubmitBtn" style="width:100%;padding:13px;background:#2874f0;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;"
+              onmouseover="this.style.background='#1e5bc6'" onmouseout="this.style.background='#2874f0'">
+        <i class="fas fa-check-circle"></i> Reset Password & Sign In
+      </button>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:.85rem;">
+        <a href="#" onclick="showForgotPasswordModal('${email}')" style="color:#ff6f00;font-weight:600;"><i class="fas fa-redo"></i> Resend Code</a>
+        <a href="#" onclick="showAuthModal('login')" style="color:#2874f0;font-weight:700;">Back to Sign In</a>
+      </div>
+    </form>`;
+
+  modal.classList.add('active');
+  setTimeout(() => document.getElementById('resetCode')?.focus(), 100);
+}
+
+async function handleResetPasswordWithCode(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('resetEmail')?.value.trim();
+  const code = document.getElementById('resetCode')?.value.trim();
+  const password = document.getElementById('resetNewPassword')?.value;
+  const confirmPassword = document.getElementById('resetConfirmPassword')?.value;
+
+  if (!code || code.length !== 6) {
+    showNotification('Please enter the valid 6-digit verification code.', 'error');
+    return;
+  }
+
+  if (!password || password.length < 8) {
+    showNotification('Password must be at least 8 characters long.', 'error');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showNotification('Passwords do not match. Please recheck.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('resetSubmitBtn') || event.target.querySelector('button[type="submit"]');
+  const originalText = btn ? btn.innerHTML : 'Reset Password & Sign In';
+
+  try {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting Password...';
+    }
+
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, code, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to reset password.');
+    }
+
+    if (data.user) {
+      currentUser = data.user;
+      localStorage.setItem('shopease_user', JSON.stringify(currentUser));
+    }
+    if (data.token) {
+      localStorage.setItem('shopease_token', data.token);
+    }
+
+    updateUserUI();
+    closeAuthModal();
+    loadHome();
+    showNotification('Password reset successfully! Welcome back! 🎉', 'success');
+
+  } catch (error) {
+    console.error('Reset password error:', error);
+    showNotification(error.message || 'Password reset failed. Please check the code.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
     }
   }
 }

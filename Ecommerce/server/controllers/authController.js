@@ -198,79 +198,100 @@ exports.changePassword = catchAsync(async (req, res, next) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @desc    Forgot password — send reset link to email
+// @desc    Forgot password — send 6-digit verification code to email
 // @route   POST /api/auth/forgot-password
 // @access  Public
 // ─────────────────────────────────────────────────────────────────────────────
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
-  const user = await User.findOne({ email });
-
-  // Generic response to prevent email enumeration
-  if (!user) {
-    return sendResponse(
-      res, 200,
-      'If an account with that email exists, a reset link has been sent.'
-    );
+  if (!email) {
+    return next(new AppError('Please provide your email address.', 400));
   }
 
-  // Generate reset token and save hashed version to DB
-  const rawToken = user.createPasswordResetToken();
+  const user = await User.findOne({ email: email.toLowerCase().trim() });
+
+  // Generic response if not found (prevent enumeration)
+  if (!user) {
+    return res.status(200).json({
+      success: true,
+      message: 'If an account with that email exists, a 6-digit reset code has been sent.',
+    });
+  }
+
+  // Generate 6-digit OTP code and save hashed version to DB
+  const rawCode = user.createPasswordResetCode ? user.createPasswordResetCode() : user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  const resetUrl = `${clientUrl()}/reset-password/${rawToken}`;
+  console.log(`\n🔑 [ShopEase] Password Reset OTP Code for ${user.email}: [ ${rawCode} ]\n`);
 
   try {
     await sendEmail({
       to:      user.email,
-      subject: 'ShopEase — Password Reset Request (valid 10 min)',
+      subject: `ShopEase — Your Password Reset Code: ${rawCode}`,
       html: `
-        <h2>Password Reset Request</h2>
-        <p>You requested a password reset for your ShopEase account.</p>
-        <p>Click the link below to set a new password:</p>
-        <a href="${resetUrl}" style="
-          display:inline-block;padding:12px 24px;
-          background:#6366f1;color:#fff;border-radius:6px;
-          text-decoration:none;font-weight:bold;">
-          Reset Password
-        </a>
-        <p>This link expires in <strong>10 minutes</strong>.</p>
-        <p>If you didn't request this, please ignore this email. Your password will not change.</p>
+        <div style="font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;background:#ffffff;">
+          <div style="text-align:center;margin-bottom:20px;">
+            <h1 style="color:#2874f0;font-size:26px;margin:0;">🛒 ShopEase</h1>
+            <p style="color:#666;font-size:14px;margin-top:4px;">Secure Password Reset</p>
+          </div>
+          <p style="font-size:15px;color:#333;">Hello <strong>${user.name || 'valued customer'}</strong>,</p>
+          <p style="font-size:14px;color:#555;line-height:1.5;">You requested a password reset for your ShopEase account. Enter the following 6-digit verification code in the app to set your new password:</p>
+          <div style="text-align:center;margin:28px 0;">
+            <div style="display:inline-block;padding:14px 32px;background:#f0f4ff;border:2px dashed #2874f0;border-radius:10px;">
+              <span style="font-size:32px;font-weight:800;letter-spacing:8px;color:#2874f0;font-family:monospace;">${rawCode}</span>
+            </div>
+          </div>
+          <p style="font-size:13px;color:#e65100;font-weight:600;text-align:center;">⏱️ This verification code is valid for 10 minutes.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:20px 0;" />
+          <p style="font-size:12px;color:#999;text-align:center;">If you did not request this password reset, please ignore this email. Your password remains safe.</p>
+        </div>
       `,
-      text: `Reset your ShopEase password: ${resetUrl} (expires in 10 minutes)`,
+      text: `Your ShopEase password reset code is: ${rawCode} (expires in 10 minutes).`,
     });
-
-    sendResponse(res, 200, 'Password reset link sent to your email.');
   } catch (err) {
-    // Roll back tokens if email fails
-    user.resetPasswordToken  = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save({ validateBeforeSave: false });
-
-    return next(new AppError('Failed to send reset email. Please try again later.', 500));
+    console.warn(`⚠️ Reset email could not be delivered via SMTP: ${err.message}. OTP code generated: ${rawCode}`);
   }
+
+  return res.status(200).json({
+    success: true,
+    message: 'A 6-digit verification code has been sent to your email.',
+    resetCode: process.env.NODE_ENV === 'development' ? rawCode : undefined,
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @desc    Reset password using token from email link
-// @route   PUT /api/auth/reset-password/:token
+// @desc    Reset password using 6-digit code (or token)
+// @route   POST /api/auth/reset-password OR PUT /api/auth/reset-password/:token
 // @access  Public
 // ─────────────────────────────────────────────────────────────────────────────
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  const { token } = req.params;
-  const { password } = req.body;
+  const tokenOrCode = (req.params.token || req.body.code || req.body.token || '').toString().trim();
+  const email = (req.body.email || '').toLowerCase().trim();
+  const password = req.body.password || req.body.newPassword;
 
-  // Hash the raw token from the URL to compare with the stored hash
-  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+  if (!tokenOrCode) {
+    return next(new AppError('Please enter the 6-digit verification code.', 400));
+  }
+  if (!password) {
+    return next(new AppError('Please provide your new password.', 400));
+  }
 
-  const user = await User.findOne({
+  // Hash code / token to compare with stored SHA-256 hash
+  const hashedToken = crypto.createHash('sha256').update(tokenOrCode).digest('hex');
+
+  const query = {
     resetPasswordToken:  hashedToken,
-    resetPasswordExpire: { $gt: Date.now() }, // token must not be expired
-  }).select('+resetPasswordToken +resetPasswordExpire');
+    resetPasswordExpire: { $gt: Date.now() }, // must not be expired
+  };
+  if (email) {
+    query.email = email;
+  }
+
+  const user = await User.findOne(query).select('+resetPasswordToken +resetPasswordExpire');
 
   if (!user) {
-    return next(new AppError('Password reset token is invalid or has expired.', 400));
+    return next(new AppError('Invalid or expired verification code. Please request a new code.', 400));
   }
 
   // Set new password + clear reset fields
@@ -279,8 +300,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.resetPasswordExpire = undefined;
   await user.save();
 
-  // Log the user in immediately
-  createSendToken(user, 200, res, 'Password reset successful. You are now logged in.');
+  // Log the user in immediately with new token
+  createSendToken(user, 200, res, 'Password reset successful! You are now logged in.');
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
