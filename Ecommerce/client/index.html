@@ -44,6 +44,7 @@
         </select>
       </div>
       <span class="sep">|</span>
+      <a href="#" onclick="showMyOrdersPage()"><i class="fas fa-box-open"></i> My Orders</a>
       <a href="#" onclick="showAuthModal('login')"><i class="fas fa-user-astronaut"></i> Login</a>
       <a href="#" onclick="showAuthModal('register')"><i class="fas fa-rocket"></i> Join Free</a>
       <a href="#" onclick="showSellPage()"><i class="fas fa-store"></i> Sell on ShopEase</a>
@@ -87,6 +88,13 @@
           <span class="hact-main" id="userAccountMain">Sign In <i class="fas fa-chevron-down" style="font-size:.7rem;"></i></span>
         </div>
       </div>
+      <div class="hact" onclick="showMyOrdersPage()">
+        <i class="fas fa-box-open"></i>
+        <div class="hact-txt">
+          <span class="hact-sub">Track</span>
+          <span class="hact-main">Orders <span class="hbadge" id="ordersCount">0</span></span>
+        </div>
+      </div>
       <div class="hact" onclick="showWishlist()">
         <i class="fas fa-heart"></i>
         <div class="hact-txt">
@@ -113,8 +121,9 @@
     <a href="#" class="nav-item all-menu" onclick="loadHome()">
       <i class="fas fa-border-all"></i> All Categories
     </a>
-    <a href="#" class="nav-item active" onclick="loadHome()"><i class="fas fa-home"></i> Home</a>
+    <a href="#" class="nav-item active" id="navHomeBtn" onclick="loadHome()"><i class="fas fa-home"></i> Home</a>
     <a href="#" class="nav-item hot" onclick="showDeals()"><i class="fas fa-fire"></i> Flash Deals</a>
+    <a href="#" class="nav-item" id="navOrdersBtn" onclick="showMyOrdersPage()"><i class="fas fa-box-open"></i> My Orders</a>
     <a href="#" class="nav-item" onclick="filterByCategory('Electronics')"><i class="fas fa-microchip"></i> Electronics</a>
     <a href="#" class="nav-item" onclick="filterByCategory('Fashion')"><i class="fas fa-shirt"></i> Fashion</a>
     <a href="#" class="nav-item" onclick="filterByCategory('Home & Kitchen')"><i class="fas fa-couch"></i> Home & Kitchen</a>
@@ -287,8 +296,27 @@
   </div>
 </section>
 
+<!-- ══════════════════════ MY ORDERS SECTION ══════════════════════ -->
+<section id="ordersSection" class="orders-section" style="display:none;padding:40px 0 60px;">
+  <div class="wrap">
+    <div class="orders-page-header">
+      <div class="oph-left">
+        <button class="btn-back-shop" onclick="loadHome()"><i class="fas fa-arrow-left"></i> Back to Shopping</button>
+        <h2><i class="fas fa-box-open" style="color:var(--primary);"></i> My Orders</h2>
+        <p>Track your orders, view receipts, and monitor live express delivery status.</p>
+      </div>
+      <div class="oph-tabs">
+        <button class="order-tab-btn active" onclick="filterOrdersTab('all', this)">All Orders</button>
+        <button class="order-tab-btn" onclick="filterOrdersTab('active', this)">Active / Transit</button>
+        <button class="order-tab-btn" onclick="filterOrdersTab('delivered', this)">Delivered</button>
+      </div>
+    </div>
+    <div id="ordersListContainer" class="orders-list-container"></div>
+  </div>
+</section>
+
 <!-- ══════════════════════ FILTER + PRODUCTS ══════════════════════ -->
-<section class="shop-section">
+<section class="shop-section" id="shopSection">
   <div class="wrap shop-layout">
 
     <!-- Sidebar Filters -->
@@ -480,6 +508,36 @@
   <div class="modal-card" style="max-width:780px;">
     <button class="modal-close" onclick="closeModal('productModal')"><i class="fas fa-times"></i></button>
     <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- UPI QR Code Payment Modal -->
+<div id="upiModal" class="modal-overlay">
+  <div class="modal-card upi-modal-card" style="max-width:500px;padding:0;overflow:hidden;border-radius:24px;">
+    <div class="upi-header">
+      <div class="upi-header-title">
+        <i class="fas fa-shield-alt" style="color:var(--accent-emerald);"></i>
+        <span>Scan QR code to use UPI</span>
+      </div>
+      <button class="modal-close" onclick="closeModal('upiModal')" style="position:static;"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="upiModalBody" class="upi-modal-body"></div>
+  </div>
+</div>
+
+<!-- Live Order GPS Tracking Modal -->
+<div id="trackingModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:600px;padding:28px;">
+    <button class="modal-close" onclick="closeModal('trackingModal')"><i class="fas fa-times"></i></button>
+    <div id="trackingModalBody"></div>
+  </div>
+</div>
+
+<!-- Order Invoice Modal -->
+<div id="invoiceModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:640px;padding:28px;">
+    <button class="modal-close" onclick="closeModal('invoiceModal')"><i class="fas fa-times"></i></button>
+    <div id="invoiceModalBody"></div>
   </div>
 </div>
 

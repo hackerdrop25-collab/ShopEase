@@ -134,6 +134,7 @@ window.addEventListener('DOMContentLoaded', () => {
   loadProducts();
   updateCartCount();
   updateWishlistCount();
+  updateOrdersCount();
   updateUserUI();
   initSlider();
   initCountdown();
@@ -433,7 +434,7 @@ function showProductDetails(product) {
             <span class="pd-disc-pct">${product.discount}% OFF</span>
           ` : ''}
         </div>
-        ${hasDisc ? `<div class="pd-save" style="margin-bottom:12px;font-size:.88rem;">
+        ${hasDisc ? `<div class="pd-save">
           <i class="fas fa-tag"></i> You save ₹${(product.originalPrice - product.price).toLocaleString('en-IN')}
         </div>` : ''}
         <p class="pd-desc">${product.description || 'No description available.'}</p>
@@ -670,7 +671,22 @@ function clearFilters() {
   document.getElementById('productCount').textContent = `${allProducts.length} Products Found`;
 }
 
-function loadHome() { clearFilters(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function loadHome() {
+  const ordersSec = document.getElementById('ordersSection');
+  const shopSec = document.getElementById('shopSection');
+  if (ordersSec) ordersSec.style.display = 'none';
+  if (shopSec) shopSec.style.display = '';
+
+  document.querySelectorAll('.hero-section, .deal-strip, .trust-section, .categories-section, .promo-section').forEach(el => {
+    if (el) el.style.display = '';
+  });
+
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('navHomeBtn')?.classList.add('active');
+
+  clearFilters();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 function showDeals() {
   const deals = allProducts.filter(p => p.discount);
@@ -1329,60 +1345,97 @@ function showCheckoutPage() {
   const content = document.getElementById('authContent');
 
   content.innerHTML = `
-    <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:20px;"><i class="fas fa-lock" style="color:#2874f0;margin-right:8px;"></i>Secure Checkout</h2>
-    <div style="background:#e8f5e9;border-radius:8px;padding:14px;margin-bottom:20px;font-size:.88rem;color:#2e7d32;">
-      <i class="fas fa-tag"></i> You're saving <strong>₹${savings.toLocaleString('en-IN')}</strong> on this order!
+    <h2 style="font-size:1.4rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px;color:var(--txt1);">
+      <i class="fas fa-shield-alt" style="color:var(--primary);"></i> Delivery & Payment Details
+    </h2>
+    ${savings > 0 ? `
+      <div style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:.88rem;color:#34d399;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-tag"></i> You're saving <strong>₹${savings.toLocaleString('en-IN')}</strong> on this order!
+      </div>` : ''}
+    
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:var(--txt2);">Full Name</label>
+      <input type="text" id="checkoutName" value="${customerName}" required autocomplete="name" placeholder="Full Name" 
+             style="width:100%;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.92rem;color:var(--txt1);outline:none;font-family:inherit;" />
     </div>
-    <div style="margin-bottom:16px;">
-      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Full Name</label>
-      <input type="text" id="checkoutName" value="${customerName}" required autocomplete="name" placeholder="Your full name" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:var(--txt2);">Mobile Number</label>
+      <input type="tel" id="checkoutPhone" required autocomplete="tel" inputmode="numeric" pattern="[0-9]{10}" placeholder="10-digit mobile number" 
+             style="width:100%;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.92rem;color:var(--txt1);outline:none;font-family:inherit;" />
     </div>
-    <div style="margin-bottom:16px;">
-      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Phone Number</label>
-      <input type="tel" id="checkoutPhone" required autocomplete="tel" inputmode="numeric" pattern="[0-9]{10}" placeholder="10-digit phone number" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:var(--txt2);">Delivery Address</label>
+      <textarea id="checkoutAddress" rows="2" required autocomplete="street-address" placeholder="Flat / House No., Street, Area"
+                style="width:100%;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.92rem;color:var(--txt1);outline:none;font-family:inherit;resize:none;"></textarea>
     </div>
-    <div style="margin-bottom:16px;">
-      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">Delivery Address</label>
-      <textarea id="checkoutAddress" rows="3" required autocomplete="street-address" placeholder="House/Flat No., Street, Area"
-                style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;resize:none;"></textarea>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <div>
-        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">City</label>
-        <input type="text" id="checkoutCity" required autocomplete="address-level2" placeholder="City" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:var(--txt2);">City</label>
+        <input type="text" id="checkoutCity" required autocomplete="address-level2" placeholder="City" 
+               style="width:100%;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.92rem;color:var(--txt1);outline:none;font-family:inherit;" />
       </div>
       <div>
-        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">State</label>
-        <input type="text" id="checkoutState" required autocomplete="address-level1" placeholder="State" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+        <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:var(--txt2);">State</label>
+        <input type="text" id="checkoutState" required autocomplete="address-level1" placeholder="State" 
+               style="width:100%;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.92rem;color:var(--txt1);outline:none;font-family:inherit;" />
       </div>
     </div>
-    <div style="margin-bottom:20px;">
-      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:#555;">PIN Code</label>
-      <input type="text" id="checkoutPincode" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{6}" placeholder="6-digit PIN code" style="width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;" />
+    <div style="margin-bottom:18px;">
+      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:6px;color:var(--txt2);">PIN Code</label>
+      <input type="text" id="checkoutPincode" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{6}" placeholder="6-digit PIN code" 
+             style="width:100%;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.92rem;color:var(--txt1);outline:none;font-family:inherit;" />
     </div>
-    <div style="margin-bottom:20px;">
-      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:8px;color:#555;">Payment Method</label>
+
+    <!-- Payment Options -->
+    <div style="margin-bottom:18px;">
+      <label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:8px;color:var(--txt2);">Select Payment Method</label>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        ${['UPI / PhonePe / GPay', 'Credit / Debit Card', 'Net Banking', 'Cash on Delivery'].map((m, i) => `
-          <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid ${i === 0 ? '#2874f0' : '#e0e0e0'};border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:500;">
-            <input type="radio" name="payMethod" ${i === 0 ? 'checked' : ''} style="accent-color:#2874f0;" />
-            ${m}
-          </label>`).join('')}
+        <label style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(99,102,241,0.1);border:1.5px solid var(--primary);border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:700;color:var(--txt1);">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="radio" name="payMethod" value="UPI" checked style="accent-color:var(--primary);width:16px;height:16px;" />
+            <span><i class="fas fa-qrcode" style="color:var(--accent-cyan);margin-right:6px;"></i> Scan UPI QR Code (Instant & 50+ Apps)</span>
+          </div>
+          <span style="font-size:.75rem;background:var(--primary);color:#fff;padding:2px 8px;border-radius:99px;">FASTEST</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--txt2);">
+          <input type="radio" name="payMethod" value="Card" style="accent-color:var(--primary);width:16px;height:16px;" />
+          <span><i class="fas fa-credit-card" style="margin-right:6px;"></i> Credit / Debit Card</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--txt2);">
+          <input type="radio" name="payMethod" value="NetBanking" style="accent-color:var(--primary);width:16px;height:16px;" />
+          <span><i class="fas fa-university" style="margin-right:6px;"></i> Net Banking</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--txt2);">
+          <input type="radio" name="payMethod" value="COD" style="accent-color:var(--primary);width:16px;height:16px;" />
+          <span><i class="fas fa-money-bill-wave" style="margin-right:6px;"></i> Cash on Delivery</span>
+        </label>
       </div>
     </div>
-    <div style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:20px;font-size:.9rem;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-        <span style="color:#666;">Order Total</span><span style="font-weight:800;">₹${total.toLocaleString('en-IN')}</span>
+
+    <!-- Order Summary Box -->
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:.9rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;color:var(--txt2);">
+        <span>Cart Items (${cart.reduce((s, i) => s + i.quantity, 0)})</span>
+        <span style="font-weight:700;color:var(--txt1);">₹${total.toLocaleString('en-IN')}</span>
       </div>
-      <div style="display:flex;justify-content:space-between;">
-        <span style="color:#666;">Delivery</span><span style="color:#26a541;font-weight:700;">FREE</span>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;color:var(--txt2);">
+        <span>Express Delivery</span>
+        <span style="color:#10b981;font-weight:700;">FREE</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);font-size:1.05rem;font-weight:800;color:var(--txt1);">
+        <span>Grand Total</span>
+        <span style="color:var(--primary);">₹${total.toLocaleString('en-IN')}</span>
       </div>
     </div>
-    <button onclick="placeOrder()" style="width:100%;padding:14px;background:#ff6f00;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;">
-      <i class="fas fa-lock"></i> Place Order — ₹${total.toLocaleString('en-IN')}
+
+    <button onclick="placeOrder()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--accent-purple));color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;gap:10px;transition:var(--trans);">
+      <i class="fas fa-lock"></i> Proceed to Pay — ₹${total.toLocaleString('en-IN')}
     </button>`;
   modal.classList.add('active');
 }
+
+let upiCountdownInterval = null;
+let currentPendingOrder = null;
 
 function placeOrder() {
   const shippingAddress = {
@@ -1396,7 +1449,7 @@ function placeOrder() {
   };
   const missingField = Object.entries(shippingAddress).find(([field, value]) => field !== 'country' && !value);
   if (missingField) {
-    showNotification('Please complete your name and delivery address.', 'error');
+    showNotification('Please fill all required address fields.', 'error');
     const fieldIds = { fullName: 'checkoutName', phone: 'checkoutPhone', address: 'checkoutAddress', city: 'checkoutCity', state: 'checkoutState', pincode: 'checkoutPincode' };
     document.getElementById(fieldIds[missingField[0]])?.focus();
     return;
@@ -1405,13 +1458,532 @@ function placeOrder() {
     showNotification('Enter a valid 10-digit phone number and 6-digit PIN code.', 'error');
     return;
   }
-  const paymentMethod = document.querySelector('input[name="payMethod"]:checked')?.parentElement.textContent.trim() || 'COD';
-  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
-  orders.unshift({ id: `ORD-${Date.now()}`, items: cart, shippingAddress, paymentMethod, total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0), placedAt: new Date().toISOString() });
-  localStorage.setItem('shopease_orders', JSON.stringify(orders));
-  cart = []; saveCart(); updateCartCount();
+
+  const selectedMethodRadio = document.querySelector('input[name="payMethod"]:checked');
+  const paymentMethod = selectedMethodRadio ? selectedMethodRadio.value : 'UPI';
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const orderId = `ORD-${Date.now()}`;
+
+  const orderData = {
+    id: orderId,
+    items: [...cart],
+    shippingAddress,
+    paymentMethod,
+    total,
+    placedAt: new Date().toISOString()
+  };
+
+  currentPendingOrder = orderData;
   closeAuthModal();
-  showNotification('🎉 Order placed successfully! You will receive a confirmation soon.', 'success');
+
+  if (paymentMethod === 'UPI') {
+    // Launch Dedicated UPI QR Code Payment Scanner Window
+    showUpiQrPaymentModal(orderData);
+  } else {
+    // Standard order completion
+    finalizeOrder(orderData);
+  }
+}
+
+function showUpiQrPaymentModal(order) {
+  const modal = document.getElementById('upiModal');
+  const body = document.getElementById('upiModalBody');
+  if (!modal || !body) return;
+
+  const upiUri = `upi://pay?pa=shopease@icici&pn=ShopEase%20Retail&am=${order.total}&cu=INR&tn=${order.id}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+
+  let remainingSeconds = 299; // 4:59
+
+  body.innerHTML = `
+    <!-- Top QR Card -->
+    <div class="upi-qr-card">
+      <div class="upi-qr-viewport">
+        <div class="upi-corner tl"></div>
+        <div class="upi-corner tr"></div>
+        <div class="upi-corner bl"></div>
+        <div class="upi-corner br"></div>
+        <div class="upi-scan-beam"></div>
+        <img src="${qrUrl}" alt="UPI QR Code" 
+             onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi%3A%2F%2Fpay%3Fpa%3Dshopease%40icici%26am%3D${order.total}'" />
+      </div>
+      <div class="upi-merchant-name">ShopEase Retail</div>
+      <div class="upi-amount-pill">
+        <i class="fas fa-rupee-sign"></i> ₹${order.total.toLocaleString('en-IN')}
+      </div>
+      <div class="upi-timer-row">
+        <span>Complete this action within</span>
+        <span id="upiTimer" class="upi-timer-val">4:59</span>
+      </div>
+    </div>
+
+    <!-- Instructions & Apps -->
+    <div class="upi-instructions-card">
+      <h4>Instructions</h4>
+      <p>Scan this QR code using any of the 50+ UPI apps.</p>
+      <div class="upi-apps-row">
+        <span class="upi-app-pill gpay"><i class="fab fa-google-pay" style="font-size:1.1rem;"></i> GPay</span>
+        <span class="upi-app-pill phonepe"><i class="fas fa-mobile-alt"></i> PhonePe</span>
+        <span class="upi-app-pill paytm"><i class="fas fa-wallet"></i> Paytm</span>
+        <span class="upi-app-pill bhim"><i class="fas fa-university"></i> BHIM</span>
+        <span class="upi-app-pill amazon"><i class="fab fa-amazon-pay"></i> Amazon Pay</span>
+      </div>
+      <p style="margin-bottom:0;font-size:.82rem;color:var(--txt3);">
+        <i class="fas fa-info-circle" style="color:var(--accent-cyan);margin-right:4px;"></i> Approve UPI Payment in your app.
+      </p>
+    </div>
+
+    <!-- Live Radar Status -->
+    <div class="upi-status-pill">
+      <div class="upi-radar-dot"></div>
+      <span>Waiting for UPI payment confirmation…</span>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="upi-actions">
+      <button class="btn-upi-simulate" onclick="simulateUpiPaymentSuccess()">
+        <i class="fas fa-bolt"></i> Simulate UPI Scan & Pay (Instant Verify)
+      </button>
+      <button class="btn-upi-copy" onclick="copyUpiId('shopease@icici')">
+        <i class="fas fa-copy"></i> Copy UPI ID: <strong>shopease@icici</strong>
+      </button>
+    </div>
+  `;
+
+  modal.classList.add('active');
+
+  // Start live countdown timer
+  if (upiCountdownInterval) clearInterval(upiCountdownInterval);
+  upiCountdownInterval = setInterval(() => {
+    remainingSeconds--;
+    const m = Math.floor(remainingSeconds / 60);
+    const s = remainingSeconds % 60;
+    const timerEl = document.getElementById('upiTimer');
+    if (timerEl) {
+      timerEl.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+    if (remainingSeconds <= 0) {
+      clearInterval(upiCountdownInterval);
+      showNotification('Payment session expired. Please try again.', 'error');
+      closeModal('upiModal');
+    }
+  }, 1000);
+}
+
+function copyUpiId(upiId) {
+  navigator.clipboard.writeText(upiId).then(() => {
+    showNotification(`UPI ID "${upiId}" copied to clipboard!`, 'success');
+  }).catch(() => {
+    showNotification(`UPI ID: ${upiId}`, 'info');
+  });
+}
+
+function simulateUpiPaymentSuccess() {
+  if (upiCountdownInterval) clearInterval(upiCountdownInterval);
+  const body = document.getElementById('upiModalBody');
+  if (!body || !currentPendingOrder) return;
+
+  const order = currentPendingOrder;
+
+  // Render animated verified screen
+  body.innerHTML = `
+    <div class="upi-success-view">
+      <div class="upi-check-circle">
+        <i class="fas fa-check"></i>
+      </div>
+      <h3>Payment Verified!</h3>
+      <p style="color:var(--txt2);font-size:.92rem;margin-top:-8px;">Your order has been placed successfully.</p>
+      
+      <div class="upi-order-info">
+        <div><span>Order ID</span><strong>${order.id}</strong></div>
+        <div><span>Amount Paid</span><strong style="color:#10b981;">₹${order.total.toLocaleString('en-IN')}</strong></div>
+        <div><span>Payment Mode</span><strong>UPI (Instant Verified)</strong></div>
+        <div><span>Deliver To</span><strong>${order.shippingAddress.fullName} (${order.shippingAddress.pincode})</strong></div>
+        <div><span>Estimated Delivery</span><strong style="color:var(--primary);">3 Business Days</strong></div>
+      </div>
+
+      <div style="display:flex;gap:10px;width:100%;margin-top:14px;">
+        <button onclick="finalizeOrder(currentPendingOrder, true); showMyOrdersPage();" class="btn-checkout" style="flex:1;">
+          <i class="fas fa-box-open"></i> View in My Orders
+        </button>
+        <button onclick="finalizeOrder(currentPendingOrder, true); loadHome();" class="btn-upi-copy" style="flex:1;font-weight:700;">
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  `;
+
+  showNotification('🎉 UPI Payment Successful! Order Confirmed.', 'success');
+}
+
+function finalizeOrder(orderData, isAlreadyVerified = false) {
+  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+  orders.unshift(orderData);
+  localStorage.setItem('shopease_orders', JSON.stringify(orders));
+
+  cart = [];
+  saveCart();
+  updateCartCount();
+  updateOrdersCount();
+
+  if (document.getElementById('cartModal')) {
+    closeModal('cartModal');
+  }
+  if (document.getElementById('upiModal')) {
+    closeModal('upiModal');
+  }
+  if (document.getElementById('authModal')) {
+    closeAuthModal();
+  }
+
+  if (!isAlreadyVerified) {
+    showNotification('🎉 Order placed successfully! You can track it in My Orders.', 'success');
+  }
+
+  currentPendingOrder = null;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MY ORDERS PAGE CONTROLLER
+   ═══════════════════════════════════════════════════════════════ */
+let currentOrderTab = 'all';
+
+function updateOrdersCount() {
+  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+  const countEls = document.querySelectorAll('#ordersCount');
+  countEls.forEach(el => el.textContent = orders.length);
+}
+
+function showMyOrdersPage() {
+  const ordersSec = document.getElementById('ordersSection');
+  const shopSec = document.getElementById('shopSection');
+  if (!ordersSec) return;
+
+  // Hide other homepage sections
+  document.querySelectorAll('.hero-section, .deal-strip, .trust-section, .categories-section, .promo-section').forEach(el => {
+    if (el) el.style.display = 'none';
+  });
+  if (shopSec) shopSec.style.display = 'none';
+
+  ordersSec.style.display = 'block';
+
+  // Update navbar active state
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('navOrdersBtn')?.classList.add('active');
+
+  renderOrdersList(currentOrderTab);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filterOrdersTab(tab, btnEl) {
+  currentOrderTab = tab;
+  document.querySelectorAll('.order-tab-btn').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderOrdersList(tab);
+}
+
+function renderOrdersList(filter = 'all') {
+  const container = document.getElementById('ordersListContainer');
+  if (!container) return;
+
+  let orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+
+  if (filter === 'active') {
+    orders = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled');
+  } else if (filter === 'delivered') {
+    orders = orders.filter(o => o.status === 'Delivered');
+  }
+
+  if (orders.length === 0) {
+    container.innerHTML = `
+      <div class="orders-empty-state">
+        <i class="fas fa-box-open"></i>
+        <h3>No Orders Found</h3>
+        <p>${filter === 'all' ? 'You haven’t placed any orders yet. Explore our futuristic gear today!' : `No ${filter} orders found in your history.`}</p>
+        <button class="btn-checkout" style="max-width:260px;margin:0 auto;" onclick="loadHome()">
+          <i class="fas fa-shopping-bag"></i> Start Shopping
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = orders.map((order, idx) => {
+    const status = order.status || 'Confirmed';
+    const statusClass = status.toLowerCase().includes('transit') || status.toLowerCase().includes('shipped') ? 'transit' :
+                        status.toLowerCase().includes('delivered') ? 'delivered' :
+                        status.toLowerCase().includes('cancelled') ? 'cancelled' : 'confirmed';
+
+    const orderDate = new Date(order.placedAt || Date.now()).toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+    const isUPI = (order.paymentMethod || '').includes('UPI');
+
+    const itemsHtml = (order.items || []).map(item => `
+      <div class="order-item-row">
+        <img src="${item.images?.[0]?.url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop'}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop'" />
+        <div class="oir-info">
+          <div class="oir-title">${item.name}</div>
+          <div class="oir-meta"><span style="color:var(--primary);font-weight:700;">${item.category}</span> • Qty: <strong>${item.quantity}</strong></div>
+        </div>
+        <div class="oir-price">
+          <div>₹${(item.price * item.quantity).toLocaleString('en-IN')}</div>
+          <small style="color:var(--txt3);font-size:.75rem;font-weight:500;">₹${item.price.toLocaleString('en-IN')} each</small>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="order-card" id="order-card-${order.id}">
+        <!-- Header -->
+        <div class="order-card-header">
+          <div class="och-left">
+            <span class="order-id-tag"><i class="fas fa-receipt" style="color:var(--primary);"></i> Order ${order.id}</span>
+            <span class="order-date">Placed on ${orderDate}</span>
+          </div>
+          <div class="och-right">
+            <span class="order-paymode-badge">
+              <i class="${isUPI ? 'fas fa-qrcode' : 'fas fa-credit-card'}" style="color:${isUPI ? 'var(--accent-cyan)' : 'inherit'};margin-right:4px;"></i>
+              ${order.paymentMethod || 'UPI'}
+            </span>
+            <span class="order-status-badge ${statusClass}">
+              <i class="fas fa-${statusClass === 'confirmed' ? 'check-circle' : statusClass === 'transit' ? 'truck-fast' : statusClass === 'delivered' ? 'box-circle-check' : 'times-circle'}"></i>
+              ${status}
+            </span>
+            <span class="order-total-badge">₹${order.total.toLocaleString('en-IN')}</span>
+          </div>
+        </div>
+
+        <!-- 4-Step Stepper -->
+        <div class="order-stepper-wrap">
+          <div class="order-stepper">
+            <div class="order-step done">
+              <div class="order-step-icon"><i class="fas fa-check"></i></div>
+              <div class="order-step-title">Order Placed</div>
+              <div class="order-step-sub">Verified</div>
+            </div>
+            <div class="order-step ${statusClass !== 'cancelled' ? 'active' : ''}">
+              <div class="order-step-icon"><i class="fas fa-box"></i></div>
+              <div class="order-step-title">Packed</div>
+              <div class="order-step-sub">Hub Ready</div>
+            </div>
+            <div class="order-step ${statusClass === 'transit' || statusClass === 'delivered' ? 'active' : ''}">
+              <div class="order-step-icon"><i class="fas fa-truck-fast"></i></div>
+              <div class="order-step-title">Dispatched</div>
+              <div class="order-step-sub">Express Delivery</div>
+            </div>
+            <div class="order-step ${statusClass === 'delivered' ? 'done' : ''}">
+              <div class="order-step-icon"><i class="fas fa-house"></i></div>
+              <div class="order-step-title">Delivered</div>
+              <div class="order-step-sub">ETA 3 Days</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Breakdown -->
+        <div class="order-items-grid">
+          ${itemsHtml}
+        </div>
+
+        <!-- Footer -->
+        <div class="order-card-footer">
+          <div class="order-delivery-address-mini">
+            <i class="fas fa-location-dot" style="color:var(--accent-pink);"></i>
+            <span>Deliver to: <strong>${order.shippingAddress?.fullName || 'Customer'}</strong>, ${order.shippingAddress?.city || ''} (${order.shippingAddress?.pincode || ''})</span>
+          </div>
+          <div class="order-action-btns">
+            <button class="btn-order-track" onclick="showLiveTrackingModal('${order.id}')">
+              <i class="fas fa-location-crosshairs"></i> Live GPS Track
+            </button>
+            <button class="btn-order-invoice" onclick="showInvoiceModal('${order.id}')">
+              <i class="fas fa-file-invoice"></i> Invoice
+            </button>
+            <button class="btn-order-invoice" onclick="reorderAll('${order.id}')" title="Add items to cart">
+              <i class="fas fa-rotate-right"></i> Reorder
+            </button>
+            ${statusClass !== 'cancelled' && statusClass !== 'delivered' ? `
+              <button class="btn-order-cancel" onclick="cancelOrder('${order.id}')">
+                <i class="fas fa-times"></i> Cancel
+              </button>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showLiveTrackingModal(orderId) {
+  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+  const order = orders.find(o => o.id === orderId);
+  if (!order) return;
+
+  const modal = document.getElementById('trackingModal');
+  const body = document.getElementById('trackingModalBody');
+  if (!modal || !body) return;
+
+  body.innerHTML = `
+    <h3 style="font-size:1.35rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px;color:var(--txt1);">
+      <i class="fas fa-location-arrow" style="color:var(--accent-cyan);"></i> Live Delivery Radar — ${order.id}
+    </h3>
+
+    <!-- Map Simulator -->
+    <div style="position:relative;height:200px;background:radial-gradient(ellipse at center, rgba(6,182,212,0.15) 0%, rgba(15,23,42,0.95) 100%), #0b1120;border:1px solid var(--border-glow);border-radius:16px;overflow:hidden;margin-bottom:20px;display:flex;align-items:center;justify-content:center;">
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);background-size:25px 25px;"></div>
+      
+      <!-- Courier Pin -->
+      <div style="position:relative;z-index:3;text-align:center;">
+        <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--accent-cyan),var(--primary));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;margin:0 auto 6px;box-shadow:0 0 20px var(--accent-cyan);animation:upiRadarPulse 2s infinite;">
+          <i class="fas fa-truck-fast"></i>
+        </div>
+        <span style="font-size:.78rem;font-weight:800;background:rgba(0,0,0,0.8);color:#fff;padding:3px 10px;border-radius:99px;border:1px solid var(--border);">
+          Courier on way (2.4 km away)
+        </span>
+      </div>
+    </div>
+
+    <!-- Agent & ETA Card -->
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--txt1);">
+            <i class="fas fa-user-ninja"></i>
+          </div>
+          <div>
+            <div style="font-weight:800;color:var(--txt1);font-size:.92rem;">Rohan Varma (HyperFast Rider)</div>
+            <div style="font-size:.78rem;color:var(--txt3);"><i class="fas fa-star" style="color:#fbbf24;"></i> 4.9 Rating • Hero Electric EV</div>
+          </div>
+        </div>
+        <a href="tel:9876543210" style="padding:6px 12px;border-radius:8px;background:rgba(16,185,129,0.15);color:#34d399;font-weight:700;font-size:.82rem;display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-phone"></i> Call
+        </a>
+      </div>
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px;font-size:.85rem;color:var(--txt2);">
+        <span>Estimated Delivery</span>
+        <strong style="color:var(--accent-emerald);">Today within 45 Mins</strong>
+      </div>
+    </div>
+
+    <button onclick="closeModal('trackingModal')" class="btn-checkout" style="width:100%;">
+      Close Tracking
+    </button>
+  `;
+
+  modal.classList.add('active');
+}
+
+function showInvoiceModal(orderId) {
+  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+  const order = orders.find(o => o.id === orderId);
+  if (!order) return;
+
+  const modal = document.getElementById('invoiceModal');
+  const body = document.getElementById('invoiceModalBody');
+  if (!modal || !body) return;
+
+  const subtotal = order.total;
+  const gst = Math.round(subtotal * 0.18);
+  const basePrice = subtotal - gst;
+
+  body.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--border);padding-bottom:18px;margin-bottom:18px;">
+      <div>
+        <h2 style="font-size:1.5rem;font-weight:800;color:var(--txt1);"><i class="fas fa-bolt" style="color:var(--primary);"></i> Shop<em>Ease</em> Retail</h2>
+        <p style="font-size:.82rem;color:var(--txt3);">Tax Invoice / Cash Receipt</p>
+      </div>
+      <div style="text-align:right;">
+        <strong style="font-size:.95rem;color:var(--txt1);">${order.id}</strong>
+        <div style="font-size:.8rem;color:var(--txt3);">${new Date(order.placedAt).toLocaleDateString('en-IN')}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;font-size:.85rem;">
+      <div style="background:var(--surface);padding:12px;border-radius:8px;border:1px solid var(--border);">
+        <strong style="color:var(--txt1);display:block;margin-bottom:4px;">Billed & Shipped To:</strong>
+        <div style="color:var(--txt2);">${order.shippingAddress?.fullName}</div>
+        <div style="color:var(--txt3);">${order.shippingAddress?.address}, ${order.shippingAddress?.city} - ${order.shippingAddress?.pincode}</div>
+        <div style="color:var(--txt3);">Phone: ${order.shippingAddress?.phone}</div>
+      </div>
+      <div style="background:var(--surface);padding:12px;border-radius:8px;border:1px solid var(--border);">
+        <strong style="color:var(--txt1);display:block;margin-bottom:4px;">Payment Summary:</strong>
+        <div style="color:var(--txt2);">Mode: <strong>${order.paymentMethod || 'UPI (Verified)'}</strong></div>
+        <div style="color:var(--txt2);">Status: <span style="color:#10b981;font-weight:700;">Paid in Full</span></div>
+        <div style="color:var(--txt3);">Ref: ${order.id}</div>
+      </div>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:18px;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);color:var(--txt3);text-align:left;">
+          <th style="padding:8px 4px;">Item</th>
+          <th style="padding:8px 4px;text-align:center;">Qty</th>
+          <th style="padding:8px 4px;text-align:right;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${(order.items || []).map(i => `
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.06);color:var(--txt1);">
+            <td style="padding:10px 4px;"><strong>${i.name}</strong></td>
+            <td style="padding:10px 4px;text-align:center;">${i.quantity}</td>
+            <td style="padding:10px 4px;text-align:right;">₹${(i.price * i.quantity).toLocaleString('en-IN')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+
+    <div style="background:var(--surface-card);padding:14px;border-radius:10px;margin-bottom:20px;font-size:.88rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;color:var(--txt3);"><span>Taxable Amount</span><span>₹${basePrice.toLocaleString('en-IN')}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;color:var(--txt3);"><span>GST (18% Included)</span><span>₹${gst.toLocaleString('en-IN')}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:800;color:var(--txt1);border-top:1px solid var(--border);padding-top:8px;">
+        <span>Total Paid</span>
+        <span style="color:var(--primary);">₹${subtotal.toLocaleString('en-IN')}</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button onclick="window.print()" class="btn-checkout" style="flex:1;">
+        <i class="fas fa-print"></i> Print / Download PDF
+      </button>
+      <button onclick="closeModal('invoiceModal')" class="btn-upi-copy" style="flex:1;">
+        Close
+      </button>
+    </div>
+  `;
+
+  modal.classList.add('active');
+}
+
+function cancelOrder(orderId) {
+  if (!confirm(`Are you sure you want to cancel Order #${orderId}? Instant refund will be credited.`)) return;
+
+  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+  const idx = orders.findIndex(o => o.id === orderId);
+  if (idx !== -1) {
+    orders[idx].status = 'Cancelled';
+    localStorage.setItem('shopease_orders', JSON.stringify(orders));
+    showNotification(`Order #${orderId} cancelled. Refund initiated.`, 'info');
+    renderOrdersList(currentOrderTab);
+  }
+}
+
+function reorderAll(orderId) {
+  const orders = JSON.parse(localStorage.getItem('shopease_orders') || '[]');
+  const order = orders.find(o => o.id === orderId);
+  if (!order || !order.items) return;
+
+  order.items.forEach(item => {
+    const existing = cart.find(c => c._id === item._id);
+    if (existing) {
+      existing.quantity += item.quantity;
+    } else {
+      cart.push({ ...item });
+    }
+  });
+
+  saveCart();
+  updateCartCount();
+  showNotification('Items added back to your cart!', 'success');
+  showCart();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1434,6 +2006,9 @@ function closeModal(id) {
   if (el) {
     el.classList.remove('active');
     // Do NOT set style.display — modals are shown/hidden via CSS .active class only
+  }
+  if (id === 'upiModal' && typeof upiCountdownInterval !== 'undefined' && upiCountdownInterval) {
+    clearInterval(upiCountdownInterval);
   }
 }
 
@@ -1471,10 +2046,10 @@ function showNotification(msg, type = 'success') {
 
 // Close modals when clicking backdrop
 window.addEventListener('click', e => {
-  ['authModal', 'productModal', 'cartModal'].forEach(id => {
+  ['authModal', 'productModal', 'cartModal', 'upiModal', 'trackingModal', 'invoiceModal'].forEach(id => {
     const el = document.getElementById(id);
     if (e.target === el) {
-      el.classList.remove('active');
+      closeModal(id);
     }
   });
 });
