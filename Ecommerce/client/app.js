@@ -606,7 +606,7 @@ function ensureShopViewActive() {
   if (ordersSec) ordersSec.style.display = 'none';
   if (shopSec) shopSec.style.display = '';
 
-  document.querySelectorAll('.hero-section, .deal-strip, .trust-section, .categories-section, .promo-section').forEach(el => {
+  document.querySelectorAll('.hero-section, .cat-strip-section, .deal-strip, .trust-section, .promo-section').forEach(el => {
     if (el) el.style.display = '';
   });
 }
@@ -624,6 +624,7 @@ function showWishlist() {
    FILTERS & SORT
    ═══════════════════════════════════════════════════════════════ */
 function applyFilters() {
+  ensureShopViewActive();
   // Sidebar radio values
   const catEl = document.querySelector('input[name="sbCat"]:checked');
   const priceEl = document.querySelector('input[name="sbPrice"]:checked');
@@ -668,11 +669,19 @@ function sortProducts(list) {
 function filterByCategory(cat) {
   ensureShopViewActive();
 
+  // Reset search and secondary filters so user sees all items in category
+  document.querySelectorAll('input[name="sbPrice"]').forEach(r => r.checked = (r.value === ''));
+  document.querySelectorAll('input[name="sbRating"]').forEach(r => r.checked = (r.value === ''));
+  const inStockEl = document.getElementById('sbInStock');
+  if (inStockEl) inStockEl.checked = false;
+  const searchInput = document.getElementById('mainSearch');
+  if (searchInput) searchInput.value = '';
+
   // Update navbar active state
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(item => {
     const txt = item.textContent.trim().toLowerCase();
-    if (cat && (txt.includes(cat.toLowerCase()) || (cat === 'Fresh Fruits' && txt.includes('organics')))) {
+    if (cat && (txt.includes(cat.toLowerCase()) || (cat === 'Fresh Fruits' && (txt.includes('organics') || txt.includes('fruits'))))) {
       item.classList.add('active');
     }
   });
@@ -680,7 +689,14 @@ function filterByCategory(cat) {
   // Tick the matching sidebar radio
   const radios = document.querySelectorAll('input[name="sbCat"]');
   radios.forEach(r => { r.checked = (r.value === cat); });
-  applyFilters();
+
+  // Filter products directly
+  let filtered = [...allProducts];
+  if (cat) {
+    filtered = filtered.filter(p => p.category === cat);
+  }
+  sortProducts(filtered);
+  document.getElementById('productCount').textContent = `${filtered.length} Products Found in ${cat || 'All Categories'}`;
 
   const shopEl = document.getElementById('shopSection') || document.querySelector('.shop-section');
   if (shopEl) {
@@ -1685,7 +1701,7 @@ function showMyOrdersPage() {
   if (!ordersSec) return;
 
   // Hide other homepage sections
-  document.querySelectorAll('.hero-section, .deal-strip, .trust-section, .categories-section, .promo-section').forEach(el => {
+  document.querySelectorAll('.hero-section, .cat-strip-section, .deal-strip, .trust-section, .promo-section').forEach(el => {
     if (el) el.style.display = 'none';
   });
   if (shopSec) shopSec.style.display = 'none';
