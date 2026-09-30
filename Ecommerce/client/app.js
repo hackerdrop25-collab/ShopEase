@@ -600,10 +600,24 @@ function toggleWishlist(productId) {
   saveWishlist(); updateWishlistCount(); displayProducts(allProducts);
 }
 
+function ensureShopViewActive() {
+  const ordersSec = document.getElementById('ordersSection');
+  const shopSec = document.getElementById('shopSection');
+  if (ordersSec) ordersSec.style.display = 'none';
+  if (shopSec) shopSec.style.display = '';
+
+  document.querySelectorAll('.hero-section, .deal-strip, .trust-section, .categories-section, .promo-section').forEach(el => {
+    if (el) el.style.display = '';
+  });
+}
+
 function showWishlist() {
+  ensureShopViewActive();
   if (!wishlist.length) { showNotification('Your wishlist is empty', 'error'); return; }
   displayProducts(wishlist);
   document.getElementById('productCount').textContent = `${wishlist.length} items in your Wishlist`;
+  const shopEl = document.getElementById('shopSection') || document.querySelector('.shop-section');
+  if (shopEl) window.scrollTo({ top: shopEl.offsetTop - 110, behavior: 'smooth' });
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -652,14 +666,30 @@ function sortProducts(list) {
 }
 
 function filterByCategory(cat) {
+  ensureShopViewActive();
+
+  // Update navbar active state
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const txt = item.textContent.trim().toLowerCase();
+    if (cat && (txt.includes(cat.toLowerCase()) || (cat === 'Fresh Fruits' && txt.includes('organics')))) {
+      item.classList.add('active');
+    }
+  });
+
   // Tick the matching sidebar radio
   const radios = document.querySelectorAll('input[name="sbCat"]');
   radios.forEach(r => { r.checked = (r.value === cat); });
   applyFilters();
-  window.scrollTo({ top: document.querySelector('.shop-section').offsetTop - 130, behavior: 'smooth' });
+
+  const shopEl = document.getElementById('shopSection') || document.querySelector('.shop-section');
+  if (shopEl) {
+    window.scrollTo({ top: shopEl.offsetTop - 110, behavior: 'smooth' });
+  }
 }
 
 function clearFilters() {
+  ensureShopViewActive();
   document.querySelectorAll('input[name="sbCat"]').forEach(r => r.checked = r.value === '');
   document.querySelectorAll('input[name="sbPrice"]').forEach(r => r.checked = r.value === '');
   document.querySelectorAll('input[name="sbRating"]').forEach(r => r.checked = r.value === '');
@@ -672,36 +702,30 @@ function clearFilters() {
 }
 
 function loadHome() {
-  const ordersSec = document.getElementById('ordersSection');
-  const shopSec = document.getElementById('shopSection');
-  if (ordersSec) ordersSec.style.display = 'none';
-  if (shopSec) shopSec.style.display = '';
-
-  document.querySelectorAll('.hero-section, .deal-strip, .trust-section, .categories-section, .promo-section').forEach(el => {
-    if (el) el.style.display = '';
-  });
-
+  ensureShopViewActive();
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   document.getElementById('navHomeBtn')?.classList.add('active');
-
   clearFilters();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showDeals() {
+  ensureShopViewActive();
   const deals = allProducts.filter(p => p.discount);
   filterByCategory('');
   setTimeout(() => {
     displayProducts(deals);
     document.getElementById('productCount').textContent = `${deals.length} Deals Available`;
   }, 50);
-  window.scrollTo({ top: document.querySelector('.shop-section').offsetTop - 130, behavior: 'smooth' });
+  const shopEl = document.getElementById('shopSection') || document.querySelector('.shop-section');
+  if (shopEl) window.scrollTo({ top: shopEl.offsetTop - 110, behavior: 'smooth' });
 }
 
 /* ═══════════════════════════════════════════════════════════════
    SEARCH
    ═══════════════════════════════════════════════════════════════ */
 function performSearch() {
+  ensureShopViewActive();
   const kw = document.getElementById('mainSearch').value.trim().toLowerCase();
   if (!kw) return;
   const catFilter = document.getElementById('searchCat').value;
@@ -713,7 +737,8 @@ function performSearch() {
   );
   displayProducts(results);
   document.getElementById('productCount').textContent = `${results.length} results for "${kw}"`;
-  window.scrollTo({ top: document.querySelector('.shop-section').offsetTop - 130, behavior: 'smooth' });
+  const shopEl = document.getElementById('shopSection') || document.querySelector('.shop-section');
+  if (shopEl) window.scrollTo({ top: shopEl.offsetTop - 110, behavior: 'smooth' });
 }
 
 function setupSearchEnter() {
