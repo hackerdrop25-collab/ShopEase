@@ -50,7 +50,6 @@ const importProducts = async () => {
     process.exit(1);
   }
 };
-
 // Delete all products
 const deleteProducts = async () => {
   try {

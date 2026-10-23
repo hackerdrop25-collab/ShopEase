@@ -667,6 +667,7 @@ function sortProducts(list) {
 }
 
 function filterByCategory(cat) {
+  if (window.event) window.event.preventDefault();
   ensureShopViewActive();
 
   // Reset search and secondary filters so user sees all items in category
@@ -718,6 +719,7 @@ function clearFilters() {
 }
 
 function loadHome() {
+  if (window.event) window.event.preventDefault();
   ensureShopViewActive();
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   document.getElementById('navHomeBtn')?.classList.add('active');
@@ -1696,6 +1698,7 @@ function updateOrdersCount() {
 }
 
 function showMyOrdersPage() {
+  if (window.event) window.event.preventDefault();
   const ordersSec = document.getElementById('ordersSection');
   const shopSec = document.getElementById('shopSection');
   if (!ordersSec) return;
