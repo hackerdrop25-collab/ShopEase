@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 const API_URL = 'http://localhost:5000/api';
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 let cart = JSON.parse(localStorage.getItem('shopease_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('shopease_wishlist')) || [];
@@ -22,100 +22,47 @@ function getAuthHeaders() {
 /* ═══════════════════════════════════════════════════════════════
    PRODUCT DATA
    ═══════════════════════════════════════════════════════════════ */
-const mockProducts = [
-  // ── ELECTRONICS (15 products — 50% OFF sale) ────────────────────────────────
-  { _id: "1", name: "Apple iPhone 15 Pro Max", description: "A17 Pro chip, 256GB Titanium, 48MP ProRAW camera, 5x optical zoom, USB-C", price: 79950, originalPrice: 159900, discount: 50, category: "Electronics", brand: "Apple", ratings: 4.9, numOfReviews: 1245, stock: 25, images: [{ url: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&h=400&fit=crop" }] },
-  { _id: "2", name: "Samsung Galaxy S24 Ultra", description: "200MP camera, Snapdragon 8 Gen 3, 12GB RAM, 512GB, built-in S Pen, 6.8\" QHD+", price: 65000, originalPrice: 129999, discount: 50, category: "Electronics", brand: "Samsung", ratings: 4.8, numOfReviews: 892, stock: 30, images: [{ url: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500&h=400&fit=crop" }] },
-  { _id: "3", name: "Dell XPS 15 Laptop", description: "Intel Core i7-13700H, 16GB RAM, 512GB NVMe SSD, 15.6\" 4K OLED, NVIDIA RTX 4050", price: 77500, originalPrice: 154999, discount: 50, category: "Electronics", brand: "Dell", ratings: 4.7, numOfReviews: 456, stock: 15, images: [{ url: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500&h=400&fit=crop" }] },
-  { _id: "4", name: "MacBook Air M3", description: "Apple M3 chip, 16GB unified memory, 512GB SSD, 13.6\" Liquid Retina, 18hr battery", price: 67450, originalPrice: 134900, discount: 50, category: "Electronics", brand: "Apple", ratings: 4.9, numOfReviews: 678, stock: 20, images: [{ url: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&h=400&fit=crop" }] },
-  { _id: "5", name: "Sony WH-1000XM5 Headphones", description: "Industry-leading ANC, 30hr battery, multipoint connection, Hi-Res Audio certified", price: 14995, originalPrice: 29990, discount: 50, category: "Electronics", brand: "Sony", ratings: 4.8, numOfReviews: 1234, stock: 80, images: [{ url: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500&h=400&fit=crop" }] },
-  { _id: "35", name: "OnePlus 12 5G", description: "Snapdragon 8 Gen 3, 50MP Hasselblad triple camera, 5400mAh, 100W SuperVOOC charging", price: 49999, originalPrice: 64999, discount: 23, category: "Electronics", brand: "OnePlus", ratings: 4.7, numOfReviews: 2341, stock: 45, images: [{ url: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500&h=400&fit=crop" }] },
-  { _id: "36", name: "iPad Air M2 (10.9\")", description: "Apple M2 chip, 64GB, 10.9\" Liquid Retina, Touch ID, USB-C, compatible with Apple Pencil", price: 59900, originalPrice: 74900, discount: 20, category: "Electronics", brand: "Apple", ratings: 4.8, numOfReviews: 987, stock: 35, images: [{ url: "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=500&h=400&fit=crop" }] },
-  { _id: "37", name: "Samsung 55\" QLED 4K Smart TV", description: "Quantum Dot technology, HDR10+, Tizen OS, Alexa built-in, 3 HDMI, ultra-slim design", price: 54999, originalPrice: 79999, discount: 31, category: "Electronics", brand: "Samsung", ratings: 4.6, numOfReviews: 1567, stock: 20, images: [{ url: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&h=400&fit=crop" }] },
-  { _id: "38", name: "Apple AirPods Pro (2nd Gen)", description: "H2 chip, Active Noise Cancellation, Adaptive Transparency, USB-C MagSafe case", price: 19900, originalPrice: 26900, discount: 26, category: "Electronics", brand: "Apple", ratings: 4.7, numOfReviews: 3210, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=500&h=400&fit=crop" }] },
-  { _id: "39", name: "Lenovo IdeaPad Slim 5 Laptop", description: "AMD Ryzen 5 7530U, 16GB RAM, 512GB SSD, 15.6\" FHD IPS display, backlit keyboard", price: 52999, originalPrice: 69999, discount: 24, category: "Electronics", brand: "Lenovo", ratings: 4.5, numOfReviews: 1123, stock: 28, images: [{ url: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=400&fit=crop" }] },
-  { _id: "40", name: "Canon EOS R50 Camera", description: "24.2MP APS-C sensor, 4K video, dual AF, beginner-friendly mirrorless, Wi-Fi & Bluetooth", price: 57990, originalPrice: 74990, discount: 23, category: "Electronics", brand: "Canon", ratings: 4.8, numOfReviews: 678, stock: 18, images: [{ url: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500&h=400&fit=crop" }] },
-  { _id: "41", name: "JBL Charge 5 Bluetooth Speaker", description: "Waterproof IP67, 20hr playtime, USB-C power bank, PartyBoost multi-speaker pairing", price: 9999, originalPrice: 13999, discount: 29, category: "Electronics", brand: "JBL", ratings: 4.6, numOfReviews: 2456, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=400&fit=crop" }] },
-  { _id: "42", name: "Logitech MX Master 3S Mouse", description: "8000 DPI laser sensor, quiet clicks, USB-C fast charge, ergonomic design, multi-device", price: 8995, originalPrice: 11995, discount: 25, category: "Electronics", brand: "Logitech", ratings: 4.8, numOfReviews: 1890, stock: 90, images: [{ url: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=400&fit=crop" }] },
-  { _id: "43", name: "PlayStation 5 Slim Console", description: "4K gaming, ray tracing, DualSense controller, 1TB SSD, Ultra HD Blu-ray disc drive", price: 44990, originalPrice: 54990, discount: 18, category: "Electronics", brand: "Sony", ratings: 4.9, numOfReviews: 3456, stock: 15, images: [{ url: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500&h=400&fit=crop" }] },
-  { _id: "44", name: "Kindle Paperwhite 16GB", description: "6.8\" glare-free display, adjustable warm light, 10-week battery, waterproof, USB-C", price: 12999, originalPrice: 16999, discount: 24, category: "Electronics", brand: "Amazon", ratings: 4.7, numOfReviews: 5678, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500&h=400&fit=crop" }] },
+const mockProducts = [];
 
-  // ── FASHION (15 products) ──────────────────────────────────────────────────
-  { _id: "6", name: "Levi's 511 Slim Fit Jeans", description: "Classic slim fit, 98% cotton 2% elastane, dark indigo wash, comfortable all-day stretch", price: 3499, category: "Fashion", brand: "Levi's", ratings: 4.5, numOfReviews: 1234, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=400&fit=crop" }] },
-  { _id: "7", name: "Nike Air Max 270", description: "Max Air 270° heel unit, breathable mesh upper, foam midsole, durable rubber outsole", price: 12999, category: "Fashion", brand: "Nike", ratings: 4.7, numOfReviews: 2456, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop" }] },
-  { _id: "8", name: "Adidas Originals Hoodie", description: "70% cotton 30% polyester, iconic Trefoil logo, kangaroo pocket, ribbed cuffs and hem", price: 4999, category: "Fashion", brand: "Adidas", ratings: 4.6, numOfReviews: 890, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=400&fit=crop" }] },
-  { _id: "9", name: "Women's Designer Kurti", description: "Elegant floral print, 100% soft cotton, 3/4 sleeves, knee length, available in 6 sizes", price: 1299, category: "Fashion", brand: "Biba", ratings: 4.6, numOfReviews: 1567, stock: 350, images: [{ url: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&h=400&fit=crop" }] },
-  { _id: "10", name: "Ray-Ban Aviator Sunglasses", description: "Classic gold metal frame, polarized UV400 green lens, iconic teardrop shape since 1937", price: 7999, category: "Fashion", brand: "Ray-Ban", ratings: 4.8, numOfReviews: 2345, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=400&fit=crop" }] },
-  { _id: "45", name: "Puma Training T-Shirt", description: "Moisture-wicking DryCELL fabric, slim fit, anti-odour, perfect for gym or casual wear", price: 1299, originalPrice: 1799, discount: 28, category: "Fashion", brand: "Puma", ratings: 4.5, numOfReviews: 2100, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=400&fit=crop" }] },
-  { _id: "46", name: "Men's Formal Shirt – White", description: "100% premium cotton, slim fit, spread collar, wrinkle-resistant, available sizes S–XXL", price: 1599, originalPrice: 2499, discount: 36, category: "Fashion", brand: "Van Heusen", ratings: 4.4, numOfReviews: 1890, stock: 280, images: [{ url: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&h=400&fit=crop" }] },
-  { _id: "47", name: "Women's Floral Summer Dress", description: "Lightweight chiffon, flowy silhouette, V-neck, sleeveless, knee-length, 6 colour options", price: 1999, originalPrice: 2999, discount: 33, category: "Fashion", brand: "Zara", ratings: 4.7, numOfReviews: 1456, stock: 220, images: [{ url: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=500&h=400&fit=crop" }] },
-  { _id: "48", name: "Woodland Leather Casual Shoes", description: "Full-grain leather upper, rubber lug sole, memory foam insole, water-resistant", price: 3499, originalPrice: 4999, discount: 30, category: "Fashion", brand: "Woodland", ratings: 4.6, numOfReviews: 1234, stock: 160, images: [{ url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop&sat=-100" }] },
-  { _id: "49", name: "Women's Leather Handbag", description: "Genuine PU leather, spacious interior, 3 compartments, gold-tone hardware, detachable strap", price: 2999, originalPrice: 4499, discount: 33, category: "Fashion", brand: "Baggit", ratings: 4.7, numOfReviews: 987, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&h=400&fit=crop" }] },
-  { _id: "50", name: "Titan Analog Watch – Black", description: "Stainless steel case, sapphire crystal glass, 100m water resistance, leather strap", price: 4999, originalPrice: 7499, discount: 33, category: "Fashion", brand: "Titan", ratings: 4.6, numOfReviews: 2340, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500&h=400&fit=crop" }] },
-  { _id: "51", name: "Men's Winter Puffer Jacket", description: "Water-repellent shell, 400-fill power down insulation, packable, 4 zip pockets", price: 4999, originalPrice: 7999, discount: 38, category: "Fashion", brand: "The North Face", ratings: 4.8, numOfReviews: 876, stock: 140, images: [{ url: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&h=400&fit=crop" }] },
-  { _id: "52", name: "Wildcraft 40L Hiking Backpack", description: "Water-resistant 600D polyester, padded shoulder straps, laptop sleeve, rain cover included", price: 2499, originalPrice: 3999, discount: 38, category: "Fashion", brand: "Wildcraft", ratings: 4.5, numOfReviews: 1123, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=400&fit=crop" }] },
-  { _id: "53", name: "Women's High-Waist Yoga Pants", description: "4-way stretch, squat-proof, moisture-wicking, high waist, 7/8 length, 5 pockets", price: 1499, originalPrice: 2299, discount: 35, category: "Fashion", brand: "Decathlon", ratings: 4.6, numOfReviews: 2890, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&h=400&fit=crop" }] },
-  { _id: "54", name: "Fastrack Neon Digital Watch", description: "Resin case, digital display with backlight, stopwatch, alarm, water-resistant 50m", price: 1299, originalPrice: 1999, discount: 35, category: "Fashion", brand: "Fastrack", ratings: 4.3, numOfReviews: 1567, stock: 320, images: [{ url: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&h=400&fit=crop" }] },
-  { _id: "55", name: "Men's Cargo Shorts", description: "100% cotton twill, 6 pockets including cargo pockets, belt loops, relaxed fit", price: 999, originalPrice: 1499, discount: 33, category: "Fashion", brand: "Roadster", ratings: 4.4, numOfReviews: 1890, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500&h=400&fit=crop" }] },
+/* ═══════════════════════════════════════════════════════════════
+   LIVE PRODUCT NORMALIZER (Full MongoDB Schema Support)
+   ═══════════════════════════════════════════════════════════════ */
+function normalizeProduct(p) {
+  const name = p.name || p.title || 'Product';
+  const price = Number(p.price) || 0;
+  const originalPrice = Number(p.comparePrice || p.originalPrice || 0);
+  const discount = p.discount || p.discountPercent || (originalPrice > price ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0);
+  const ratings = Number(p.ratings || p.rating || 4.7);
+  const numOfReviews = Number(p.numOfReviews || p.numReviews || 120);
 
-  // ── HOME & KITCHEN (14 products) ──────────────────────────────────────────
-  { _id: "11", name: "Philips Air Fryer HD9252", description: "Rapid Air technology, 4.1L, 7 digital presets, touchscreen, dishwasher-safe basket", price: 12999, category: "Home & Kitchen", brand: "Philips", ratings: 4.6, numOfReviews: 1234, stock: 80, images: [{ url: "https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&h=400&fit=crop" }] },
-  { _id: "12", name: "Prestige Induction Cooktop", description: "2000W, feather-touch panel, 8 preset menus, child-lock, auto-shutoff, ISI certified", price: 3299, category: "Home & Kitchen", brand: "Prestige", ratings: 4.4, numOfReviews: 890, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=500&h=400&fit=crop" }] },
-  { _id: "13", name: "Milton Thermosteel Bottle 1L", description: "18/8 stainless steel double wall, 24hr cold & 12hr hot, leak-proof lid, BPA-free", price: 699, category: "Home & Kitchen", brand: "Milton", ratings: 4.5, numOfReviews: 2345, stock: 500, images: [{ url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=400&fit=crop" }] },
-  { _id: "14", name: "Bajaj Mixer Grinder 750W", description: "3 stainless steel jars (1.5L+1L+0.4L), 750W copper motor, overload protection, 2yr warranty", price: 4499, category: "Home & Kitchen", brand: "Bajaj", ratings: 4.5, numOfReviews: 890, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop" }] },
-  { _id: "56", name: "Instant Pot Duo 7-in-1 Cooker", description: "Pressure cooker, slow cooker, rice cooker, steamer, sauté, yogurt maker & food warmer, 6L", price: 9999, originalPrice: 13999, discount: 29, category: "Home & Kitchen", brand: "Instant Pot", ratings: 4.8, numOfReviews: 3210, stock: 60, images: [{ url: "https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&h=400&fit=crop&hue=200" }] },
-  { _id: "57", name: "Godrej Refrigerator 265L", description: "Frost-free, 3-star energy rating, toughened glass shelves, large vegetable tray, crisper", price: 28999, originalPrice: 36999, discount: 22, category: "Home & Kitchen", brand: "Godrej", ratings: 4.5, numOfReviews: 1450, stock: 25, images: [{ url: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=500&h=400&fit=crop" }] },
-  { _id: "58", name: "IFB Front Load Washing Machine", description: "6kg capacity, 6 motion wash, silver nano technology, in-built heater, 2yr warranty", price: 31999, originalPrice: 42999, discount: 26, category: "Home & Kitchen", brand: "IFB", ratings: 4.6, numOfReviews: 987, stock: 20, images: [{ url: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=500&h=400&fit=crop" }] },
-  { _id: "59", name: "Bosch Dishwasher 12 Place", description: "12 place settings, 5 programs, half load function, auto door open drying, energy-efficient", price: 34999, originalPrice: 44999, discount: 22, category: "Home & Kitchen", brand: "Bosch", ratings: 4.7, numOfReviews: 654, stock: 15, images: [{ url: "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&h=400&fit=crop" }] },
-  { _id: "60", name: "Havells Ceiling Fan 1200mm", description: "BLDC motor, 5-star energy rated, remote control, 52W power consumption, anti-dust blade", price: 3499, originalPrice: 4999, discount: 30, category: "Home & Kitchen", brand: "Havells", ratings: 4.5, numOfReviews: 2345, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=400&fit=crop" }] },
-  { _id: "61", name: "Dyson V12 Detect Slim Vacuum", description: "Laser dust detection, HEPA filtration, 60-min runtime, LCD screen, lightweight 2.2kg", price: 42900, originalPrice: 54900, discount: 22, category: "Home & Kitchen", brand: "Dyson", ratings: 4.8, numOfReviews: 876, stock: 30, images: [{ url: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500&h=400&fit=crop" }] },
-  { _id: "62", name: "Nonstick Cookware Set 5-Piece", description: "Hard anodised aluminium, PFOA-free coating, induction-compatible, glass lids, 2yr warranty", price: 3999, originalPrice: 5999, discount: 33, category: "Home & Kitchen", brand: "Prestige", ratings: 4.5, numOfReviews: 1890, stock: 140, images: [{ url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500&h=400&fit=crop" }] },
-  { _id: "63", name: "Borosil Glass Lunch Box 3-Tier", description: "Borosilicate glass, microwave & oven safe, airtight steel clips, leak-proof, 320ml each tier", price: 1199, originalPrice: 1799, discount: 33, category: "Home & Kitchen", brand: "Borosil", ratings: 4.4, numOfReviews: 1123, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=400&fit=crop" }] },
-  { _id: "64", name: "Philips Hand Blender 650W", description: "Turbo boost button, stainless steel blending shaft, detachable for easy cleaning, BPA-free jar", price: 2499, originalPrice: 3499, discount: 29, category: "Home & Kitchen", brand: "Philips", ratings: 4.6, numOfReviews: 987, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&h=400&fit=crop&hue=60" }] },
-  { _id: "65", name: "Solimo Cotton Bed Sheet King", description: "400 thread count, 100% cotton, king size, 1 flat sheet + 2 pillow covers, machine washable", price: 1499, originalPrice: 2299, discount: 35, category: "Home & Kitchen", brand: "Amazon Basics", ratings: 4.3, numOfReviews: 2345, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500&h=400&fit=crop" }] },
+  let imageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+  if (p.images && p.images.length > 0) {
+    imageUrl = typeof p.images[0] === 'string' ? p.images[0] : (p.images[0].url || imageUrl);
+  }
 
-  // ── BOOKS (12 products) ────────────────────────────────────────────────────
-  { _id: "15", name: "Rich Dad Poor Dad", description: "Robert Kiyosaki's revolutionary guide to financial intelligence and building lasting wealth", price: 399, category: "Books", brand: "Penguin", ratings: 4.8, numOfReviews: 3456, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500&h=400&fit=crop" }] },
-  { _id: "16", name: "Atomic Habits", description: "James Clear's proven framework for building good habits, breaking bad ones, mastering tiny behaviors", price: 499, category: "Books", brand: "Penguin", ratings: 4.9, numOfReviews: 4567, stock: 280, images: [{ url: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500&h=400&fit=crop" }] },
-  { _id: "17", name: "The Alchemist", description: "Paulo Coelho's global bestseller — Santiago's magical journey following his dream across the desert", price: 350, category: "Books", brand: "Harper Collins", ratings: 4.7, numOfReviews: 5678, stock: 320, images: [{ url: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500&h=400&fit=crop" }] },
-  { _id: "18", name: "Sapiens", description: "Yuval Noah Harari's sweeping narrative of humankind from Stone Age caves to 21st century labs", price: 599, category: "Books", brand: "Harper", ratings: 4.8, numOfReviews: 2890, stock: 220, images: [{ url: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500&h=400&fit=crop" }] },
-  { _id: "66", name: "The Psychology of Money", description: "Morgan Housel's 19 timeless lessons on wealth, greed, and happiness from a behavioural lens", price: 349, originalPrice: 499, discount: 30, category: "Books", brand: "Jaico", ratings: 4.8, numOfReviews: 3100, stock: 280, images: [{ url: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500&h=400&fit=crop" }] },
-  { _id: "67", name: "Think and Grow Rich", description: "Napoleon Hill's timeless classic — 13 principles of personal success distilled from 500 rich men", price: 299, originalPrice: 449, discount: 33, category: "Books", brand: "Rupa", ratings: 4.7, numOfReviews: 2678, stock: 350, images: [{ url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&h=400&fit=crop" }] },
-  { _id: "68", name: "Deep Work – Cal Newport", description: "Rules for focused success in a distracted world — the superpower of the 21st century economy", price: 450, originalPrice: 599, discount: 25, category: "Books", brand: "Grand Central", ratings: 4.6, numOfReviews: 1890, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=500&h=400&fit=crop" }] },
-  { _id: "69", name: "Harry Potter Box Set (7 Books)", description: "Complete J.K. Rowling collection in a collector's box — Philosopher's Stone to Deathly Hallows", price: 3999, originalPrice: 5999, discount: 33, category: "Books", brand: "Bloomsbury", ratings: 4.9, numOfReviews: 7890, stock: 80, images: [{ url: "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=500&h=400&fit=crop" }] },
-  { _id: "70", name: "Zero to One – Peter Thiel", description: "Notes on startups and how to build the future — essential reading for every entrepreneur", price: 499, originalPrice: 699, discount: 29, category: "Books", brand: "Currency", ratings: 4.7, numOfReviews: 2100, stock: 230, images: [{ url: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=500&h=400&fit=crop" }] },
-  { _id: "71", name: "The 5 AM Club – Robin Sharma", description: "Own your morning, elevate your life — the 20/20/20 formula for peak performance", price: 399, originalPrice: 599, discount: 33, category: "Books", brand: "Harper Thorsons", ratings: 4.5, numOfReviews: 1456, stock: 260, images: [{ url: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500&h=400&fit=crop" }] },
-  { _id: "72", name: "Ikigai – Japanese Life Philosophy", description: "Discover your reason for being — the Japanese concept for a long, happy, meaningful life", price: 299, originalPrice: 399, discount: 25, category: "Books", brand: "Arrow", ratings: 4.6, numOfReviews: 2345, stock: 310, images: [{ url: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=500&h=400&fit=crop" }] },
-  { _id: "73", name: "Wings of Fire – A.P.J. Kalam", description: "The inspiring autobiography of India's Missile Man and beloved former President", price: 199, originalPrice: 299, discount: 33, category: "Books", brand: "Universities Press", ratings: 4.9, numOfReviews: 6789, stock: 400, images: [{ url: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&h=400&fit=crop" }] },
-
-  // ── SPORTS & FITNESS (12 products) ───────────────────────────────────────
-  { _id: "19", name: "Yoga Mat Premium 6mm", description: "Anti-slip TPE surface, eco-friendly, dual-texture reversible design, includes carry strap bag", price: 999, category: "Sports & Fitness", brand: "Strauss", ratings: 4.4, numOfReviews: 890, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500&h=400&fit=crop" }] },
-  { _id: "20", name: "Dumbbells Set 10kg", description: "Rubber-coated hexagonal, anti-roll design, chrome handle, pair of 2×5kg, home gym essential", price: 1899, category: "Sports & Fitness", brand: "Kore", ratings: 4.6, numOfReviews: 567, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=400&fit=crop" }] },
-  { _id: "21", name: "Cricket Bat Kashmir Willow", description: "Full size Grade-1 Kashmir willow, pre-knocked blade, toe guard, rubber grip, net-practice ready", price: 1499, category: "Sports & Fitness", brand: "Cosco", ratings: 4.2, numOfReviews: 456, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&h=400&fit=crop" }] },
-  { _id: "22", name: "Football Size 5", description: "FIFA-quality PU construction, butyl inner bladder, 32-panel stitched design, match grade", price: 899, category: "Sports & Fitness", brand: "Nivia", ratings: 4.4, numOfReviews: 789, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1552318965-6e6be7484ada?w=500&h=400&fit=crop" }] },
-  { _id: "74", name: "Resistance Bands Set (5 Bands)", description: "Latex loop bands, 5 resistance levels, includes handles, door anchor, ankle straps & carry bag", price: 699, originalPrice: 999, discount: 30, category: "Sports & Fitness", brand: "Boldfit", ratings: 4.3, numOfReviews: 1890, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=500&h=400&fit=crop" }] },
-  { _id: "75", name: "Yonex Nanoflare 001 Racket", description: "Carbon nanotube frame, slim shaft, super-light 77g, fast swing speed, with full cover", price: 2999, originalPrice: 3999, discount: 25, category: "Sports & Fitness", brand: "Yonex", ratings: 4.7, numOfReviews: 1234, stock: 90, images: [{ url: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500&h=400&fit=crop" }] },
-  { _id: "76", name: "Adjustable Skipping Rope", description: "Ball-bearing PVC rope, foam ergonomic handles, digital counter display, adjustable length", price: 349, originalPrice: 599, discount: 42, category: "Sports & Fitness", brand: "Cockatoo", ratings: 4.2, numOfReviews: 2100, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=500&h=400&fit=crop" }] },
-  { _id: "77", name: "Adidas Running Shoes – Lite", description: "Litestrike EVA midsole, Cloudfoam comfort, breathable mesh upper, everyday training shoe", price: 3499, originalPrice: 4999, discount: 30, category: "Sports & Fitness", brand: "Adidas", ratings: 4.6, numOfReviews: 2890, stock: 160, images: [{ url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=400&fit=crop" }] },
-  { _id: "78", name: "Protein Shaker Bottle 700ml", description: "BPA-free Tritan plastic, leak-proof flip cap, mixing ball, graduated markings, dishwasher safe", price: 499, originalPrice: 799, discount: 38, category: "Sports & Fitness", brand: "Boldfit", ratings: 4.5, numOfReviews: 3456, stock: 400, images: [{ url: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=500&h=400&fit=crop" }] },
-  { _id: "79", name: "Pull-Up Bar Doorframe", description: "No-screw steel doorframe bar, 150kg max load, telescopic 70–100cm, foam grips, with resistance band", price: 1299, originalPrice: 1999, discount: 35, category: "Sports & Fitness", brand: "Kore", ratings: 4.4, numOfReviews: 987, stock: 120, images: [{ url: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500&h=400&fit=crop" }] },
-  { _id: "80", name: "Nivia Storm Basketball Size 7", description: "Full-grain rubber, deep channel design, excellent grip, ideal for indoor & outdoor courts", price: 1299, originalPrice: 1799, discount: 28, category: "Sports & Fitness", brand: "Nivia", ratings: 4.5, numOfReviews: 876, stock: 140, images: [{ url: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=500&h=400&fit=crop" }] },
-  { _id: "81", name: "Gym Duffle Bag 40L", description: "1680D nylon, separate shoe compartment, wet pocket, adjustable strap, reflective strip", price: 1499, originalPrice: 2199, discount: 32, category: "Sports & Fitness", brand: "Puma", ratings: 4.5, numOfReviews: 1234, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=400&fit=crop" }] },
-
-  // ── FRESH FRUITS (12 products) ────────────────────────────────────────────
-  { _id: "23", name: "Fresh Apples – Shimla (1kg)", description: "Hand-picked Himachal orchards, crisp sweet-tart flavour, rich in dietary fibre & antioxidants", price: 180, category: "Fresh Fruits", brand: "Fresh Farm", ratings: 4.7, numOfReviews: 1234, stock: 500, images: [{ url: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&h=400&fit=crop" }] },
-  { _id: "24", name: "Alphonso Mangoes (1 Dozen)", description: "GI-tagged Ratnagiri Alphonso, naturally ripened, zero carbide, golden flesh, divine sweetness", price: 1200, category: "Fresh Fruits", brand: "Farm Fresh", ratings: 4.9, numOfReviews: 2456, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&h=400&fit=crop" }] },
-  { _id: "25", name: "Bananas – Robusta (1 Dozen)", description: "Farm-fresh Robusta, rich in potassium & vitamin B6, energy-dense, sourced directly from farms", price: 60, category: "Fresh Fruits", brand: "Fresh Farm", ratings: 4.6, numOfReviews: 890, stock: 800, images: [{ url: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&h=400&fit=crop" }] },
-  { _id: "26", name: "Fresh Oranges – Nagpur (1kg)", description: "Famous Nagpur Santra, vitamin C powerhouse, thin skin, juicy segments, tangy-sweet flavour", price: 80, category: "Fresh Fruits", brand: "Citrus Fresh", ratings: 4.5, numOfReviews: 678, stock: 600, images: [{ url: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=500&h=400&fit=crop" }] },
-  { _id: "27", name: "Green Grapes – Seedless (500g)", description: "Nashik vineyard seedless table grapes, plump, sweet, perfectly hydrating, zero seeds", price: 120, category: "Fresh Fruits", brand: "Valley Fresh", ratings: 4.7, numOfReviews: 1123, stock: 400, images: [{ url: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=500&h=400&fit=crop" }] },
-  { _id: "28", name: "Fresh Pomegranate (1kg)", description: "Deep-red antioxidant-rich arils, premium quality, polyphenol-dense, sourced from Solapur farms", price: 200, category: "Fresh Fruits", brand: "Fruit Basket", ratings: 4.8, numOfReviews: 890, stock: 300, images: [{ url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&h=400&fit=crop" }] },
-  { _id: "29", name: "Papaya – Ripe (1 piece)", description: "Golden ripe ~1.2kg papaya, ready-to-eat, high vitamin C & digestive papain enzymes", price: 60, category: "Fresh Fruits", brand: "Tropical Fresh", ratings: 4.4, numOfReviews: 567, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=500&h=400&fit=crop" }] },
-  { _id: "30", name: "Watermelon – Whole (1 piece)", description: "Seedless sweet red flesh, summer staple, ~4–5kg, 92% water, naturally cooling & hydrating", price: 40, category: "Fresh Fruits", brand: "Farm Direct", ratings: 4.6, numOfReviews: 1234, stock: 100, images: [{ url: "https://images.unsplash.com/photo-1563114773-84221bd62daa?w=500&h=400&fit=crop" }] },
-  { _id: "31", name: "Fresh Strawberries (250g)", description: "Mahabaleshwar hill-station berries, deep red, sweet-tart, harvested at peak morning freshness", price: 150, category: "Fresh Fruits", brand: "Berry Fresh", ratings: 4.8, numOfReviews: 789, stock: 180, images: [{ url: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500&h=400&fit=crop" }] },
-  { _id: "32", name: "Kiwi Fruit (6 pieces)", description: "Fresh imported kiwi, vitamin K & C rich, tangy-sweet, great for smoothies, salads & desserts", price: 200, category: "Fresh Fruits", brand: "Exotic Fresh", ratings: 4.7, numOfReviews: 456, stock: 250, images: [{ url: "https://images.unsplash.com/photo-1585059895524-72359e06133a?w=500&h=400&fit=crop" }] },
-  { _id: "33", name: "Dragon Fruit – White (1 piece)", description: "Exotic pitaya ~300g, mild sweet kiwi-like flavour, magnesium, fibre & vitamin C rich", price: 80, category: "Fresh Fruits", brand: "Exotic Fresh", ratings: 4.5, numOfReviews: 345, stock: 150, images: [{ url: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=500&h=400&fit=crop" }] },
-  { _id: "34", name: "Fresh Pineapple (1 piece)", description: "Sweet-tangy tropical pineapple ~1.2kg, vitamin C & bromelain rich, farm-fresh daily delivery", price: 60, category: "Fresh Fruits", brand: "Tropical Fresh", ratings: 4.6, numOfReviews: 678, stock: 200, images: [{ url: "https://images.unsplash.com/photo-1490885578174-acda8905c2c6?w=500&h=400&fit=crop" }] }
-];
+  return {
+    ...p,
+    _id: String(p._id),
+    name,
+    title: name,
+    price,
+    costPrice: Number(p.costPrice || 0),
+    originalPrice,
+    comparePrice: originalPrice,
+    discount,
+    discountPercent: discount,
+    ratings,
+    numOfReviews,
+    imageUrl,
+    images: Array.isArray(p.images) && p.images.length > 0
+      ? p.images.map(img => typeof img === 'string' ? { url: img } : img)
+      : [{ url: imageUrl }],
+    stock: p.stock !== undefined ? Number(p.stock) : 0,
+    category: p.category || 'General',
+    brand: p.brand || 'ShopEase',
+    description: p.description || '',
+  };
+}
 
 /* ═══════════════════════════════════════════════════════════════
    INIT
@@ -293,12 +240,16 @@ function tickCountdown() {
 }
 
 function renderDealCards() {
-  const deals = mockProducts.filter(p => p.discount).slice(0, 8);
+  const deals = (allProducts || []).filter(p => (p.discount > 0 || (p.comparePrice && p.comparePrice > p.price))).slice(0, 8);
   const container = document.getElementById('dealCards');
   if (!container) return;
+  if (!deals.length) {
+    container.innerHTML = '<div style="color:var(--txt3);padding:20px;font-size:0.9rem;">Fresh deals updating soon!</div>';
+    return;
+  }
   container.innerHTML = deals.map(p => `
     <div class="deal-card" onclick="showProductDetails(${JSON.stringify(p).replace(/"/g, '&quot;')})">
-      <img src="${p.images[0].url}" alt="${p.name}"
+      <img src="${p.imageUrl || (p.images && p.images[0]?.url) || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop'}" alt="${p.name}"
            onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop'" />
       <div class="deal-card-name">${p.name}</div>
       <div class="deal-card-price">₹${p.price.toLocaleString('en-IN')}</div>
@@ -308,26 +259,42 @@ function renderDealCards() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   LOAD PRODUCTS
+   LOAD PRODUCTS (Live from MongoDB Backend API)
    ═══════════════════════════════════════════════════════════════ */
 async function loadProducts() {
+  const loadingEl = document.getElementById('loading');
   try {
-    document.getElementById('loading').style.display = 'flex';
-    if (USE_MOCK_DATA) {
-      allProducts = mockProducts;
-    } else {
-      const res = await fetch(`${API_URL}/products`);
-      const data = await res.json();
-      allProducts = (data.success && data.products) ? data.products : mockProducts;
-    }
+    if (loadingEl) loadingEl.style.display = 'flex';
+
+    const res = await fetch(`${API_URL}/products?limit=1000`);
+    const data = await res.json();
+    const raw = (data.success && data.products) ? data.products : (Array.isArray(data) ? data : []);
+
+    allProducts = raw.map(normalizeProduct);
     displayProducts(allProducts);
-    document.getElementById('productCount').textContent = `${allProducts.length} Products Found`;
-    document.getElementById('loading').style.display = 'none';
-  } catch {
-    allProducts = mockProducts;
+    renderDealCards();
+    updateDynamicCategories();
+
+    const countEl = document.getElementById('productCount');
+    if (countEl) countEl.textContent = `${allProducts.length} Products Found`;
+    if (loadingEl) loadingEl.style.display = 'none';
+  } catch (err) {
+    console.error('Error loading products from MongoDB:', err);
+    allProducts = [];
     displayProducts(allProducts);
-    document.getElementById('productCount').textContent = `${allProducts.length} Products (Demo Mode)`;
-    document.getElementById('loading').style.display = 'none';
+    const countEl = document.getElementById('productCount');
+    if (countEl) countEl.textContent = `0 Products (Connect API)`;
+    if (loadingEl) loadingEl.style.display = 'none';
+  }
+}
+
+function updateDynamicCategories() {
+  const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))].sort();
+  const searchCat = document.getElementById('searchCat');
+  if (searchCat && categories.length) {
+    const currentVal = searchCat.value;
+    searchCat.innerHTML = '<option value="">All Categories</option>' +
+      categories.map(c => `<option value="${c}" ${c === currentVal ? 'selected' : ''}>${c}</option>`).join('');
   }
 }
 
@@ -662,7 +629,7 @@ function sortProducts(list) {
   if (activeSortKey === 'price-low') sorted.sort((a, b) => a.price - b.price);
   if (activeSortKey === 'price-high') sorted.sort((a, b) => b.price - a.price);
   if (activeSortKey === 'rating') sorted.sort((a, b) => (b.ratings || 0) - (a.ratings || 0));
-  if (activeSortKey === 'newest') sorted.sort((a, b) => parseInt(b._id) - parseInt(a._id));
+  if (activeSortKey === 'newest') sorted.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0) || String(b._id).localeCompare(String(a._id)));
   displayProducts(sorted);
 }
 
@@ -882,6 +849,9 @@ function showAuthModal(type) {
         <p style="color:#888;font-size:.88rem;">${currentUser ? currentUser.email : ''}</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:12px;">
+        <a href="admin.html" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <i class="fas fa-crown"></i> Open Admin Panel
+        </a>
         <button onclick="closeAuthModal(); loadHome();" style="width:100%;padding:12px;background:#2874f0;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;">
           <i class="fas fa-home" style="margin-right:8px;"></i> Go to Home Page
         </button>

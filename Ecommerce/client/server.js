@@ -8,6 +8,10 @@ let PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.static(__dirname));
 
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

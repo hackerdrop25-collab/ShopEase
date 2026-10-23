@@ -172,9 +172,67 @@ const getOrderById = async (req, res) => {
   }
 };
 
+// GET ALL ORDERS (ADMIN)
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate('user', 'name email phone')
+      .populate('items.product')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      orders
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get all orders",
+      error: error.message
+    });
+  }
+};
+
+// UPDATE ORDER STATUS (ADMIN)
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderStatus, paymentStatus } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found"
+      });
+    }
+
+    if (orderStatus) order.orderStatus = orderStatus;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
+    if (orderStatus === 'Delivered') {
+      order.deliveredAt = new Date();
+    }
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order updated successfully",
+      order
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update order",
+      error: error.message
+    });
+  }
+};
 
 module.exports = {
   createOrder,
   getMyOrders,
-  getOrderById
+  getOrderById,
+  getAllOrders,
+  updateOrderStatus
 };

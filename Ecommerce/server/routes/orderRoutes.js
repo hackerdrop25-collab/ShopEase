@@ -5,11 +5,13 @@
 
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 const {
   createOrder,
   getMyOrders,
-  getOrderById
+  getOrderById,
+  getAllOrders,
+  updateOrderStatus,
 } = require('../controllers/orderController');
 
 // All order routes require authentication
@@ -17,6 +19,8 @@ router.use(protect);
 
 router.post('/', createOrder);
 router.get('/my', getMyOrders);
+router.get('/', authorize('admin'), getAllOrders);
+router.put('/:id/status', authorize('admin'), updateOrderStatus);
 router.get('/:id', getOrderById);
 
 module.exports = router;

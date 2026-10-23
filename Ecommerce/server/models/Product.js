@@ -77,6 +77,13 @@ const productSchema = new mongoose.Schema(
       min: [0, 'Compare price cannot be negative'],
     },
 
+    // Wholesale / Cost price (for profit and margin tracking)
+    costPrice: {
+      type: Number,
+      default: 0,
+      min: [0, 'Cost price cannot be negative'],
+    },
+
     stock: {
       type: Number,
       default: 0,
@@ -201,6 +208,19 @@ productSchema.virtual('discountPercent').get(function () {
 // ── Virtual: In Stock ─────────────────────────────────────────────────────────
 productSchema.virtual('inStock').get(function () {
   return this.stock > 0;
+});
+
+// ── Virtual: Profit per unit ──────────────────────────────────────────────────
+productSchema.virtual('profit').get(function () {
+  const cost = this.costPrice || 0;
+  return this.price > cost ? this.price - cost : 0;
+});
+
+// ── Virtual: Profit Margin Percentage ─────────────────────────────────────────
+productSchema.virtual('profitMargin').get(function () {
+  if (!this.price || this.price <= 0) return 0;
+  const cost = this.costPrice || 0;
+  return Math.round(((this.price - cost) / this.price) * 100);
 });
 
 // ── Pre-validate Hook: Sync name and title ──────────────────────────────────
