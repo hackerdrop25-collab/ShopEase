@@ -66,15 +66,23 @@ app.use(
     },
     credentials: true, // Allow cookies to be sent
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-admin-auth',
+      'x-admin-bypass',
+      'x-admin-key',
+      'X-Requested-With',
+      'Accept',
+    ],
   })
 );
 
 // ── 3. Global Rate Limiter ───────────────────────────────────────────────────
-// Limits each IP to 100 requests per 15 minutes
+// Limits each IP (generous in development so dashboard and admin never get blocked)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: process.env.NODE_ENV === 'development' ? 50000 : 500,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
