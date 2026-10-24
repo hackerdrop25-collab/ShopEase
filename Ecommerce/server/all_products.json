@@ -1,0 +1,1272 @@
+[
+  {
+    "_id": "6a9650cb872722f85b192cff",
+    "name": "Organic Shimla Red Apples",
+    "description": "Hand-picked directly from the high-altitude orchards of Shimla. Sweet, crunchy, and rich in natural antioxidants.",
+    "price": 180,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt1",
+        "url": "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&q=80",
+        "altText": "Shimla Red Apples"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d00",
+    "name": "Royal Gala Apples",
+    "description": "Imported crisp Royal Gala apples with sweet floral aroma, thin skin, and satisfying crunch.",
+    "price": 210,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt2",
+        "url": "https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?auto=format&fit=crop&w=600&q=80",
+        "altText": "Royal Gala Apples"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d01",
+    "name": "Green Packham Pears",
+    "description": "Butter-soft, aromatic green pears brimming with natural dietary fiber and refreshing juice.",
+    "price": 160,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt3",
+        "url": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
+        "altText": "Green Pears"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d02",
+    "name": "Ratnagiri Alphonso Mangoes",
+    "description": "King of Mangoes naturally tree-ripened without any chemicals or carbide. Rich golden flesh with unforgettable sweetness.",
+    "price": 1250,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt4",
+        "url": "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80",
+        "altText": "Alphonso Mangoes"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d03",
+    "name": "Organic Hass Avocados",
+    "description": "Nutrient-dense creamy Hass avocados packed with healthy heart fats, vitamin E, and potassium.",
+    "price": 240,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt5",
+        "url": "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&w=600&q=80",
+        "altText": "Hass Avocados"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d04",
+    "name": "Red Dragon Fruit",
+    "description": "Vibrant pitaya high in fiber, magnesium, and vitamin C with subtle sweet kiwi-like texture.",
+    "price": 220,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt6",
+        "url": "https://images.unsplash.com/photo-1527325678964-54921646f988?auto=format&fit=crop&w=600&q=80",
+        "altText": "Red Dragon Fruit"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d05",
+    "name": "Farm Fresh Mahabaleshwar Strawberries",
+    "description": "Deep red juicy strawberries harvested early morning to retain peak freshness and heavenly berry aroma.",
+    "price": 130,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt7",
+        "url": "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=600&q=80",
+        "altText": "Fresh Strawberries"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d06",
+    "name": "Nashik Green Seedless Grapes",
+    "description": "Plump seedless table grapes from Nashik vineyards. Bursting with natural sugars and refreshing hydration.",
+    "price": 90,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt8",
+        "url": "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=600&q=80",
+        "altText": "Green Seedless Grapes"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d07",
+    "name": "Nagpur Juicy Oranges",
+    "description": "Famous Nagpur oranges rich in immune-boosting Vitamin C, dietary fiber, and refreshing natural juice.",
+    "price": 110,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt9",
+        "url": "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=600&q=80",
+        "altText": "Nagpur Oranges"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d08",
+    "name": "Organic Red Pomegranate",
+    "description": "Deep red juicy pomegranate seeds loaded with powerful antioxidants, polyphenols, and iron.",
+    "price": 195,
+    "category": "Fresh Fruits",
+    "images": [
+      {
+        "public_id": "frt10",
+        "url": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
+        "altText": "Red Pomegranate"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d09",
+    "name": "Organic Farm Spinach (Palak)",
+    "description": "Tender green spinach leaves cultivated without synthetic pesticides. Rich in iron, folate, and essential vitamins.",
+    "price": 35,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg1",
+        "url": "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80",
+        "altText": "Organic Spinach"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d0a",
+    "name": "Hydroponic Romaine Lettuce",
+    "description": "Pesticide-free hydroponically grown Romaine lettuce with super crunchy leaves, ideal for fresh Caesar salads.",
+    "price": 65,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg2",
+        "url": "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&w=600&q=80",
+        "altText": "Romaine Lettuce"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d0b",
+    "name": "Farm Fresh Vine Tomatoes",
+    "description": "Sun-ripened red vine tomatoes cultivated organically. Juicy, tangy, and essential for every kitchen.",
+    "price": 45,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg3",
+        "url": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80",
+        "altText": "Vine Tomatoes"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d0c",
+    "name": "Organic Red Onions",
+    "description": "Firm, crisp Nashik red onions with sharp aroma and long shelf life. Grown using traditional compost methods.",
+    "price": 40,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg4",
+        "url": "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80",
+        "altText": "Red Onions"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d0d",
+    "name": "Farm New Crop Potatoes",
+    "description": "Smooth skinned, starchy golden potatoes direct from Punjab farms. Perfect for baking, frying, and curry.",
+    "price": 35,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg5",
+        "url": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80",
+        "altText": "Farm Potatoes"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d0e",
+    "name": "Trio Colored Bell Peppers",
+    "description": "Vibrant greenhouse grown capsicums packed with beta-carotene, crunchy texture, and sweet flavor.",
+    "price": 110,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg6",
+        "url": "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=600&q=80",
+        "altText": "Trio Bell Peppers"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d0f",
+    "name": "Fresh Broccoli Florets",
+    "description": "Compact green broccoli heads dense with vitamins K and C, sulforaphane, and plant nutrients.",
+    "price": 80,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg7",
+        "url": "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&w=600&q=80",
+        "altText": "Green Broccoli"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d10",
+    "name": "Button Mushrooms Pack",
+    "description": "Hygienically cultivated white button mushrooms, rich in selenium, vitamin D, and umami savory flavor.",
+    "price": 55,
+    "category": "Fresh Vegetables",
+    "images": [
+      {
+        "public_id": "veg8",
+        "url": "https://images.unsplash.com/photo-1504470695779-75300268aa0e?auto=format&fit=crop&w=600&q=80",
+        "altText": "Button Mushrooms"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d11",
+    "name": "High-Yield Hybrid Wheat Seeds",
+    "description": "Certified high-germination wheat seed variety with strong tillering capacity, rust resistance, and superior grain quality.",
+    "price": 450,
+    "category": "Seeds & Saplings",
+    "images": [
+      {
+        "public_id": "sed1",
+        "url": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80",
+        "altText": "Wheat Seeds"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d12",
+    "name": "Organic Vegetable Seed Starter Kit",
+    "description": "Includes Non-GMO seeds for Tomato, Spinach, Coriander, Chili, Cucumber, Brinjal, Radish, Beans & Capsicum with planting guide.",
+    "price": 299,
+    "category": "Seeds & Saplings",
+    "images": [
+      {
+        "public_id": "sed2",
+        "url": "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80",
+        "altText": "Vegetable Seed Kit"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d13",
+    "name": "Hybrid Cherry Tomato Seeds",
+    "description": "High yield indeterminate cherry tomato variety producing sweet mini fruits continuously over 6 months.",
+    "price": 149,
+    "category": "Seeds & Saplings",
+    "images": [
+      {
+        "public_id": "sed3",
+        "url": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80",
+        "altText": "Cherry Tomato Seeds"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d14",
+    "name": "Grafted Thai Guava Live Plant Sapling",
+    "description": "Fast fruiting high-density guava sapling producing large sweet crisp guavas weighing up to 500g each within 1 year.",
+    "price": 349,
+    "category": "Seeds & Saplings",
+    "images": [
+      {
+        "public_id": "sed4",
+        "url": "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=80",
+        "altText": "Guava Plant Sapling"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d15",
+    "name": "16 Litre Battery Powered Knapsack Sprayer",
+    "description": "Heavy-duty 12V 8Ah battery agricultural sprayer with stainless steel lance, 4 nozzle attachments, and 4-hour continuous spray.",
+    "price": 2499,
+    "category": "Farming Tools",
+    "images": [
+      {
+        "public_id": "tol1",
+        "url": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80",
+        "altText": "Battery Agricultural Sprayer"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d16",
+    "name": "Automatic Drip Irrigation Kit 50 Plants",
+    "description": "Water saving kit containing 16mm main line tube, adjustable drippers, T-connectors, water timer adapter, and stakes.",
+    "price": 899,
+    "category": "Farming Tools",
+    "images": [
+      {
+        "public_id": "tol2",
+        "url": "https://images.unsplash.com/photo-1590682680695-43b964a3ae17?auto=format&fit=crop&w=600&q=80",
+        "altText": "Drip Irrigation Kit"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d17",
+    "name": "Professional Japanese Steel Bypass Pruning Shears",
+    "description": "SK-5 high carbon steel blade secateurs with ergonomic non-slip handles for easy branch trimming and crop harvesting.",
+    "price": 499,
+    "category": "Farming Tools",
+    "images": [
+      {
+        "public_id": "tol3",
+        "url": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80",
+        "altText": "Pruning Shears"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d18",
+    "name": "3-in-1 Soil pH, Moisture & Sunlight Meter",
+    "description": "Battery-free dual probe meter instantly measures soil pH acidity, moisture level percentage, and sunlight intensity.",
+    "price": 399,
+    "category": "Farming Tools",
+    "images": [
+      {
+        "public_id": "tol4",
+        "url": "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80",
+        "altText": "Soil Meter"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d19",
+    "name": "Organic Vermicompost Bio-Fertilizer",
+    "description": "100% natural bio-fertilizer enriched with nitrogen, phosphorus, micro-nutrients, and beneficial soil microbes.",
+    "price": 249,
+    "category": "Farming Tools",
+    "images": [
+      {
+        "public_id": "tol5",
+        "url": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80",
+        "altText": "Vermicompost Bag"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d1a",
+    "name": "Pure A2 Gir Cow Desi Ghee",
+    "description": "Crafted from grass-fed Gir cows using traditional curd-churned Bilona method. Golden color, rich granular texture, and divine aroma.",
+    "price": 850,
+    "category": "Organic Staples",
+    "images": [
+      {
+        "public_id": "stp1",
+        "url": "https://images.unsplash.com/photo-1608686207856-001b95cf60ca?auto=format&fit=crop&w=600&q=80",
+        "altText": "A2 Desi Cow Ghee"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d1b",
+    "name": "Cold Pressed Mustard Oil",
+    "description": "Extracted in traditional wooden Chekku presses at low temperatures to preserve natural pungent aroma, omega-3, and antioxidants.",
+    "price": 240,
+    "category": "Organic Staples",
+    "images": [
+      {
+        "public_id": "stp2",
+        "url": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80",
+        "altText": "Cold Pressed Mustard Oil"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d1c",
+    "name": "Raw Sundarban Wild Forest Honey",
+    "description": "100% pure raw unpasteurized wild honey collected sustainably by forest tribes. Contains natural pollen, enzymes, and propolis.",
+    "price": 390,
+    "category": "Organic Staples",
+    "images": [
+      {
+        "public_id": "stp3",
+        "url": "https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=600&q=80",
+        "altText": "Raw Forest Honey"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d1d",
+    "name": "Organic Chemical-Free Jaggery Powder",
+    "description": "Made from fresh organic sugarcane juice without sulfur or chemical bleaching. Rich in natural iron and minerals.",
+    "price": 110,
+    "category": "Organic Staples",
+    "images": [
+      {
+        "public_id": "stp4",
+        "url": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
+        "altText": "Organic Jaggery Powder"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d1e",
+    "name": "Aged Traditional Basmati Rice",
+    "description": "Aged for 2 years for aromatic fragrance, slender double-length grains that stay fluffy and non-sticky after cooking.",
+    "price": 690,
+    "category": "Organic Staples",
+    "images": [
+      {
+        "public_id": "stp5",
+        "url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80",
+        "altText": "Aged Basmati Rice"
+      }
+    ]
+  },
+  {
+    "_id": "6a9650cb872722f85b192d1f",
+    "name": "Organic MP Sharbati Whole Wheat Atta",
+    "description": "Slow stone-milled flour made from golden MP Sharbati wheat. Produces soft, fluffy, nutrient-dense rotis.",
+    "price": 310,
+    "category": "Organic Staples",
+    "images": [
+      {
+        "public_id": "stp6",
+        "url": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80",
+        "altText": "Organic Sharbati Atta"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188a2",
+    "name": "Apple iPhone 15 Pro Max",
+    "description": "Latest iPhone with A17 Pro chip, 256GB storage, Titanium design, 48MP camera",
+    "price": 159900,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "iphone15pro",
+        "url": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188a5",
+    "name": "Samsung Galaxy S24 Ultra",
+    "description": "Flagship Android with 200MP camera, S Pen, 12GB RAM, 512GB storage",
+    "price": 129999,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "samsung-s24",
+        "url": "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188a8",
+    "name": "Dell XPS 15 Laptop",
+    "description": "Intel Core i7-13700H, 16GB RAM, 512GB SSD, 15.6\" 4K Display, NVIDIA RTX 4050",
+    "price": 154999,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "dell-xps",
+        "url": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188ab",
+    "name": "MacBook Air M3",
+    "description": "Apple M3 chip, 16GB RAM, 512GB SSD, 13.6\" Liquid Retina Display",
+    "price": 134900,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "macbook-air",
+        "url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188ae",
+    "name": "Sony WH-1000XM5 Headphones",
+    "description": "Premium noise-cancelling wireless headphones, 30hr battery, multipoint connection",
+    "price": 29990,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "sony-headphones",
+        "url": "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188b1",
+    "name": "Apple AirPods Pro (2nd Gen)",
+    "description": "Active noise cancellation, adaptive transparency, H2 chip, USB-C charging",
+    "price": 24900,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "airpods-pro",
+        "url": "https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188b4",
+    "name": "iPad Pro 12.9\" M2",
+    "description": "M2 chip, 128GB, Liquid Retina XDR display, Apple Pencil support",
+    "price": 119900,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "ipad-pro",
+        "url": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188b7",
+    "name": "Samsung 55\" 4K Smart TV",
+    "description": "Crystal UHD 4K, HDR, Smart Hub, Alexa built-in, 3 HDMI ports",
+    "price": 49990,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "samsung-tv",
+        "url": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188ba",
+    "name": "Canon EOS R6 Mark II",
+    "description": "24.2MP full-frame mirrorless camera, 4K 60fps video, in-body stabilization",
+    "price": 239990,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "canon-camera",
+        "url": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188bd",
+    "name": "PlayStation 5 Console",
+    "description": "Sony PS5 with DualSense controller, 825GB SSD, 4K gaming, ray tracing",
+    "price": 54990,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "ps5",
+        "url": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188c0",
+    "name": "Apple Watch Series 9",
+    "description": "GPS + Cellular, 45mm, fitness tracking, ECG, blood oxygen, always-on display",
+    "price": 49900,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "apple-watch",
+        "url": "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188c3",
+    "name": "JBL Flip 6 Bluetooth Speaker",
+    "description": "Portable waterproof speaker, 12hrs playtime, powerful bass, PartyBoost",
+    "price": 11999,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "jbl-speaker",
+        "url": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188c6",
+    "name": "GoPro HERO 12 Black",
+    "description": "5.3K60 video, HyperSmooth 6.0, waterproof, HDR photos, voice control",
+    "price": 44999,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "gopro",
+        "url": "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188c9",
+    "name": "Kindle Paperwhite Signature",
+    "description": "6.8\" display, 32GB, auto-adjusting light, wireless charging, waterproof",
+    "price": 17999,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "kindle",
+        "url": "https://images.unsplash.com/photo-1592359114411-e8f45450b1e7?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188cc",
+    "name": "Logitech MX Master 3S Mouse",
+    "description": "Wireless ergonomic mouse, 8K DPI, quiet clicks, USB-C charging",
+    "price": 9995,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "logitech-mouse",
+        "url": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188cf",
+    "name": "Levi's Men's 511 Slim Fit Jeans",
+    "description": "Classic slim fit jeans, 98% cotton 2% elastane, dark wash, comfortable stretch",
+    "price": 3499,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "levis-jeans",
+        "url": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188d2",
+    "name": "Nike Air Max 270 Running Shoes",
+    "description": "Men's running shoes with Max Air cushioning, breathable mesh, durable rubber sole",
+    "price": 12999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "nike-shoes",
+        "url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188d5",
+    "name": "Adidas Originals Hoodie",
+    "description": "Men's pullover hoodie, 70% cotton 30% polyester, Trefoil logo, kangaroo pocket",
+    "price": 4999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "adidas-hoodie",
+        "url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff96fd70465f7cf188d8",
+    "name": "Van Heusen Formal Shirt - White",
+    "description": "Men's slim fit formal shirt, 100% cotton, wrinkle-free, spread collar",
+    "price": 1599,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "formal-shirt",
+        "url": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188db",
+    "name": "Puma Women's Sports Bra",
+    "description": "High support sports bra, moisture-wicking fabric, removable padding, racerback",
+    "price": 1999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "sports-bra",
+        "url": "https://images.unsplash.com/photo-1588117305388-c2631a279f82?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188de",
+    "name": "Women's Designer Kurti - Blue",
+    "description": "Elegant printed kurti, soft cotton fabric, 3/4 sleeves, knee length",
+    "price": 1299,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "kurti",
+        "url": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188e1",
+    "name": "Women's Leather Handbag - Brown",
+    "description": "Genuine leather shoulder bag, multiple compartments, adjustable strap, zip closure",
+    "price": 3499,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "handbag",
+        "url": "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188e4",
+    "name": "Fastrack Analog Watch - Men",
+    "description": "Stainless steel watch, water resistant, date display, leather strap",
+    "price": 2499,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "fastrack-watch",
+        "url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188e7",
+    "name": "Ray-Ban Aviator Sunglasses",
+    "description": "Classic aviator style, UV protection, metal frame, gradient lenses",
+    "price": 7999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "rayban",
+        "url": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188ea",
+    "name": "Wildcraft Backpack 40L",
+    "description": "Hiking backpack, water resistant, multiple pockets, padded shoulder straps",
+    "price": 2999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "backpack",
+        "url": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188ed",
+    "name": "Men's Leather Belt - Black",
+    "description": "Genuine leather belt, reversible black/brown, metal buckle, 1.5\" width",
+    "price": 899,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "belt",
+        "url": "https://images.unsplash.com/photo-1553704571-c0b68eb1b0f7?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188f0",
+    "name": "Women's Yoga Pants - Black",
+    "description": "High waist yoga pants, 4-way stretch, moisture-wicking, squat-proof",
+    "price": 1499,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "yoga-pants",
+        "url": "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188f3",
+    "name": "Men's Formal Shoes - Brown",
+    "description": "Leather oxford shoes, cushioned insole, lace-up, perfect for office wear",
+    "price": 3999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "formal-shoes",
+        "url": "https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188f6",
+    "name": "Women's Summer Dress - Floral",
+    "description": "Flowy summer dress, sleeveless, V-neck, lightweight fabric, knee length",
+    "price": 1999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "summer-dress",
+        "url": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188f9",
+    "name": "Men's Winter Jacket - Navy",
+    "description": "Hooded winter jacket, water resistant, fleece lined, multiple pockets",
+    "price": 4999,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "winter-jacket",
+        "url": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188fc",
+    "name": "Philips Air Fryer HD9252/90",
+    "description": "Digital air fryer, 4.1L capacity, rapid air technology, 7 presets, dishwasher safe",
+    "price": 12999,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "air-fryer",
+        "url": "https://images.unsplash.com/photo-1585515320310-259814833e62?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf188ff",
+    "name": "Prestige Induction Cooktop",
+    "description": "2000W induction cooktop, touch panel, 8 preset menus, automatic shut-off",
+    "price": 3299,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "induction",
+        "url": "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18902",
+    "name": "Pigeon Electric Kettle 1.5L",
+    "description": "Stainless steel electric kettle, 1500W, auto shut-off, boil-dry protection",
+    "price": 899,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "kettle",
+        "url": "https://images.unsplash.com/photo-1585571103784-5c9c1a26d9f4?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18905",
+    "name": "Milton Thermosteel Water Bottle 1L",
+    "description": "Insulated steel bottle, keeps water cold/hot for 24hrs, leak-proof",
+    "price": 699,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "water-bottle",
+        "url": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18908",
+    "name": "Hawkins Pressure Cooker 5L",
+    "description": "Aluminum pressure cooker, 5 liters, ISI certified, includes gasket and weight",
+    "price": 1999,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "pressure-cooker",
+        "url": "https://images.unsplash.com/photo-1584990347449-39c5e2d41a74?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1890b",
+    "name": "Bajaj Mixer Grinder 750W",
+    "description": "3 jars mixer grinder, stainless steel blades, overload protection, 2-year warranty",
+    "price": 4499,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "mixer-grinder",
+        "url": "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1890e",
+    "name": "Cello Executive Lunch Box",
+    "description": "4-container lunch box, microwave safe, leak-proof, insulated bag included",
+    "price": 599,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "lunch-box",
+        "url": "https://images.unsplash.com/photo-1547558840-8ad6e0a6fa4f?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18911",
+    "name": "Borosil Glass Dinner Set 27-Piece",
+    "description": "Opal glass dinner set, microwave & dishwasher safe, break resistant",
+    "price": 3999,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "dinner-set",
+        "url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18914",
+    "name": "Amazon Basics Non-Stick Cookware Set",
+    "description": "7-piece cookware set, non-stick coating, induction compatible, soft-touch handles",
+    "price": 2999,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "cookware-set",
+        "url": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18917",
+    "name": "Eureka Forbes Vacuum Cleaner",
+    "description": "1400W vacuum cleaner, HEPA filter, 20L capacity, blower function, 2-year warranty",
+    "price": 8999,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "vacuum-cleaner",
+        "url": "https://images.unsplash.com/photo-1558317374-067fb43f03a0?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1891a",
+    "name": "Solimo Cotton Bath Towels (Pack of 4)",
+    "description": "100% cotton bath towels, 500 GSM, quick-dry, fade resistant, machine washable",
+    "price": 1299,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "towels",
+        "url": "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1891d",
+    "name": "Lifelong Iron Box 1000W",
+    "description": "Dry iron, non-stick coated soleplate, thermal fuse protection, 1-year warranty",
+    "price": 499,
+    "category": "Home & Kitchen",
+    "images": [
+      {
+        "public_id": "iron",
+        "url": "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18920",
+    "name": "Rich Dad Poor Dad - Robert Kiyosaki",
+    "description": "Personal finance classic, teaches financial literacy and wealth building strategies",
+    "price": 399,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "rich-dad",
+        "url": "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18923",
+    "name": "Atomic Habits - James Clear",
+    "description": "Proven framework for improving habits, breaking bad ones, and mastering tiny behaviors",
+    "price": 499,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "atomic-habits",
+        "url": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18926",
+    "name": "Think and Grow Rich - Napoleon Hill",
+    "description": "Timeless classic on success philosophy and personal achievement",
+    "price": 299,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "think-grow-rich",
+        "url": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18929",
+    "name": "The Power of Your Subconscious Mind",
+    "description": "Dr. Joseph Murphy's guide to unlocking the power of your subconscious mind",
+    "price": 199,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "subconscious-mind",
+        "url": "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1892c",
+    "name": "Sapiens - Yuval Noah Harari",
+    "description": "A brief history of humankind from Stone Age to modern era",
+    "price": 599,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "sapiens",
+        "url": "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1892f",
+    "name": "The Alchemist - Paulo Coelho",
+    "description": "Magical story of Santiago, an Andalusian shepherd boy who yearns to travel",
+    "price": 350,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "alchemist",
+        "url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18932",
+    "name": "Deep Work - Cal Newport",
+    "description": "Rules for focused success in a distracted world, master concentration",
+    "price": 450,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "deep-work",
+        "url": "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18935",
+    "name": "The 5 AM Club - Robin Sharma",
+    "description": "Own your morning, elevate your life with early rising and peak productivity",
+    "price": 399,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "5am-club",
+        "url": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18938",
+    "name": "The Psychology of Money - Morgan Housel",
+    "description": "Timeless lessons on wealth, greed, and happiness from behavioral finance",
+    "price": 349,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "psychology-money",
+        "url": "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1893b",
+    "name": "Harry Potter Complete Collection (7 Books)",
+    "description": "Complete box set of all 7 Harry Potter books by J.K. Rowling",
+    "price": 4999,
+    "category": "Books",
+    "images": [
+      {
+        "public_id": "harry-potter",
+        "url": "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1893e",
+    "name": "Yoga Mat Premium 6mm with Bag",
+    "description": "Anti-slip yoga mat, eco-friendly TPE material, reversible, includes carrying bag",
+    "price": 999,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "yoga-mat",
+        "url": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18941",
+    "name": "Dumbbells Set 10kg (5kg x 2)",
+    "description": "Rubber-coated dumbbells, hexagonal shape prevents rolling, textured grip",
+    "price": 1899,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "dumbbells",
+        "url": "https://images.unsplash.com/photo-1638805981949-cbdef99c20b5?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18944",
+    "name": "Resistance Bands Set (5 Bands)",
+    "description": "Exercise resistance bands, varying resistance levels, includes door anchor and handles",
+    "price": 699,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "resistance-bands",
+        "url": "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18947",
+    "name": "Cosco Cricket Bat Kashmir Willow",
+    "description": "Kashmir willow cricket bat, full size, pre-treated blade, rubber grip",
+    "price": 1499,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "cricket-bat",
+        "url": "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1894a",
+    "name": "Nivia Storm Football Size 5",
+    "description": "Professional football, PU construction, butyl bladder, FIFA quality",
+    "price": 899,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "football",
+        "url": "https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aae?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf1894d",
+    "name": "Yonex Badminton Racket - Nanoray Series",
+    "description": "Lightweight badminton racket, graphite frame, isometric head, includes cover",
+    "price": 2999,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "badminton-racket",
+        "url": "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18950",
+    "name": "Skipping Rope with Counter",
+    "description": "Adjustable jump rope, digital counter, foam handles, tangle-free ball bearings",
+    "price": 349,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "skipping-rope",
+        "url": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adaff97fd70465f7cf18953",
+    "name": "Gym Bag Sports Duffle 40L",
+    "description": "Large gym bag, water-resistant, multiple compartments, shoe compartment, adjustable strap",
+    "price": 1299,
+    "category": "Sports & Fitness",
+    "images": [
+      {
+        "public_id": "gym-bag",
+        "url": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"
+      }
+    ]
+  },
+  {
+    "_id": "6adb032321bf0ffe2ab1410b",
+    "name": "Quantum Cyber Drone 4K",
+    "description": "AI-powered autonomous drone with 4K HDR camera and 40 min flight time.",
+    "price": 42999,
+    "category": "Electronics",
+    "images": [
+      {
+        "public_id": "prod_1792738083866",
+        "url": "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=500",
+        "altText": "Quantum Cyber Drone 4K"
+      }
+    ]
+  },
+  {
+    "_id": "6adb0519de3e50575f30ed18",
+    "name": "Titan Mechanical Green Dial Watch",
+    "description": "Titan mechanical watch with green dial, brown leather strap, and transparent back cover.",
+    "price": 1000,
+    "category": "Fashion",
+    "images": [
+      {
+        "public_id": "prod_1792738585961",
+        "url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
+        "altText": "Titan Mechanical Green Dial Watch"
+      }
+    ]
+  }
+]
