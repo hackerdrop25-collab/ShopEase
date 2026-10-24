@@ -1,6 +1,7 @@
 /**
  * ShopEase - Comprehensive Product Seed Data
  * 50+ Products across all categories with real prices in Indian Rupees (₹)
+ * Each product now has 2-3 images with public_id, url, and altText
  */
 
 const products = [
@@ -11,7 +12,11 @@ const products = [
     price: 159900,
     category: "Electronics",
     stock: 25,
-    images: [{ public_id: "iphone15pro", url: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500" }],
+    images: [
+      { public_id: "iphone15pro_1", url: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500", altText: "iPhone 15 Pro Max - Front view" },
+      { public_id: "iphone15pro_2", url: "https://images.unsplash.com/photo-1696439796704-c0e753e3e3b5?w=500", altText: "iPhone 15 Pro Max - Back camera" },
+      { public_id: "iphone15pro_3", url: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500", altText: "iPhone 15 Pro Max - Side profile" }
+    ],
     brand: "Apple",
     ratings: 4.9,
     numOfReviews: 1245
