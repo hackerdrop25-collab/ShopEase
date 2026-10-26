@@ -121,7 +121,7 @@ exports.createProduct = async (req, res, next) => {
     } else if (!payload.images || payload.images.length === 0) {
       payload.images = [{
         public_id: `prod_default`,
-        url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=400&fit=crop',
+        url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop',
         altText: payload.name || 'Product Image',
       }];
     }

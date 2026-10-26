@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audit Catalog Images</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 20px; }
+    h1 { margin-bottom: 20px; font-size: 22px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .card { background: #1e293b; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
+    .img-wrap { width: 100%; height: 180px; background: #000; }
+    img { width: 100%; height: 100%; object-fit: cover; }
+    .info { padding: 10px; }
+    .title { font-size: 13px; font-weight: bold; margin-bottom: 4px; }
+    .desc { font-size: 11px; color: #94a3b8; }
+    .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; background: #3b82f6; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Audit Images Test</h1>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const items = [
+      {
+        tag: 'Sports & Fitness',
+        name: 'Nivia Storm Football Size 5',
+        desc: 'Professional football PU construction',
+        img: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500'
+      },
+      {
+        tag: 'Sports & Fitness',
+        name: 'Dumbbells Set 10kg (5kg x 2)',
+        desc: 'Rubber-coated hexagonal dumbbells',
+        img: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=500'
+      },
+      {
+        tag: 'Sports & Fitness',
+        name: 'Cosco Cricket Bat Kashmir Willow',
+        desc: 'Full size wooden cricket bat',
+        img: 'https://images.unsplash.com/photo-1593766788306-28561086694e?w=500'
+      },
+      {
+        tag: 'Sports & Fitness',
+        name: 'Yonex Badminton Racket - Nanoray Series',
+        desc: 'Badminton racket with shuttlecock',
+        img: 'https://images.unsplash.com/photo-1613918108466-292b78a8ef95?w=500'
+      },
+      {
+        tag: 'Sports & Fitness',
+        name: 'Resistance Bands Set (5 Bands)',
+        desc: 'Exercise resistance workout bands',
+        img: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500'
+      },
+      {
+        tag: 'Sports & Fitness',
+        name: 'Skipping Rope with Counter',
+        desc: 'Adjustable jump rope with handles',
+        img: 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=500'
+      },
+      {
+        tag: 'Sports & Fitness',
+        name: 'Gym Bag Sports Duffle 40L',
+        desc: 'Sports duffle gym bag',
+        img: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500'
+      },
+      {
+        tag: 'Sports & Fitness',
+        name: 'Yoga Mat Premium 6mm with Bag',
+        desc: 'Anti-slip yoga mat',
+        img: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500'
+      },
+      {
+        tag: 'Books',
+        name: 'Harry Potter Complete Collection (7 Books)',
+        desc: 'Complete box set of Harry Potter',
+        img: 'https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=500'
+      },
+      {
+        tag: 'Books',
+        name: 'The Psychology of Money - Morgan Housel',
+        desc: 'Lessons on wealth, greed, and happiness',
+        img: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500'
+      },
+      {
+        tag: 'Fashion',
+        name: 'Fastrack Analog Watch - Men',
+        desc: 'Stainless steel analog wrist watch leather strap',
+        img: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500'
+      },
+      {
+        tag: 'Fashion',
+        name: 'Men Leather Belt - Black',
+        desc: 'Genuine leather belt with metal buckle',
+        img: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=500'
+      },
+      {
+        tag: 'Home & Kitchen',
+        name: 'Pigeon Electric Kettle 1.5L',
+        desc: 'Stainless steel electric kettle',
+        img: 'https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?w=500'
+      },
+      {
+        tag: 'Home & Kitchen',
+        name: 'Hawkins Pressure Cooker 5L',
+        desc: 'Stainless steel pressure cooker',
+        img: 'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500'
+      },
+      {
+        tag: 'Home & Kitchen',
+        name: 'Cello Executive Lunch Box',
+        desc: 'Multi-container lunch box',
+        img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500'
+      },
+      {
+        tag: 'Home & Kitchen',
+        name: 'Eureka Forbes Vacuum Cleaner',
+        desc: 'Vacuum cleaner appliance',
+        img: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=500'
+      },
+      {
+        tag: 'Electronics',
+        name: 'Kindle Paperwhite Signature',
+        desc: '6.8 inch e-reader display',
+        img: 'https://images.unsplash.com/photo-1544717302-de2939b7ef71?w=500'
+      }
+    ];
+
+    document.getElementById('grid').innerHTML = items.map(it => `
+      <div class="card">
+        <div class="img-wrap">
+          <img src="${it.img}" alt="${it.name}" onerror="this.style.background='red'" />
+        </div>
+        <div class="info">
+          <span class="tag">${it.tag}</span>
+          <div class="title">${it.name}</div>
+          <div class="desc">${it.desc}</div>
+        </div>
+      </div>
+    `).join('');
+  </script>
+</body>
+</html>

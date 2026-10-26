@@ -120,7 +120,7 @@ async function setup() {
           images: seedItem.images && seedItem.images.length > 0 ? seedItem.images : [
             {
               public_id: `prod_${Date.now()}`,
-              url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500',
+              url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
               altText: seedItem.name,
             },
           ],
@@ -130,6 +130,16 @@ async function setup() {
 
         await Product.create(newProd);
         addedCount++;
+      } else {
+        // Sync images and description to match latest catalog
+        if (seedItem.images && seedItem.images.length > 0) {
+          exists.images = seedItem.images;
+          exists.imageUrl = seedItem.images[0].url;
+        }
+        if (seedItem.description) {
+          exists.description = seedItem.description;
+        }
+        await exists.save();
       }
     }
 

@@ -5,10 +5,20 @@
 const API_URL = 'http://localhost:5000/api';
 const USE_MOCK_DATA = false;
 
-let cart = JSON.parse(localStorage.getItem('shopease_cart')) || [];
-let wishlist = JSON.parse(localStorage.getItem('shopease_wishlist')) || [];
+function safeGetStorage(key, fallback) {
+  try {
+    const val = localStorage.getItem(key);
+    return val ? JSON.parse(val) : fallback;
+  } catch (err) {
+    console.warn(`Error reading localStorage for key "${key}":`, err);
+    return fallback;
+  }
+}
+
+let cart = safeGetStorage('shopease_cart', []);
+let wishlist = safeGetStorage('shopease_wishlist', []);
 let allProducts = [];
-let currentUser = JSON.parse(localStorage.getItem('shopease_user')) || null;
+let currentUser = safeGetStorage('shopease_user', null);
 let activeSortKey = 'popularity';
 let countdownTarget = null;
 
@@ -24,6 +34,26 @@ function getAuthHeaders() {
    ═══════════════════════════════════════════════════════════════ */
 const mockProducts = [];
 
+function getProductFallbackImage(category) {
+  const cat = (category || '').toLowerCase();
+  if (cat.includes('sport') || cat.includes('fitness')) {
+    return 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500';
+  }
+  if (cat.includes('book')) {
+    return 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500';
+  }
+  if (cat.includes('kitchen') || cat.includes('home')) {
+    return 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500';
+  }
+  if (cat.includes('fashion') || cat.includes('cloth') || cat.includes('wear') || cat.includes('shoe')) {
+    return 'https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=500';
+  }
+  if (cat.includes('fruit') || cat.includes('veg') || cat.includes('staple') || cat.includes('seed')) {
+    return 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=500';
+  }
+  return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500';
+}
+
 /* ═══════════════════════════════════════════════════════════════
    LIVE PRODUCT NORMALIZER (Full MongoDB Schema Support)
    ═══════════════════════════════════════════════════════════════ */
@@ -35,9 +65,12 @@ function normalizeProduct(p) {
   const ratings = Number(p.ratings || p.rating || 4.7);
   const numOfReviews = Number(p.numOfReviews || p.numReviews || 120);
 
-  let imageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+  const fallback = getProductFallbackImage(p.category);
+  let imageUrl = fallback;
   if (p.images && p.images.length > 0) {
-    imageUrl = typeof p.images[0] === 'string' ? p.images[0] : (p.images[0].url || imageUrl);
+    imageUrl = typeof p.images[0] === 'string' ? p.images[0] : (p.images[0].url || fallback);
+  } else if (p.imageUrl) {
+    imageUrl = p.imageUrl;
   }
 
   return {
@@ -67,27 +100,48 @@ function normalizeProduct(p) {
 /* ═══════════════════════════════════════════════════════════════
    INIT
    ═══════════════════════════════════════════════════════════════ */
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    const loader = document.getElementById('loadingScreen');
-    if (loader) loader.classList.add('hidden');
+function hideLoaderAndPromptAuth() {
+  const loader = document.getElementById('loadingScreen');
+  if (loader) loader.classList.add('hidden');
+
+  const path = (window.location.pathname || '').toLowerCase();
+  const hash = (window.location.hash || '').toLowerCase();
+
+  if (path.includes('login') || hash.includes('login')) {
+    showAuthModal('login');
+  } else if (path.includes('register') || hash.includes('register')) {
+    showAuthModal('register');
+  } else if (!currentUser) {
     // Prompt sign in first on app startup if user is not signed in
-    if (!currentUser) {
-      showAuthModal('login');
-    }
-  }, 1500);
-  initExponentialCanvas();
-  initTheme();
-  loadProducts();
-  updateCartCount();
-  updateWishlistCount();
-  updateOrdersCount();
-  updateUserUI();
-  initSlider();
-  initCountdown();
-  setupScrollEffects();
-  setupSearchEnter();
-});
+    showAuthModal('login');
+  }
+}
+
+function initApp() {
+  setTimeout(hideLoaderAndPromptAuth, 1000);
+
+  const safeInit = (fn, name) => {
+    try { fn(); } catch (err) { console.warn(`Error during ${name}:`, err); }
+  };
+
+  safeInit(initExponentialCanvas, 'initExponentialCanvas');
+  safeInit(initTheme, 'initTheme');
+  safeInit(loadProducts, 'loadProducts');
+  safeInit(updateCartCount, 'updateCartCount');
+  safeInit(updateWishlistCount, 'updateWishlistCount');
+  safeInit(updateOrdersCount, 'updateOrdersCount');
+  safeInit(updateUserUI, 'updateUserUI');
+  safeInit(initSlider, 'initSlider');
+  safeInit(initCountdown, 'initCountdown');
+  safeInit(setupScrollEffects, 'setupScrollEffects');
+  safeInit(setupSearchEnter, 'setupSearchEnter');
+}
+
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 /* ═══════════════════════════════════════════════════════════════
    EXPONENTIAL CANVAS & THEME ENGINE
@@ -247,15 +301,18 @@ function renderDealCards() {
     container.innerHTML = '<div style="color:var(--txt3);padding:20px;font-size:0.9rem;">Fresh deals updating soon!</div>';
     return;
   }
-  container.innerHTML = deals.map(p => `
+  container.innerHTML = deals.map(p => {
+    const fb = getProductFallbackImage(p.category);
+    const img = p.imageUrl || (p.images && p.images[0]?.url) || fb;
+    return `
     <div class="deal-card" onclick="showProductDetails(${JSON.stringify(p).replace(/"/g, '&quot;')})">
-      <img src="${p.imageUrl || (p.images && p.images[0]?.url) || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop'}" alt="${p.name}"
-           onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop'" />
+      <img src="${img}" alt="${p.name}" onerror="this.src='${fb}'" />
       <div class="deal-card-name">${p.name}</div>
       <div class="deal-card-price">₹${p.price.toLocaleString('en-IN')}</div>
       <span class="deal-card-disc">${p.discount}% OFF</span>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -318,7 +375,8 @@ function displayProducts(products) {
     card.className = 'product-card';
     card.style.animationDelay = `${index * 0.04}s`;
 
-    const imageUrl = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=400&fit=crop';
+    const fb = getProductFallbackImage(product.category);
+    const imageUrl = product.images?.[0]?.url || product.imageUrl || fb;
     const inStock = product.stock > 0;
     const inWish = wishlist.some(w => w._id === product._id);
     const hasDisc = product.discount && product.originalPrice;
@@ -326,7 +384,7 @@ function displayProducts(products) {
     card.innerHTML = `
       <div class="pc-img-wrap">
         <img src="${imageUrl}" alt="${product.name}" loading="lazy"
-             onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=400&fit=crop'" />
+             onerror="this.src='${fb}'" />
         ${hasDisc ? `<span class="pc-badge">${product.discount}% OFF</span>` : (inStock ? `<span class="pc-badge" style="background:linear-gradient(135deg,var(--accent-emerald),var(--primary));">In Stock</span>` : '')}
         <button class="pc-wishlist ${inWish ? 'active' : ''}"
                 onclick="event.stopPropagation(); toggleWishlist('${product._id}')">
@@ -373,7 +431,8 @@ function displayProducts(products) {
 function showProductDetails(product) {
   const modal = document.getElementById('productModal');
   const body = document.getElementById('modalBody');
-  const imageUrl = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=500&fit=crop';
+  const fb = getProductFallbackImage(product.category);
+  const imageUrl = product.images?.[0]?.url || product.imageUrl || fb;
   const inStock = product.stock > 0;
   const hasDisc = product.discount && product.originalPrice;
   const inWish = wishlist.some(w => w._id === product._id);
@@ -382,7 +441,7 @@ function showProductDetails(product) {
     <div class="pd-wrap">
       <div class="pd-img-col">
         <img src="${imageUrl}" alt="${product.name}"
-             onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=500&fit=crop'" />
+             onerror="this.src='${fb}'" />
       </div>
       <div class="pd-info-col">
         <span class="pd-cat">${product.category}</span>
@@ -498,11 +557,12 @@ function showCart() {
       if (item.discount && item.originalPrice) {
         totalSavings += (item.originalPrice - item.price) * item.quantity;
       }
+      const fb = getProductFallbackImage(item.category);
       const div = document.createElement('div');
       div.className = 'cart-item';
       div.innerHTML = `
-        <img src="${item.images?.[0]?.url || ''}" alt="${item.name}"
-             onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=90&h=90&fit=crop'" />
+        <img src="${item.images?.[0]?.url || item.imageUrl || fb}" alt="${item.name}"
+             onerror="this.src='${fb}'" />
         <div class="ci-details">
           <div class="ci-title">${item.name}</div>
           <div class="ci-price">₹${item.price.toLocaleString('en-IN')}</div>
@@ -1734,9 +1794,12 @@ function renderOrdersList(filter = 'all') {
 
     const isUPI = (order.paymentMethod || '').includes('UPI');
 
-    const itemsHtml = (order.items || []).map(item => `
+    const itemsHtml = (order.items || []).map(item => {
+      const fb = getProductFallbackImage(item.category);
+      const itemImg = item.images?.[0]?.url || item.imageUrl || fb;
+      return `
       <div class="order-item-row">
-        <img src="${item.images?.[0]?.url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop'}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop'" />
+        <img src="${itemImg}" alt="${item.name}" onerror="this.src='${fb}'" />
         <div class="oir-info">
           <div class="oir-title">${item.name}</div>
           <div class="oir-meta"><span style="color:var(--primary);font-weight:700;">${item.category}</span> • Qty: <strong>${item.quantity}</strong></div>
@@ -1746,7 +1809,8 @@ function renderOrdersList(filter = 'all') {
           <small style="color:var(--txt3);font-size:.75rem;font-weight:500;">₹${item.price.toLocaleString('en-IN')} each</small>
         </div>
       </div>
-    `).join('');
+      `;
+    }).join('');
 
     return `
       <div class="order-card" id="order-card-${order.id}">

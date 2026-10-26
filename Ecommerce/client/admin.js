@@ -173,6 +173,16 @@ async function fetchOrders() {
 }
 
 // ── NORMALIZATION HELPER ─────────────────────────────────────────────
+function getAdminFallbackImage(category) {
+  const cat = (category || '').toLowerCase();
+  if (cat.includes('sport') || cat.includes('fitness')) return 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500';
+  if (cat.includes('book')) return 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500';
+  if (cat.includes('kitchen') || cat.includes('home')) return 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500';
+  if (cat.includes('fashion') || cat.includes('cloth') || cat.includes('wear')) return 'https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=500';
+  if (cat.includes('fruit') || cat.includes('veg') || cat.includes('staple')) return 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=500';
+  return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500';
+}
+
 function normalizeAdminProduct(p) {
   const name = p.name || p.title || 'Untitled Product';
   const price = Number(p.price) || 0;
@@ -182,9 +192,12 @@ function normalizeAdminProduct(p) {
   const unitProfit = Math.max(0, price - costPrice);
   const margin = price > 0 ? Math.round((unitProfit / price) * 100) : 0;
 
-  let imageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+  const fallback = getAdminFallbackImage(p.category);
+  let imageUrl = fallback;
   if (p.images && p.images.length > 0) {
-    imageUrl = typeof p.images[0] === 'string' ? p.images[0] : (p.images[0].url || imageUrl);
+    imageUrl = typeof p.images[0] === 'string' ? p.images[0] : (p.images[0].url || fallback);
+  } else if (p.imageUrl) {
+    imageUrl = p.imageUrl;
   }
 
   return {
@@ -433,7 +446,7 @@ function renderProductsTable(products) {
       <tr>
         <td>
           <div class="prod-thumb-cell">
-            <img class="prod-thumb" src="${p.imageUrl}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100'" />
+            <img class="prod-thumb" src="${p.imageUrl}" alt="${p.name}" onerror="this.src='${getAdminFallbackImage(p.category)}'" />
             <div>
               <div class="prod-meta-name">${p.name}</div>
               <div class="prod-meta-brand">${p.brand}</div>
@@ -495,7 +508,7 @@ function renderStockTable(products) {
       <tr>
         <td>
           <div class="prod-thumb-cell">
-            <img class="prod-thumb" src="${p.imageUrl}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100'" />
+            <img class="prod-thumb" src="${p.imageUrl}" alt="${p.name}" onerror="this.src='${getAdminFallbackImage(p.category)}'" />
             <div class="prod-meta-name">${p.name}</div>
           </div>
         </td>
@@ -708,7 +721,7 @@ async function handleCreateProduct(e) {
 
   // If user entered a webpage link or non-image URL, use a clean product image fallback
   if (!imageUrl || (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) || imageUrl.includes('.html') || (imageUrl.includes('/product/') && !imageUrl.includes('.jpg') && !imageUrl.includes('.png') && !imageUrl.includes('unsplash'))) {
-    imageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+    imageUrl = getAdminFallbackImage(category);
   }
 
   try {
@@ -940,7 +953,7 @@ function previewImage(inputId, previewId) {
   const preview = document.getElementById(previewId);
   if (preview && url) {
     preview.onerror = () => {
-      preview.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+      preview.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500';
     };
     preview.src = url;
   }

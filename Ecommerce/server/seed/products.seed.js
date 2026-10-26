@@ -159,7 +159,7 @@ const products = [
     price: 17999,
     category: "Electronics",
     stock: 200,
-    images: [{ public_id: "kindle", url: "https://images.unsplash.com/photo-1592359114411-e8f45450b1e7?w=500" }],
+    images: [{ public_id: "kindle", url: "https://images.unsplash.com/photo-1544717302-de2939b7ef71?w=500" }],
     brand: "Amazon",
     ratings: 4.6,
     numOfReviews: 2345
@@ -260,7 +260,7 @@ const products = [
     price: 2499,
     category: "Fashion",
     stock: 180,
-    images: [{ public_id: "fastrack-watch", url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" }],
+    images: [{ public_id: "fastrack-watch", url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500" }],
     brand: "Fastrack",
     ratings: 4.3,
     numOfReviews: 1234
@@ -293,7 +293,7 @@ const products = [
     price: 899,
     category: "Fashion",
     stock: 300,
-    images: [{ public_id: "belt", url: "https://images.unsplash.com/photo-1553704571-c0b68eb1b0f7?w=500" }],
+    images: [{ public_id: "belt", url: "https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=500" }],
     brand: "Park Avenue",
     ratings: 4.4,
     numOfReviews: 456
@@ -372,7 +372,7 @@ const products = [
     price: 899,
     category: "Home & Kitchen",
     stock: 200,
-    images: [{ public_id: "kettle", url: "https://images.unsplash.com/photo-1585571103784-5c9c1a26d9f4?w=500" }],
+    images: [{ public_id: "kettle", url: "https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?w=500" }],
     brand: "Pigeon",
     ratings: 4.3,
     numOfReviews: 678
@@ -394,7 +394,7 @@ const products = [
     price: 1999,
     category: "Home & Kitchen",
     stock: 180,
-    images: [{ public_id: "pressure-cooker", url: "https://images.unsplash.com/photo-1584990347449-39c5e2d41a74?w=500" }],
+    images: [{ public_id: "pressure-cooker", url: "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500" }],
     brand: "Hawkins",
     ratings: 4.7,
     numOfReviews: 1567
@@ -416,7 +416,7 @@ const products = [
     price: 599,
     category: "Home & Kitchen",
     stock: 300,
-    images: [{ public_id: "lunch-box", url: "https://images.unsplash.com/photo-1547558840-8ad6e0a6fa4f?w=500" }],
+    images: [{ public_id: "lunch-box", url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500" }],
     brand: "Cello",
     ratings: 4.2,
     numOfReviews: 567
@@ -449,7 +449,7 @@ const products = [
     price: 8999,
     category: "Home & Kitchen",
     stock: 60,
-    images: [{ public_id: "vacuum-cleaner", url: "https://images.unsplash.com/photo-1558317374-067fb43f03a0?w=500" }],
+    images: [{ public_id: "vacuum-cleaner", url: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=500" }],
     brand: "Eureka Forbes",
     ratings: 4.5,
     numOfReviews: 456
@@ -572,7 +572,7 @@ const products = [
     price: 349,
     category: "Books",
     stock: 280,
-    images: [{ public_id: "psychology-money", url: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500" }],
+    images: [{ public_id: "psychology-money", url: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500" }],
     brand: "Jaico",
     ratings: 4.8,
     numOfReviews: 2345
@@ -583,7 +583,7 @@ const products = [
     price: 4999,
     category: "Books",
     stock: 80,
-    images: [{ public_id: "harry-potter", url: "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=500" }],
+    images: [{ public_id: "harry-potter", url: "https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=500" }],
     brand: "Bloomsbury",
     ratings: 4.9,
     numOfReviews: 7890
@@ -607,7 +607,7 @@ const products = [
     price: 1899,
     category: "Sports & Fitness",
     stock: 150,
-    images: [{ public_id: "dumbbells", url: "https://images.unsplash.com/photo-1638805981949-cbdef99c20b5?w=500" }],
+    images: [{ public_id: "dumbbells", url: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=500" }],
     brand: "Kore",
     ratings: 4.6,
     numOfReviews: 567
@@ -618,7 +618,7 @@ const products = [
     price: 699,
     category: "Sports & Fitness",
     stock: 250,
-    images: [{ public_id: "resistance-bands", url: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=500" }],
+    images: [{ public_id: "resistance-bands", url: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500" }],
     brand: "Boldfit",
     ratings: 4.3,
     numOfReviews: 678
@@ -629,7 +629,7 @@ const products = [
     price: 1499,
     category: "Sports & Fitness",
     stock: 100,
-    images: [{ public_id: "cricket-bat", url: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500" }],
+    images: [{ public_id: "cricket-bat", url: "https://images.unsplash.com/photo-1593766788306-28561086694e?w=500" }],
     brand: "Cosco",
     ratings: 4.2,
     numOfReviews: 456
@@ -640,7 +640,7 @@ const products = [
     price: 899,
     category: "Sports & Fitness",
     stock: 180,
-    images: [{ public_id: "football", url: "https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aae?w=500" }],
+    images: [{ public_id: "football", url: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500" }],
     brand: "Nivia",
     ratings: 4.4,
     numOfReviews: 789
@@ -651,7 +651,7 @@ const products = [
     price: 2999,
     category: "Sports & Fitness",
     stock: 90,
-    images: [{ public_id: "badminton-racket", url: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500" }],
+    images: [{ public_id: "badminton-racket", url: "https://images.unsplash.com/photo-1613918108466-292b78a8ef95?w=500" }],
     brand: "Yonex",
     ratings: 4.7,
     numOfReviews: 1234
@@ -673,7 +673,7 @@ const products = [
     price: 1299,
     category: "Sports & Fitness",
     stock: 160,
-    images: [{ public_id: "gym-bag", url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" }],
+    images: [{ public_id: "gym-bag", url: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500" }],
     brand: "American Tourister",
     ratings: 4.5,
     numOfReviews: 890

@@ -21,6 +21,14 @@
     <p>Initializing Exponential Tech Engine…</p>
   </div>
 </div>
+<script>
+  setTimeout(function() {
+    var l = document.getElementById('loadingScreen');
+    if (l && !l.classList.contains('hidden')) {
+      l.classList.add('hidden');
+    }
+  }, 2500);
+</script>
 
 <!-- ══════════════════════ TOP STRIP ══════════════════════ -->
 <div class="top-strip">
