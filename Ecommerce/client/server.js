@@ -20,7 +20,7 @@ function startServer(p) {
   const server = app.listen(p, () => {
     console.log(`
 ╔══════════════════════════════════════════════════╗
-║   ✨ ShopEase Exponential Dark Tech Web Server    ║
+║   ✨ ShopEase Professional Web Server             ║
 ╚══════════════════════════════════════════════════╝
 
   ✅ Website running at: http://localhost:${p}

@@ -124,7 +124,7 @@ function initApp() {
     try { fn(); } catch (err) { console.warn(`Error during ${name}:`, err); }
   };
 
-  safeInit(initExponentialCanvas, 'initExponentialCanvas');
+  safeInit(initAmbientBg, 'initAmbientBg');
   safeInit(initTheme, 'initTheme');
   safeInit(loadProducts, 'loadProducts');
   safeInit(updateCartCount, 'updateCartCount');
@@ -144,10 +144,10 @@ if (document.readyState === 'loading') {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   EXPONENTIAL CANVAS & THEME ENGINE
+   THEME ENGINE
    ═══════════════════════════════════════════════════════════════ */
 function initTheme() {
-  const saved = localStorage.getItem('shopease_theme') || 'exponential-dark';
+  const saved = localStorage.getItem('shopease_theme') || 'dark';
   changeTheme(saved);
 }
 
@@ -158,72 +158,22 @@ function changeTheme(themeName) {
   if (sel) sel.value = themeName;
 }
 
-function initExponentialCanvas() {
-  const canvas = document.getElementById('expBgCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let width = (canvas.width = window.innerWidth);
-  let height = (canvas.height = window.innerHeight);
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
+/* Ambient background is handled purely via CSS gradient — no canvas needed */
+function initAmbientBg() {
+  // Subtle parallax tilt on hero section for polish
+  const hero = document.querySelector('.hero-slider-section');
+  if (!hero) return;
+  hero.addEventListener('mousemove', (e) => {
+    const { left, top, width, height } = hero.getBoundingClientRect();
+    const cx = (e.clientX - left) / width - 0.5;
+    const cy = (e.clientY - top) / height - 0.5;
+    hero.style.setProperty('--tilt-x', `${cy * 4}deg`);
+    hero.style.setProperty('--tilt-y', `${cx * -4}deg`);
   });
-
-  const numParticles = Math.min(Math.floor((width * height) / 18000), 65);
-  const particles = [];
-
-  for (let i = 0; i < numParticles; i++) {
-    particles.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      radius: Math.random() * 2 + 1,
-      alpha: Math.random() * 0.5 + 0.2
-    });
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, width, height);
-
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if (p.x < 0 || p.x > width) p.vx *= -1;
-      if (p.y < 0 || p.y > height) p.vy *= -1;
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(99, 102, 241, ' + p.alpha + ')';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = '#6366f1';
-      ctx.fill();
-
-      for (let j = i + 1; j < particles.length; j++) {
-        const p2 = particles[j];
-        const dx = p.x - p2.x;
-        const dy = p.y - p2.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 130) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(p2.x, p2.y);
-          const lineAlpha = (1 - dist / 130) * 0.2;
-          ctx.strokeStyle = 'rgba(99, 102, 241, ' + lineAlpha + ')';
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-      }
-    }
-
-    requestAnimationFrame(draw);
-  }
-
-  draw();
+  hero.addEventListener('mouseleave', () => {
+    hero.style.setProperty('--tilt-x', '0deg');
+    hero.style.setProperty('--tilt-y', '0deg');
+  });
 }
 
 /* ═══════════════════════════════════════════════════════════════
