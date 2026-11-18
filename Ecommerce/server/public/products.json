@@ -11,7 +11,12 @@
         "url": "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&q=80",
         "altText": "Shimla Red Apples"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 225,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d00",
@@ -25,7 +30,12 @@
         "url": "https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?auto=format&fit=crop&w=600&q=80",
         "altText": "Royal Gala Apples"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 263,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d01",
@@ -39,7 +49,12 @@
         "url": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
         "altText": "Green Pears"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 200,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d02",
@@ -53,7 +68,12 @@
         "url": "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80",
         "altText": "Alphonso Mangoes"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1563,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d03",
@@ -67,7 +87,12 @@
         "url": "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&w=600&q=80",
         "altText": "Hass Avocados"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 300,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d04",
@@ -81,7 +106,12 @@
         "url": "https://images.unsplash.com/photo-1527325678964-54921646f988?auto=format&fit=crop&w=600&q=80",
         "altText": "Red Dragon Fruit"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 275,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d05",
@@ -95,7 +125,12 @@
         "url": "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=600&q=80",
         "altText": "Fresh Strawberries"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 163,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d06",
@@ -109,7 +144,12 @@
         "url": "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=600&q=80",
         "altText": "Green Seedless Grapes"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 113,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d07",
@@ -123,7 +163,12 @@
         "url": "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=600&q=80",
         "altText": "Nagpur Oranges"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 138,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d08",
@@ -137,7 +182,12 @@
         "url": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
         "altText": "Red Pomegranate"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 244,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d09",
@@ -151,7 +201,12 @@
         "url": "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80",
         "altText": "Organic Spinach"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 44,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d0a",
@@ -165,7 +220,12 @@
         "url": "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&w=600&q=80",
         "altText": "Romaine Lettuce"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 81,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d0b",
@@ -179,7 +239,12 @@
         "url": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80",
         "altText": "Vine Tomatoes"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 56,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d0c",
@@ -193,7 +258,12 @@
         "url": "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80",
         "altText": "Red Onions"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 50,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d0d",
@@ -207,7 +277,12 @@
         "url": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80",
         "altText": "Farm Potatoes"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 44,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d0e",
@@ -221,7 +296,12 @@
         "url": "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=600&q=80",
         "altText": "Trio Bell Peppers"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 138,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d0f",
@@ -235,7 +315,12 @@
         "url": "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&w=600&q=80",
         "altText": "Green Broccoli"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 100,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d10",
@@ -249,7 +334,12 @@
         "url": "https://images.unsplash.com/photo-1504470695779-75300268aa0e?auto=format&fit=crop&w=600&q=80",
         "altText": "Button Mushrooms"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 69,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d11",
@@ -263,7 +353,12 @@
         "url": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80",
         "altText": "Wheat Seeds"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 563,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d12",
@@ -277,7 +372,12 @@
         "url": "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80",
         "altText": "Vegetable Seed Kit"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 374,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d13",
@@ -291,7 +391,12 @@
         "url": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80",
         "altText": "Cherry Tomato Seeds"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 186,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d14",
@@ -305,7 +410,12 @@
         "url": "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=80",
         "altText": "Guava Plant Sapling"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 436,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d15",
@@ -319,7 +429,12 @@
         "url": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80",
         "altText": "Battery Agricultural Sprayer"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 3124,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d16",
@@ -333,7 +448,12 @@
         "url": "https://images.unsplash.com/photo-1590682680695-43b964a3ae17?auto=format&fit=crop&w=600&q=80",
         "altText": "Drip Irrigation Kit"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1124,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d17",
@@ -347,7 +467,12 @@
         "url": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80",
         "altText": "Pruning Shears"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 624,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d18",
@@ -361,7 +486,12 @@
         "url": "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80",
         "altText": "Soil Meter"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 499,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d19",
@@ -375,7 +505,12 @@
         "url": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80",
         "altText": "Vermicompost Bag"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 311,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d1a",
@@ -389,7 +524,12 @@
         "url": "https://images.unsplash.com/photo-1608686207856-001b95cf60ca?auto=format&fit=crop&w=600&q=80",
         "altText": "A2 Desi Cow Ghee"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1063,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d1b",
@@ -403,7 +543,12 @@
         "url": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80",
         "altText": "Cold Pressed Mustard Oil"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 300,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d1c",
@@ -417,7 +562,12 @@
         "url": "https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=600&q=80",
         "altText": "Raw Forest Honey"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 488,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d1d",
@@ -431,7 +581,12 @@
         "url": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
         "altText": "Organic Jaggery Powder"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 138,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d1e",
@@ -445,7 +600,12 @@
         "url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80",
         "altText": "Aged Basmati Rice"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 863,
+    "discount": 20
   },
   {
     "_id": "6a9650cb872722f85b192d1f",
@@ -459,7 +619,12 @@
         "url": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80",
         "altText": "Organic Sharbati Atta"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 388,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188a2",
@@ -472,7 +637,12 @@
         "public_id": "iphone15pro",
         "url": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 199875,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188a5",
@@ -485,7 +655,12 @@
         "public_id": "samsung-s24",
         "url": "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 162499,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188a8",
@@ -498,7 +673,12 @@
         "public_id": "dell-xps",
         "url": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 193749,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188ab",
@@ -511,7 +691,12 @@
         "public_id": "macbook-air",
         "url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 168625,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188ae",
@@ -524,7 +709,12 @@
         "public_id": "sony-headphones",
         "url": "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 37488,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188b1",
@@ -537,7 +727,12 @@
         "public_id": "airpods-pro",
         "url": "https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 31125,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188b4",
@@ -550,7 +745,12 @@
         "public_id": "ipad-pro",
         "url": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 149875,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188b7",
@@ -563,7 +763,12 @@
         "public_id": "samsung-tv",
         "url": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 62488,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188ba",
@@ -576,7 +781,12 @@
         "public_id": "canon-camera",
         "url": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 299988,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188bd",
@@ -589,7 +799,12 @@
         "public_id": "ps5",
         "url": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 68738,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188c0",
@@ -602,7 +817,12 @@
         "public_id": "apple-watch",
         "url": "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 62375,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188c3",
@@ -615,7 +835,12 @@
         "public_id": "jbl-speaker",
         "url": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 14999,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188c6",
@@ -628,7 +853,12 @@
         "public_id": "gopro",
         "url": "https://images.unsplash.com/photo-1462465024002-a13e2d586449?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 56249,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188c9",
@@ -641,7 +871,12 @@
         "public_id": "kindle",
         "url": "https://images.unsplash.com/photo-1592359114411-e8f45450b1e7?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 22499,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188cc",
@@ -654,7 +889,12 @@
         "public_id": "logitech-mouse",
         "url": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 12494,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188cf",
@@ -667,7 +907,12 @@
         "public_id": "levis-jeans",
         "url": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 4374,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188d2",
@@ -680,7 +925,12 @@
         "public_id": "nike-shoes",
         "url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 16249,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188d5",
@@ -693,7 +943,12 @@
         "public_id": "adidas-hoodie",
         "url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 6249,
+    "discount": 20
   },
   {
     "_id": "6adaff96fd70465f7cf188d8",
@@ -706,7 +961,12 @@
         "public_id": "formal-shirt",
         "url": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1999,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188db",
@@ -719,7 +979,12 @@
         "public_id": "sports-bra",
         "url": "https://images.unsplash.com/photo-1588117305388-c2631a279f82?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 2499,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188de",
@@ -732,7 +997,12 @@
         "public_id": "kurti",
         "url": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1624,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188e1",
@@ -745,7 +1015,12 @@
         "public_id": "handbag",
         "url": "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 4374,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188e4",
@@ -758,7 +1033,12 @@
         "public_id": "fastrack-watch",
         "url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 3124,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188e7",
@@ -771,7 +1051,12 @@
         "public_id": "rayban",
         "url": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 9999,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188ea",
@@ -784,7 +1069,12 @@
         "public_id": "backpack",
         "url": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 3749,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188ed",
@@ -797,7 +1087,12 @@
         "public_id": "belt",
         "url": "https://images.unsplash.com/photo-1553704571-c0b68eb1b0f7?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1124,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188f0",
@@ -810,7 +1105,12 @@
         "public_id": "yoga-pants",
         "url": "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1874,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188f3",
@@ -823,7 +1123,12 @@
         "public_id": "formal-shoes",
         "url": "https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 4999,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188f6",
@@ -836,7 +1141,12 @@
         "public_id": "summer-dress",
         "url": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 2499,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188f9",
@@ -849,7 +1159,12 @@
         "public_id": "winter-jacket",
         "url": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 6249,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188fc",
@@ -862,7 +1177,12 @@
         "public_id": "air-fryer",
         "url": "https://images.unsplash.com/photo-1585515320310-259814833e62?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 16249,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf188ff",
@@ -875,7 +1195,12 @@
         "public_id": "induction",
         "url": "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 4124,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18902",
@@ -888,7 +1213,12 @@
         "public_id": "kettle",
         "url": "https://images.unsplash.com/photo-1585571103784-5c9c1a26d9f4?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1124,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18905",
@@ -901,7 +1231,12 @@
         "public_id": "water-bottle",
         "url": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 874,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18908",
@@ -914,7 +1249,12 @@
         "public_id": "pressure-cooker",
         "url": "https://images.unsplash.com/photo-1584990347449-39c5e2d41a74?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 2499,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1890b",
@@ -927,7 +1267,12 @@
         "public_id": "mixer-grinder",
         "url": "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 5624,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1890e",
@@ -940,7 +1285,12 @@
         "public_id": "lunch-box",
         "url": "https://images.unsplash.com/photo-1547558840-8ad6e0a6fa4f?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 749,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18911",
@@ -953,7 +1303,12 @@
         "public_id": "dinner-set",
         "url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 4999,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18914",
@@ -966,7 +1321,12 @@
         "public_id": "cookware-set",
         "url": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 3749,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18917",
@@ -979,7 +1339,12 @@
         "public_id": "vacuum-cleaner",
         "url": "https://images.unsplash.com/photo-1558317374-067fb43f03a0?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 11249,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1891a",
@@ -992,7 +1357,12 @@
         "public_id": "towels",
         "url": "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1624,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1891d",
@@ -1005,7 +1375,12 @@
         "public_id": "iron",
         "url": "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 624,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18920",
@@ -1018,7 +1393,12 @@
         "public_id": "rich-dad",
         "url": "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 499,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18923",
@@ -1031,7 +1411,12 @@
         "public_id": "atomic-habits",
         "url": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 624,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18926",
@@ -1044,7 +1429,12 @@
         "public_id": "think-grow-rich",
         "url": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 374,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18929",
@@ -1057,7 +1447,12 @@
         "public_id": "subconscious-mind",
         "url": "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 249,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1892c",
@@ -1070,7 +1465,12 @@
         "public_id": "sapiens",
         "url": "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 749,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1892f",
@@ -1083,7 +1483,12 @@
         "public_id": "alchemist",
         "url": "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 438,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18932",
@@ -1096,7 +1501,12 @@
         "public_id": "deep-work",
         "url": "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 563,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18935",
@@ -1109,7 +1519,12 @@
         "public_id": "5am-club",
         "url": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 499,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18938",
@@ -1122,7 +1537,12 @@
         "public_id": "psychology-money",
         "url": "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 436,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1893b",
@@ -1135,7 +1555,12 @@
         "public_id": "harry-potter",
         "url": "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 6249,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1893e",
@@ -1148,7 +1573,12 @@
         "public_id": "yoga-mat",
         "url": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1249,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18941",
@@ -1161,7 +1591,12 @@
         "public_id": "dumbbells",
         "url": "https://images.unsplash.com/photo-1638805981949-cbdef99c20b5?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 2374,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18944",
@@ -1174,7 +1609,12 @@
         "public_id": "resistance-bands",
         "url": "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 874,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18947",
@@ -1187,7 +1627,12 @@
         "public_id": "cricket-bat",
         "url": "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1874,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1894a",
@@ -1200,7 +1645,12 @@
         "public_id": "football",
         "url": "https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aae?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1124,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf1894d",
@@ -1213,7 +1663,12 @@
         "public_id": "badminton-racket",
         "url": "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 3749,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18950",
@@ -1226,7 +1681,12 @@
         "public_id": "skipping-rope",
         "url": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 436,
+    "discount": 20
   },
   {
     "_id": "6adaff97fd70465f7cf18953",
@@ -1239,7 +1699,12 @@
         "public_id": "gym-bag",
         "url": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1624,
+    "discount": 20
   },
   {
     "_id": "6adb032321bf0ffe2ab1410b",
@@ -1253,7 +1718,12 @@
         "url": "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=500",
         "altText": "Quantum Cyber Drone 4K"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 53749,
+    "discount": 20
   },
   {
     "_id": "6adb0519de3e50575f30ed18",
@@ -1267,6 +1737,11 @@
         "url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
         "altText": "Titan Mechanical Green Dial Watch"
       }
-    ]
+    ],
+    "stock": 35,
+    "ratings": 4.7,
+    "numOfReviews": 120,
+    "comparePrice": 1250,
+    "discount": 20
   }
 ]

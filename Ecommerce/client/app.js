@@ -103,7 +103,7 @@ function normalizeProduct(p) {
           return typeof img === 'string' ? { url: cleanU } : { ...img, url: cleanU };
         })
       : [{ url: imageUrl }],
-    stock: p.stock !== undefined ? Number(p.stock) : 0,
+    stock: (p.stock !== undefined && p.stock !== null && !isNaN(p.stock) && Number(p.stock) > 0) ? Number(p.stock) : 35,
     category: p.category || 'General',
     brand: p.brand || 'ShopEase',
     description: p.description || '',
@@ -388,12 +388,12 @@ function displayProducts(products) {
             ${hasDisc ? `<span class="pc-old-price">₹${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
           </div>
           <div class="pc-btn-group">
-            <button class="pc-add-btn" onclick="event.stopPropagation(); addToCart('${product._id}', true)" ${!inStock ? 'disabled style="opacity:0.5;"' : ''} title="Add to Cart & View Cart">
-              <i class="fas fa-shopping-bag"></i> ${inStock ? 'Add' : 'Sold'}
+            <button class="pc-add-btn" onclick="event.stopPropagation(); addToCart('${product._id}', true)" title="Add to Cart">
+              <i class="fas fa-shopping-bag"></i> Add
             </button>
-            ${inStock ? `<button class="pc-buy-btn" onclick="event.stopPropagation(); buyNow('${product._id}')" title="Buy Now — 1 click checkout">
-              <i class="fas fa-bolt"></i>
-            </button>` : ''}
+            <button class="pc-buy-btn" onclick="event.stopPropagation(); buyNow('${product._id}')" title="Buy Now — 1 click checkout">
+              <i class="fas fa-bolt"></i> Buy
+            </button>
           </div>
         </div>
       </div>
@@ -448,9 +448,12 @@ function showProductDetails(product) {
           ${inStock ? `${product.stock} units in stock` : 'Out of Stock'}
         </div>
         <div class="pd-btn-row">
-          <button class="btn-pd-cart" onclick="addToCart('${product._id}'); closeModal('productModal');"
-                  ${!inStock ? 'disabled' : ''}>
-            <i class="fas fa-shopping-cart"></i> ${inStock ? 'Add to Cart' : 'Out of Stock'}
+          <button class="btn-pd-cart" onclick="addToCart('${product._id}'); closeModal('productModal');">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+          <button class="btn-pd-buy" onclick="closeModal('productModal'); buyNow('${product._id}');"
+                  style="flex:1;padding:12px;background:linear-gradient(135deg,#ff9f00,#fb641b);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <i class="fas fa-bolt"></i> Buy Now
           </button>
           <button class="btn-pd-wish ${inWish ? 'active' : ''}"
                   onclick="toggleWishlist('${product._id}'); this.classList.toggle('active');">
