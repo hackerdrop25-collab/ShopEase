@@ -73,6 +73,11 @@ function normalizeProduct(p) {
     imageUrl = p.imageUrl;
   }
 
+  // Correction for GoPro action camera if an invalid placeholder or floral image was previously saved
+  if (imageUrl.includes('photo-1606041008023-472dfb5e530f') || (name.toLowerCase().includes('gopro') && imageUrl.includes('photo-1606041008023'))) {
+    imageUrl = 'https://images.unsplash.com/photo-1462465024002-a13e2d586449?w=500';
+  }
+
   return {
     ...p,
     _id: String(p._id),
@@ -88,7 +93,11 @@ function normalizeProduct(p) {
     numOfReviews,
     imageUrl,
     images: Array.isArray(p.images) && p.images.length > 0
-      ? p.images.map(img => typeof img === 'string' ? { url: img } : img)
+      ? p.images.map(img => {
+          const u = typeof img === 'string' ? img : (img.url || '');
+          const cleanU = u.includes('photo-1606041008023-472dfb5e530f') ? 'https://images.unsplash.com/photo-1462465024002-a13e2d586449?w=500' : u;
+          return typeof img === 'string' ? { url: cleanU } : { ...img, url: cleanU };
+        })
       : [{ url: imageUrl }],
     stock: p.stock !== undefined ? Number(p.stock) : 0,
     category: p.category || 'General',

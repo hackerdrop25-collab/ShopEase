@@ -200,6 +200,11 @@ function normalizeAdminProduct(p) {
     imageUrl = p.imageUrl;
   }
 
+  // Correction for GoPro action camera if an invalid floral/placeholder image was previously saved
+  if (imageUrl.includes('photo-1606041008023-472dfb5e530f') || (name.toLowerCase().includes('gopro') && imageUrl.includes('photo-1606041008023'))) {
+    imageUrl = 'https://images.unsplash.com/photo-1462465024002-a13e2d586449?w=500';
+  }
+
   return {
     ...p,
     _id: String(p._id),

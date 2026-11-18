@@ -148,7 +148,7 @@ const products = [
     price: 44999,
     category: "Electronics",
     stock: 45,
-    images: [{ public_id: "gopro", url: "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=500" }],
+    images: [{ public_id: "gopro", url: "https://images.unsplash.com/photo-1462465024002-a13e2d586449?w=500" }],
     brand: "GoPro",
     ratings: 4.7,
     numOfReviews: 567
