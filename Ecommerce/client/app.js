@@ -2,7 +2,11 @@
    ShopEase — Professional E-Commerce App (Standalone Mode)
    ═══════════════════════════════════════════════════════════════ */
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = window.__API_URL__ || (
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? (window.location.port === '5000' ? '/api' : 'http://localhost:5000/api')
+    : `${window.location.origin}/api`
+);
 const USE_MOCK_DATA = false;
 
 function safeGetStorage(key, fallback) {

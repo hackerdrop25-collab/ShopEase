@@ -3,7 +3,11 @@
  * Handles Products CRUD, Stock Management, Profit Analytics & Real-time Synchronization
  */
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = window.__API_URL__ || (
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? (window.location.port === '5000' ? '/api' : 'http://localhost:5000/api')
+    : `${window.location.origin}/api`
+);
 
 let adminProducts = [];
 let adminStats = null;

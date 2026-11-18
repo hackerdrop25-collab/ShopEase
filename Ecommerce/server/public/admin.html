@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEase Admin OS — Product, Stock & Profit Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<div class="admin-app">
+
+  <!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+  <aside class="admin-sidebar">
+    <a href="admin.html" class="sidebar-brand">
+      <div class="brand-icon">
+        <i class="fas fa-crown"></i>
+      </div>
+      <div class="brand-text">
+        <h2>Shop<em>Ease</em></h2>
+        <span>Admin OS v2.0</span>
+      </div>
+    </a>
+
+    <div class="sidebar-nav">
+      <div class="nav-section-title">Operations</div>
+      <div class="admin-nav-item active" onclick="switchTab('overview')">
+        <i class="fas fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="admin-nav-item" onclick="switchTab('products')">
+        <i class="fas fa-boxes-stacked"></i>
+        <span>Products Catalog</span>
+        <span class="sidebar-badge" id="sidebarProductCount" style="background:rgba(99,102,241,0.15);color:var(--primary);">...</span>
+      </div>
+      <div class="admin-nav-item" onclick="switchTab('stocks')">
+        <i class="fas fa-warehouse"></i>
+        <span>Stock Manager</span>
+        <span class="sidebar-badge" id="sidebarLowStockCount">0</span>
+      </div>
+      <div class="admin-nav-item" onclick="switchTab('profit')">
+        <i class="fas fa-hand-holding-dollar"></i>
+        <span>Profit Analytics</span>
+      </div>
+      <div class="admin-nav-item" onclick="switchTab('orders')">
+        <i class="fas fa-receipt"></i>
+        <span>Customer Orders</span>
+        <span class="sidebar-badge" id="sidebarOrdersCount" style="background:rgba(16,185,129,0.15);color:var(--accent-emerald);">0</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="store-link-btn" target="_blank" title="Open customer website in new tab">
+        <i class="fas fa-external-link-alt"></i> View Customer Store
+      </a>
+      <button onclick="handleAdminLogout()" class="btn-ghost-action" style="width:100%;padding:10px;border-radius:var(--radius-md);font-weight:700;">
+        <i class="fas fa-arrow-right-from-bracket"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════ MAIN CONTENT AREA ══════════════════════ -->
+  <main class="admin-main">
+    
+    <!-- TOP HEADER -->
+    <header class="admin-header">
+      <div class="header-left">
+        <div class="page-title">
+          <h1 id="headerViewTitle">Dashboard Overview</h1>
+        </div>
+        <div class="status-pill">
+          <div class="pulse-dot"></div>
+          <span>MongoDB Live Connected</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="btn-header-action btn-ghost-action" onclick="refreshAdminData()" title="Reload data from database">
+          <i class="fas fa-rotate"></i> <span>Sync</span>
+        </button>
+        <button class="btn-header-action btn-primary-action" onclick="openAddProductModal()">
+          <i class="fas fa-plus"></i> <span>Add Product</span>
+        </button>
+        <div class="user-profile-badge">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" id="adminAvatarImg" alt="Admin" />
+          <div class="user-profile-info">
+            <span class="user-profile-name" id="adminUserName">Admin ShopEase</span>
+            <span class="user-profile-role">Master Admin</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT SCROLLER -->
+    <div class="admin-content-scroll">
+
+      <!-- ── SECTION 1: DASHBOARD OVERVIEW ── -->
+      <section id="overviewSection" class="view-section active">
+        <!-- KPI METRICS -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-indigo">
+            <div class="kpi-header">
+              <span class="kpi-title">Total Products</span>
+              <div class="kpi-icon"><i class="fas fa-box-archive"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiTotalProducts">--</div>
+            <div class="kpi-footer">
+              <span class="kpi-tag tag-cyan" id="kpiCategoryCount">-- categories</span>
+              <span>active in store</span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-cyan">
+            <div class="kpi-header">
+              <span class="kpi-title">Stock Units</span>
+              <div class="kpi-icon"><i class="fas fa-cubes"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiTotalUnits">--</div>
+            <div class="kpi-footer">
+              <span class="kpi-tag tag-emerald" id="kpiInStockRatio">-- in stock</span>
+              <span>warehouse units</span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-emerald">
+            <div class="kpi-header">
+              <span class="kpi-title">Inventory Value</span>
+              <div class="kpi-icon"><i class="fas fa-coins"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiInventoryValue">₹--</div>
+            <div class="kpi-footer">
+              <span>Total cost: <strong id="kpiInventoryCost">₹--</strong></span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-header">
+              <span class="kpi-title">Projected Profit</span>
+              <div class="kpi-icon"><i class="fas fa-chart-line-up"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiProjectedProfit">₹--</div>
+            <div class="kpi-footer">
+              <span class="kpi-tag tag-emerald" id="kpiMarginPercent">+--% Margin</span>
+              <span>gross inventory profit</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TWO COLUMN WIDGETS -->
+        <div class="dashboard-grid-2">
+          <!-- CATEGORY PROFIT CONTRIBUTION -->
+          <div class="panel-card">
+            <div class="panel-card-header">
+              <div class="panel-title">
+                <i class="fas fa-layer-group"></i>
+                <span>Category Inventory & Profit Contribution</span>
+              </div>
+              <button class="btn-ghost-action" style="padding:6px 12px;font-size:0.75rem;" onclick="switchTab('profit')">Details</button>
+            </div>
+            <div id="categoryProgressContainer" style="display:flex;flex-direction:column;gap:14px;">
+              <!-- Filled via JS -->
+            </div>
+          </div>
+
+          <!-- INTERACTIVE PROFIT SIMULATOR -->
+          <div class="sim-card">
+            <div class="panel-title" style="margin-bottom:6px;">
+              <i class="fas fa-wand-magic-sparkles" style="color:var(--accent-cyan);"></i>
+              <span>Profit Margin Simulator</span>
+            </div>
+            <p style="font-size:0.8rem;color:var(--txt-muted);">Simulate inventory gross profit based on target markup percentage:</p>
+
+            <div class="sim-slider-wrap">
+              <div class="sim-slider-label">
+                <span>Target Profit Margin:</span>
+                <span><strong id="simMarginDisplay">35%</strong></span>
+              </div>
+              <input type="range" class="sim-range" id="simMarginRange" min="15" max="60" value="35" oninput="updateProfitSimulation(this.value)" />
+            </div>
+
+            <div class="sim-results">
+              <div class="sim-metric">
+                <div class="sim-metric-label">Simulated Selling Value</div>
+                <div class="sim-metric-val" id="simSimulatedRevenue">₹--</div>
+              </div>
+              <div class="sim-metric">
+                <div class="sim-metric-label">Projected Gross Profit</div>
+                <div class="sim-metric-val" id="simSimulatedProfit">₹--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMERGENCY LOW STOCK BANNER / TABLE -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div class="panel-title">
+              <i class="fas fa-triangle-exclamation" style="color:var(--accent-amber);"></i>
+              <span>Inventory Stock Alerts (Out of Stock & Low Stock)</span>
+            </div>
+            <button class="btn-ghost-action" style="padding:6px 12px;font-size:0.75rem;" onclick="switchTab('stocks')">Manage Stocks</button>
+          </div>
+          <div id="lowStockAlertTableWrap">
+            <!-- Filled via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SECTION 2: PRODUCTS MANAGEMENT ── -->
+      <section id="productsSection" class="view-section">
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <div class="search-filter-group">
+              <input type="text" class="admin-search-input" id="productSearchInput" placeholder="Search by name, brand, or category..." oninput="filterProductsTable()" />
+              <select class="admin-select" id="productCatFilter" onchange="filterProductsTable()">
+                <option value="">All Categories</option>
+              </select>
+              <select class="admin-select" id="productStockFilter" onchange="filterProductsTable()">
+                <option value="">All Stock</option>
+                <option value="in">In Stock (> 10)</option>
+                <option value="low">Low Stock (1-10)</option>
+                <option value="out">Out of Stock (0)</option>
+              </select>
+            </div>
+            <button class="btn-header-action btn-primary-action" onclick="openAddProductModal()">
+              <i class="fas fa-plus"></i> Add New Product
+            </button>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Selling Price</th>
+                  <th>Cost Price</th>
+                  <th>Profit / Margin</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SECTION 3: STOCK INVENTORY MANAGER ── -->
+      <section id="stocksSection" class="view-section">
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <div class="search-filter-group">
+              <input type="text" class="admin-search-input" id="stockSearchInput" placeholder="Filter stock by name..." oninput="filterStockTable()" />
+              <button class="btn-ghost-action" id="filterOnlyLowStockBtn" onclick="toggleLowStockFilter(this)">
+                <i class="fas fa-filter"></i> Needs Restock Only
+              </button>
+            </div>
+            <div style="font-size:0.88rem;color:var(--txt-muted);">
+              Total Items: <strong id="stockTotalUnitsBadge" style="color:#fff;">0</strong>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Current Stock</th>
+                  <th>Status</th>
+                  <th>Quick Restock</th>
+                  <th>Direct Update</th>
+                </tr>
+              </thead>
+              <tbody id="stockTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SECTION 4: PROFIT ANALYTICS ── -->
+      <section id="profitSection" class="view-section">
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-emerald">
+            <div class="kpi-header">
+              <span class="kpi-title">Total Gross Profit Potential</span>
+              <div class="kpi-icon"><i class="fas fa-sack-dollar"></i></div>
+            </div>
+            <div class="kpi-value" id="profitTotalGross">₹--</div>
+            <div class="kpi-footer">Based on 100% current inventory liquidation</div>
+          </div>
+
+          <div class="kpi-card kpi-cyan">
+            <div class="kpi-header">
+              <span class="kpi-title">Average Gross Margin</span>
+              <div class="kpi-icon"><i class="fas fa-percent"></i></div>
+            </div>
+            <div class="kpi-value" id="profitAvgMargin">--%</div>
+            <div class="kpi-footer">Across all active catalog categories</div>
+          </div>
+
+          <div class="kpi-card kpi-indigo">
+            <div class="kpi-header">
+              <span class="kpi-title">Realized Order Revenue</span>
+              <div class="kpi-icon"><i class="fas fa-cash-register"></i></div>
+            </div>
+            <div class="kpi-value" id="profitRealizedRev">₹--</div>
+            <div class="kpi-footer">From completed customer orders</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid-2">
+          <!-- TOP HIGH-MARGIN ITEMS -->
+          <div class="panel-card">
+            <div class="panel-card-header">
+              <div class="panel-title">
+                <i class="fas fa-star" style="color:var(--accent-amber);"></i>
+                <span>Top High-Margin Flagship Products</span>
+              </div>
+            </div>
+            <div id="topMarginProductsList">
+              <!-- JS rendered -->
+            </div>
+          </div>
+
+          <!-- TOP STOCK PROFIT GENERATORS -->
+          <div class="panel-card">
+            <div class="panel-card-header">
+              <div class="panel-title">
+                <i class="fas fa-arrow-trend-up" style="color:var(--accent-emerald);"></i>
+                <span>Top Potential Profit Generators</span>
+              </div>
+            </div>
+            <div id="topProfitGeneratorsList">
+              <!-- JS rendered -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SECTION 5: CUSTOMER ORDERS ── -->
+      <section id="ordersSection" class="view-section">
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <div style="font-weight:700;font-size:1.05rem;">
+              <i class="fas fa-receipt" style="color:var(--accent-cyan);margin-right:8px;"></i>
+              Customer Order History & Fulfillment
+            </div>
+            <button class="btn-ghost-action" onclick="fetchOrders()">
+              <i class="fas fa-rotate"></i> Refresh Orders
+            </button>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Items & Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <!-- Filled via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- ══════════════════════ MODALS ══════════════════════ -->
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3><i class="fas fa-plus-circle" style="color:var(--primary);margin-right:8px;"></i> Add New Product to Store</h3>
+      <button class="modal-close-btn" onclick="closeModal('addProductModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="addProductForm" onsubmit="handleCreateProduct(event)">
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Product Name / Title *</label>
+            <input type="text" class="form-input" id="addName" required placeholder="e.g. Sony WH-1000XM5 or Organic Apples" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <input type="text" class="form-input" id="addCategory" required list="categoryDatalist" placeholder="Select or type category..." />
+            <datalist id="categoryDatalist">
+              <option value="Electronics" />
+              <option value="Fashion" />
+              <option value="Home & Kitchen" />
+              <option value="Books" />
+              <option value="Sports & Fitness" />
+              <option value="Fresh Fruits" />
+              <option value="Fresh Vegetables" />
+              <option value="Farming Tools" />
+              <option value="Organic Staples" />
+            </datalist>
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Selling Price (₹) *</label>
+            <input type="number" class="form-input" id="addPrice" min="1" step="1" required placeholder="999" oninput="calculateModalProfit('add')" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cost Price (₹) *</label>
+            <input type="number" class="form-input" id="addCostPrice" min="0" step="1" required placeholder="699" oninput="calculateModalProfit('add')" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stock Quantity *</label>
+            <input type="number" class="form-input" id="addStock" min="0" step="1" required value="20" placeholder="20" />
+          </div>
+        </div>
+
+        <!-- Dynamic Profit Calculation Box -->
+        <div class="profit-preview-card" id="addProfitCard">
+          <div class="profit-preview-item">
+            <span>Profit Per Unit</span>
+            <strong id="addUnitProfit">₹0</strong>
+          </div>
+          <div class="profit-preview-item">
+            <span>Profit Margin</span>
+            <strong id="addMarginPercent">0%</strong>
+          </div>
+          <div class="profit-preview-item">
+            <span>Total Stock Profit</span>
+            <strong id="addTotalStockProfit">₹0</strong>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Compare Price / MRP (₹)</label>
+            <input type="number" class="form-input" id="addComparePrice" min="0" placeholder="Optional original MRP" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand</label>
+            <input type="text" class="form-input" id="addBrand" placeholder="e.g. Apple, Nike, Organic Farm" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Product Image URL</label>
+          <input type="url" class="form-input" id="addImageUrl" placeholder="https://images.unsplash.com/..." oninput="previewImage('addImageUrl', 'addImagePreview')" />
+          <div class="image-presets-row">
+            <span style="font-size:0.72rem;color:var(--txt-dim);line-height:22px;">Quick Presets:</span>
+            <span class="preset-chip" onclick="setPresetImage('addImageUrl', 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500')">📱 Phone</span>
+            <span class="preset-chip" onclick="setPresetImage('addImageUrl', 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500')">💻 Laptop</span>
+            <span class="preset-chip" onclick="setPresetImage('addImageUrl', 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')">👟 Shoes</span>
+            <span class="preset-chip" onclick="setPresetImage('addImageUrl', 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500')">⌚ Watch</span>
+            <span class="preset-chip" onclick="setPresetImage('addImageUrl', 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500')">🍎 Apple Fruit</span>
+          </div>
+          <div style="margin-top:10px;text-align:center;">
+            <img id="addImagePreview" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" style="width:100px;height:70px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border);" alt="Preview" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea class="form-textarea" id="addDescription" required placeholder="Detailed product specifications, key features, and highlights..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-header-action btn-ghost-action" onclick="closeModal('addProductModal')">Cancel</button>
+        <button type="submit" class="btn-header-action btn-primary-action" id="createSubmitBtn">
+          <i class="fas fa-check"></i> Create & Publish Product
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div class="modal-overlay" id="editProductModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3><i class="fas fa-edit" style="color:var(--accent-cyan);margin-right:8px;"></i> Edit Product Details</h3>
+      <button class="modal-close-btn" onclick="closeModal('editProductModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="editProductForm" onsubmit="handleUpdateProduct(event)">
+      <input type="hidden" id="editProductId" />
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Product Name / Title *</label>
+            <input type="text" class="form-input" id="editName" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <input type="text" class="form-input" id="editCategory" required list="categoryDatalist" />
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Selling Price (₹) *</label>
+            <input type="number" class="form-input" id="editPrice" min="1" step="1" required oninput="calculateModalProfit('edit')" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cost Price (₹) *</label>
+            <input type="number" class="form-input" id="editCostPrice" min="0" step="1" required oninput="calculateModalProfit('edit')" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stock Quantity *</label>
+            <input type="number" class="form-input" id="editStock" min="0" step="1" required />
+          </div>
+        </div>
+
+        <div class="profit-preview-card" id="editProfitCard">
+          <div class="profit-preview-item">
+            <span>Profit Per Unit</span>
+            <strong id="editUnitProfit">₹0</strong>
+          </div>
+          <div class="profit-preview-item">
+            <span>Profit Margin</span>
+            <strong id="editMarginPercent">0%</strong>
+          </div>
+          <div class="profit-preview-item">
+            <span>Total Stock Profit</span>
+            <strong id="editTotalStockProfit">₹0</strong>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Compare Price / MRP (₹)</label>
+            <input type="number" class="form-input" id="editComparePrice" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brand</label>
+            <input type="text" class="form-input" id="editBrand" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Product Image URL</label>
+          <input type="url" class="form-input" id="editImageUrl" oninput="previewImage('editImageUrl', 'editImagePreview')" />
+          <div style="margin-top:10px;text-align:center;">
+            <img id="editImagePreview" src="" style="width:100px;height:70px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border);" alt="Preview" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea class="form-textarea" id="editDescription" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-header-action btn-ghost-action" onclick="closeModal('editProductModal')">Cancel</button>
+        <button type="submit" class="btn-header-action btn-primary-action" id="editSubmitBtn">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- QUICK STOCK ADJUST MODAL -->
+<div class="modal-overlay" id="quickStockModal">
+  <div class="modal-dialog" style="max-width:440px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-boxes-stacked" style="color:var(--accent-amber);margin-right:8px;"></i> Adjust Stock</h3>
+      <button class="modal-close-btn" onclick="closeModal('quickStockModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="quickStockProductId" />
+      <p id="quickStockProductName" style="font-weight:700;margin-bottom:14px;color:#fff;"></p>
+      
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:20px 0;">
+        <button type="button" class="btn-icon-action" style="width:42px;height:42px;font-size:1.1rem;" onclick="adjustStockDelta(-5)">-5</button>
+        <button type="button" class="btn-icon-action" style="width:42px;height:42px;font-size:1.1rem;" onclick="adjustStockDelta(-1)">-1</button>
+        <input type="number" id="quickStockValue" min="0" style="width:100px;text-align:center;font-size:1.4rem;font-weight:800;background:#1e293b;border:1.5px solid var(--border);border-radius:var(--radius-md);padding:8px;color:#fff;" />
+        <button type="button" class="btn-icon-action" style="width:42px;height:42px;font-size:1.1rem;" onclick="adjustStockDelta(1)">+1</button>
+        <button type="button" class="btn-icon-action" style="width:42px;height:42px;font-size:1.1rem;" onclick="adjustStockDelta(5)">+5</button>
+      </div>
+      
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;">
+        <button type="button" class="preset-chip" onclick="setQuickStockDirect(0)">Out of Stock (0)</button>
+        <button type="button" class="preset-chip" onclick="setQuickStockDirect(10)">Set 10</button>
+        <button type="button" class="preset-chip" onclick="setQuickStockDirect(50)">Set 50</button>
+        <button type="button" class="preset-chip" onclick="setQuickStockDirect(100)">Set 100</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-header-action btn-ghost-action" onclick="closeModal('quickStockModal')">Cancel</button>
+      <button type="button" class="btn-header-action btn-primary-action" onclick="saveQuickStock()">
+        <i class="fas fa-check"></i> Update Stock
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div class="modal-overlay" id="deleteConfirmModal">
+  <div class="modal-dialog" style="max-width:440px;">
+    <div class="modal-header">
+      <h3 style="color:var(--accent-rose);"><i class="fas fa-trash-alt" style="margin-right:8px;"></i> Delete Product</h3>
+      <button class="modal-close-btn" onclick="closeModal('deleteConfirmModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="deleteProductId" />
+      <p style="color:var(--txt-muted);margin-bottom:12px;">Are you sure you want to permanently delete this product from MongoDB and remove it from the website?</p>
+      <div id="deleteProductName" style="font-weight:800;color:#fff;padding:12px;background:rgba(244,63,94,0.1);border-radius:var(--radius-md);border:1px solid rgba(244,63,94,0.3);"></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-header-action btn-ghost-action" onclick="closeModal('deleteConfirmModal')">Cancel</button>
+      <button type="button" class="btn-header-action" style="background:var(--accent-rose);color:#fff;" onclick="confirmDeleteProduct()">
+        <i class="fas fa-trash"></i> Yes, Delete Product
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN / AUTH MODAL -->
+<div class="modal-overlay" id="adminAuthModal">
+  <div class="modal-dialog" style="max-width:440px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-shield-halved" style="color:var(--accent-cyan);margin-right:8px;"></i> Admin Sign In</h3>
+      <button class="modal-close-btn" onclick="closeModal('adminAuthModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <form onsubmit="handleAdminLoginSubmit(event)">
+      <div class="modal-body">
+        <p style="font-size:0.88rem;color:var(--txt-muted);margin-bottom:18px;">
+          Sign in with your administrator account to manage store products, stock, and profit analytics.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Admin Email</label>
+          <input type="email" class="form-input" id="authEmail" required value="admin@shopease.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="authPassword" required value="Admin@123" />
+        </div>
+        <div style="font-size:0.78rem;color:var(--txt-dim);padding:8px 12px;background:rgba(6,182,212,0.1);border-radius:var(--radius-sm);border:1px solid rgba(6,182,212,0.2);">
+          💡 Default Credentials: <strong>admin@shopease.com</strong> / <strong>Admin@123</strong>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn-header-action btn-primary-action" style="width:100%;">
+          <i class="fas fa-key"></i> Sign In to Admin Panel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="admin-toast-container" id="adminToastContainer"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

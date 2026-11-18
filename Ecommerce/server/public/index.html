@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEase — Modern Online Shopping & Lifestyle Store</title>
+  <meta name="description" content="ShopEase — Premium online shopping with curated electronics, fashion, lifestyle, and superfast delivery." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<!-- Ambient Backdrop Glow -->
+<div class="ambient-glow-bg"></div>
+
+<!-- ══════════════════════ LOADING SCREEN ══════════════════════ -->
+<div id="loadingScreen" class="loading-screen">
+  <div class="loader-content">
+    <div class="loader-logo"><i class="fas fa-shopping-bag"></i> Shop<em>Ease</em></div>
+    <div class="loader-spinner"></div>
+    <p>Loading your shopping experience…</p>
+  </div>
+</div>
+<script>
+  setTimeout(function() {
+    var l = document.getElementById('loadingScreen');
+    if (l && !l.classList.contains('hidden')) {
+      l.classList.add('hidden');
+    }
+  }, 1800);
+</script>
+
+<!-- ══════════════════════ TOP STRIP ══════════════════════ -->
+<div class="top-strip">
+  <div class="wrap">
+    <div class="ts-left">
+      <span><i class="fas fa-truck-fast"></i> Free Shipping on orders over ₹499 | <strong>India</strong></span>
+      <span class="sep">|</span>
+      <span><i class="fas fa-shield-alt"></i> 100% Encrypted & Secure Checkout</span>
+      <span class="sep">|</span>
+      <span><i class="fas fa-headset"></i> 24/7 Dedicated Support</span>
+    </div>
+    <div class="ts-right">
+      <!-- Theme Switcher -->
+      <div class="theme-selector">
+        <i class="fas fa-palette" style="color:var(--primary);"></i>
+        <select id="themeSelect" onchange="changeTheme(this.value)">
+          <option value="dark">🌙 Modern Dark</option>
+          <option value="light">☀️ Studio Light</option>
+          <option value="royal">💎 Royal Indigo</option>
+          <option value="obsidian">👑 Obsidian Luxe</option>
+        </select>
+      </div>
+      <span class="sep">|</span>
+      <a href="#" onclick="showMyOrdersPage()"><i class="fas fa-box-open"></i> My Orders</a>
+      <a href="#" onclick="showAuthModal('login')"><i class="fas fa-user"></i> Login</a>
+      <a href="#" onclick="showAuthModal('register')"><i class="fas fa-user-plus"></i> Join Free</a>
+      <a href="#" onclick="showSellPage()"><i class="fas fa-store"></i> Sell on ShopEase</a>
+      <a href="admin.html" style="color:var(--accent-cyan);font-weight:700;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-shield-halved"></i> Admin Panel</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ MAIN HEADER ══════════════════════ -->
+<header class="main-header" id="mainHeader">
+  <div class="wrap header-inner">
+
+    <!-- Logo -->
+    <a class="logo" href="#" onclick="loadHome()">
+      <span class="logo-icon"><i class="fas fa-bolt"></i></span>
+      <span class="logo-text">Shop<em>Ease</em></span>
+    </a>
+
+    <!-- Search Box -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <select class="search-cat" id="searchCat">
+          <option value="">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Fashion">Fashion</option>
+          <option value="Home & Kitchen">Home & Kitchen</option>
+          <option value="Books">Books</option>
+          <option value="Sports & Fitness">Sports</option>
+          <option value="Fresh Fruits">Fresh Fruits</option>
+        </select>
+        <input type="text" id="mainSearch" placeholder="Search for products, brands and categories..." autocomplete="off" />
+        <button class="search-btn" onclick="performSearch()"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="header-actions">
+      <div class="hact" id="userAccountBtn" onclick="showUserMenu()">
+        <i class="fas fa-user-circle"></i>
+        <div class="hact-txt">
+          <span class="hact-sub" id="userAccountSub">Welcome</span>
+          <span class="hact-main" id="userAccountMain">Sign In <i class="fas fa-chevron-down" style="font-size:.7rem;"></i></span>
+        </div>
+      </div>
+      <div class="hact" onclick="showMyOrdersPage()">
+        <i class="fas fa-box-open"></i>
+        <div class="hact-txt">
+          <span class="hact-sub">Track</span>
+          <span class="hact-main">Orders <span class="hbadge" id="ordersCount">0</span></span>
+        </div>
+      </div>
+      <div class="hact" onclick="showWishlist()">
+        <i class="fas fa-heart"></i>
+        <div class="hact-txt">
+          <span class="hact-sub">Saved</span>
+          <span class="hact-main">Wishlist <span class="hbadge" id="wishlistCount">0</span></span>
+        </div>
+      </div>
+      <div class="hact cart-hact" onclick="showCart()">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="cart-badge" id="cartCount">0</span>
+        <div class="hact-txt">
+          <span class="hact-sub">Your</span>
+          <span class="hact-main">Cart</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<!-- ══════════════════════ NAVBAR ══════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-item all-menu" onclick="loadHome()">
+      <i class="fas fa-border-all"></i> All Categories
+    </a>
+    <a href="#" class="nav-item active" id="navHomeBtn" onclick="loadHome()"><i class="fas fa-home"></i> Home</a>
+    <a href="#" class="nav-item hot" onclick="showDeals()"><i class="fas fa-fire"></i> Flash Deals</a>
+    <a href="#" class="nav-item" id="navOrdersBtn" onclick="showMyOrdersPage()"><i class="fas fa-box-open"></i> My Orders</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Electronics')"><i class="fas fa-laptop"></i> Electronics</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Fashion')"><i class="fas fa-shirt"></i> Fashion</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Home & Kitchen')"><i class="fas fa-couch"></i> Home & Kitchen</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Books')"><i class="fas fa-book-open"></i> Books</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Sports & Fitness')"><i class="fas fa-dumbbell"></i> Sports</a>
+    <a href="#" class="nav-item" onclick="filterByCategory('Fresh Fruits')"><i class="fas fa-apple-whole"></i> Fresh Organics</a>
+    <a href="admin.html" class="nav-item admin-nav-btn" style="color:var(--accent-cyan);background:rgba(6,182,212,0.1);border-radius:20px;padding:6px 14px;border:1px solid rgba(6,182,212,0.25);margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-weight:700;"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════ HERO BANNER SLIDER ══════════════════════ -->
+<section class="hero-section">
+  <div class="wrap hero-wrap">
+    <div class="hero-slider" id="heroSlider">
+
+      <!-- Slide 1 -->
+      <div class="hero-slide active" style="background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(99,102,241,0.2));">
+        <div class="slide-content">
+          <span class="slide-tag"><i class="fas fa-star" style="color:var(--accent-cyan);"></i> Flagship Tech Collection</span>
+          <h1>Premium <span>Electronics</span> Up to 50% Off</h1>
+          <p>MacBook Pro M3, iPhone 15 Pro, Sony ANC Headphones & high-performance gadgets.</p>
+          <div class="slide-btns">
+            <button class="btn-slide-primary" onclick="filterByCategory('Electronics')">Explore Products <i class="fas fa-arrow-right"></i></button>
+            <button class="btn-slide-secondary" onclick="showDeals()">View All Deals</button>
+          </div>
+          <div class="slide-badges">
+            <span><i class="fas fa-truck-fast"></i> Express Delivery</span>
+            <span><i class="fas fa-shield-check"></i> 1-Year Warranty</span>
+            <span><i class="fas fa-rotate-left"></i> Easy Returns</span>
+          </div>
+        </div>
+        <div class="slide-img">
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=420&fit=crop" alt="Electronics Sale" />
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="hero-slide" style="background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(168,85,247,0.2));">
+        <div class="slide-content">
+          <span class="slide-tag"><i class="fas fa-crown" style="color:var(--accent-amber);"></i> Season's Best Picks</span>
+          <h1>Trending <span>Fashion & Lifestyle</span></h1>
+          <p>Discover designer denim, urban jackets, tailored blazers & sneakers built for all-day comfort.</p>
+          <div class="slide-btns">
+            <button class="btn-slide-primary" onclick="filterByCategory('Fashion')">Shop Fashion <i class="fas fa-arrow-right"></i></button>
+            <button class="btn-slide-secondary" onclick="showDeals()">View Deals</button>
+          </div>
+          <div class="slide-badges">
+            <span><i class="fas fa-percent"></i> Flat 40% Off</span>
+            <span><i class="fas fa-medal"></i> 100% Genuine Brands</span>
+          </div>
+        </div>
+        <div class="slide-img">
+          <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600&h=420&fit=crop" alt="Fashion Week" />
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="hero-slide" style="background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(6,182,212,0.2));">
+        <div class="slide-content">
+          <span class="slide-tag"><i class="fas fa-leaf" style="color:var(--accent-emerald);"></i> 100% Certified Organic</span>
+          <h1>Fresh <span>Organics</span> Farm to Table</h1>
+          <p>Hand-picked fruits, natural whole foods & cold-pressed goodness delivered crisp and fresh.</p>
+          <div class="slide-btns">
+            <button class="btn-slide-primary" onclick="filterByCategory('Fresh Fruits')">Order Organics <i class="fas fa-arrow-right"></i></button>
+            <button class="btn-slide-secondary" onclick="loadHome()">Browse All</button>
+          </div>
+          <div class="slide-badges">
+            <span><i class="fas fa-seedling"></i> Farm Fresh</span>
+            <span><i class="fas fa-truck-fast"></i> Same-Day Delivery</span>
+          </div>
+        </div>
+        <div class="slide-img">
+          <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&h=420&fit=crop" alt="Fresh Organics" />
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Controls -->
+    <button class="slider-prev" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+    <button class="slider-next" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></button>
+    <div class="slider-dots" id="sliderDots">
+      <span class="dot active" onclick="goToSlide(0)"></span>
+      <span class="dot" onclick="goToSlide(1)"></span>
+      <span class="dot" onclick="goToSlide(2)"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ CATEGORY ICON STRIP ══════════════════════ -->
+<section class="cat-strip-section">
+  <div class="wrap">
+    <div class="cat-strip">
+      <div class="cat-item" onclick="loadHome()">
+        <div class="cat-icon" style="background:rgba(99, 102, 241, 0.15); color:var(--primary);"><i class="fas fa-border-all"></i></div>
+        <span>All Items</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Electronics')">
+        <div class="cat-icon" style="background:rgba(6, 182, 212, 0.15); color:var(--accent-cyan);"><i class="fas fa-microchip"></i></div>
+        <span>Electronics</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Fashion')">
+        <div class="cat-icon" style="background:rgba(236, 72, 153, 0.15); color:var(--accent-pink);"><i class="fas fa-shirt"></i></div>
+        <span>Fashion</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Home & Kitchen')">
+        <div class="cat-icon" style="background:rgba(168, 85, 247, 0.15); color:var(--accent-purple);"><i class="fas fa-couch"></i></div>
+        <span>Home</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Books')">
+        <div class="cat-icon" style="background:rgba(245, 158, 11, 0.15); color:var(--accent-amber);"><i class="fas fa-book-open"></i></div>
+        <span>Books</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Sports & Fitness')">
+        <div class="cat-icon" style="background:rgba(16, 185, 129, 0.15); color:var(--accent-emerald);"><i class="fas fa-dumbbell"></i></div>
+        <span>Sports</span>
+      </div>
+      <div class="cat-item" onclick="filterByCategory('Fresh Fruits')">
+        <div class="cat-icon" style="background:rgba(52, 211, 153, 0.15); color:#34d399;"><i class="fas fa-apple-whole"></i></div>
+        <span>Organics</span>
+      </div>
+      <div class="cat-item" onclick="showDeals()">
+        <div class="cat-icon" style="background:rgba(244, 63, 94, 0.15); color:#f43f5e;"><i class="fas fa-fire"></i></div>
+        <span>Flash Deals</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ DEAL OF THE DAY STRIP ══════════════════════ -->
+<section class="deal-strip">
+  <div class="wrap deal-strip-inner">
+    <div class="deal-label">
+      <i class="fas fa-fire" style="color:var(--accent-amber);"></i>
+      <div>
+        <span class="dl-title">Super Flash Deals</span>
+        <span class="dl-sub">Limited Quantities • Ends In</span>
+      </div>
+      <div class="countdown" id="countdown">
+        <div class="cnt-box"><span id="cntH">08</span><small>HRS</small></div>
+        <span class="cnt-sep">:</span>
+        <div class="cnt-box"><span id="cntM">45</span><small>MIN</small></div>
+        <span class="cnt-sep">:</span>
+        <div class="cnt-box"><span id="cntS">00</span><small>SEC</small></div>
+      </div>
+    </div>
+    <div class="deal-cards" id="dealCards"></div>
+    <button class="deal-more" onclick="showDeals()">View Flash Deals <i class="fas fa-arrow-right"></i></button>
+  </div>
+</section>
+
+<!-- ══════════════════════ TRUST BADGES ══════════════════════ -->
+<section class="trust-section">
+  <div class="wrap trust-grid">
+    <div class="trust-item">
+      <i class="fas fa-truck-fast"></i>
+      <div><strong>Express Delivery</strong><span>Fast 24-48hr dispatch across India</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-rotate-left"></i>
+      <div><strong>7-Day Easy Returns</strong><span>Hassle-free instant refunds</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-shield-alt"></i>
+      <div><strong>100% Secure Checkout</strong><span>PCI-DSS & 256-Bit SSL protected</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-headset"></i>
+      <div><strong>24/7 Customer Care</strong><span>Dedicated live agent support</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ MY ORDERS SECTION ══════════════════════ -->
+<section id="ordersSection" class="orders-section" style="display:none;padding:40px 0 60px;">
+  <div class="wrap">
+    <div class="orders-page-header">
+      <div class="oph-left">
+        <button class="btn-back-shop" onclick="loadHome()"><i class="fas fa-arrow-left"></i> Back to Shopping</button>
+        <h2><i class="fas fa-box-open" style="color:var(--primary);"></i> My Orders</h2>
+        <p>Track your orders, view receipts, and monitor live express delivery status.</p>
+      </div>
+      <div class="oph-tabs">
+        <button class="order-tab-btn active" onclick="filterOrdersTab('all', this)">All Orders</button>
+        <button class="order-tab-btn" onclick="filterOrdersTab('active', this)">Active / Transit</button>
+        <button class="order-tab-btn" onclick="filterOrdersTab('delivered', this)">Delivered</button>
+      </div>
+    </div>
+    <div id="ordersListContainer" class="orders-list-container"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════ FILTER + PRODUCTS ══════════════════════ -->
+<section class="shop-section" id="shopSection">
+  <div class="wrap shop-layout">
+
+    <!-- Sidebar Filters -->
+    <aside class="sidebar">
+      <div class="sb-card">
+        <div class="sb-title"><i class="fas fa-sliders"></i> Smart Filters</div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Category</div>
+          <label class="sb-check"><input type="radio" name="sbCat" value="" onchange="applyFilters()" checked /> All Categories</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Electronics" onchange="applyFilters()" /> Electronics</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Fashion" onchange="applyFilters()" /> Fashion</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Home & Kitchen" onchange="applyFilters()" /> Home & Kitchen</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Books" onchange="applyFilters()" /> Books</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Sports & Fitness" onchange="applyFilters()" /> Sports & Fitness</label>
+          <label class="sb-check"><input type="radio" name="sbCat" value="Fresh Fruits" onchange="applyFilters()" /> Fresh Organics</label>
+        </div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Price Range</div>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="" onchange="applyFilters()" checked /> Any Price</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="0-500" onchange="applyFilters()" /> Under ₹500</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="500-2000" onchange="applyFilters()" /> ₹500 – ₹2,000</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="2000-10000" onchange="applyFilters()" /> ₹2,000 – ₹10,000</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="10000-50000" onchange="applyFilters()" /> ₹10,000 – ₹50,000</label>
+          <label class="sb-check"><input type="radio" name="sbPrice" value="50000-" onchange="applyFilters()" /> Above ₹50,000</label>
+        </div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Customer Rating</div>
+          <label class="sb-check"><input type="radio" name="sbRating" value="" onchange="applyFilters()" checked /> All Ratings</label>
+          <label class="sb-check"><input type="radio" name="sbRating" value="4" onchange="applyFilters()" /> ⭐ 4.0 & above</label>
+          <label class="sb-check"><input type="radio" name="sbRating" value="3" onchange="applyFilters()" /> ⭐ 3.0 & above</label>
+        </div>
+
+        <div class="sb-group">
+          <div class="sb-group-title">Availability</div>
+          <label class="sb-check"><input type="checkbox" id="sbInStock" onchange="applyFilters()" /> In Stock Only</label>
+        </div>
+
+        <button class="sb-clear" onclick="clearFilters()"><i class="fas fa-rotate-left"></i> Reset Filters</button>
+      </div>
+    </aside>
+
+    <!-- Products Area -->
+    <div class="products-area">
+
+      <!-- Sort Bar -->
+      <div class="sort-bar">
+        <div class="sort-info">
+          <span id="productCount">Loading products…</span>
+        </div>
+        <div class="sort-controls">
+          <span>Sort:</span>
+          <button class="sort-btn active" data-sort="popularity" onclick="setSortActive(this,'popularity')">Popularity</button>
+          <button class="sort-btn" data-sort="price-low" onclick="setSortActive(this,'price-low')">Price ↑</button>
+          <button class="sort-btn" data-sort="price-high" onclick="setSortActive(this,'price-high')">Price ↓</button>
+          <button class="sort-btn" data-sort="rating" onclick="setSortActive(this,'rating')">Rating</button>
+          <button class="sort-btn" data-sort="newest" onclick="setSortActive(this,'newest')">Newest</button>
+        </div>
+      </div>
+
+      <div id="loading" class="loading-indicator">
+        <div class="spin-ring"></div>
+        <p>Loading curated products…</p>
+      </div>
+
+      <div id="productsGrid" class="products-grid"></div>
+
+      <div id="noProducts" class="no-products" style="display:none;">
+        <img src="https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=200&h=200&fit=crop" alt="No results" style="border-radius:50%;opacity:.7;margin-bottom:20px;width:120px;" />
+        <h3>No Products Found</h3>
+        <p style="margin-bottom:16px;">Try clearing filters or modifying search keywords.</p>
+        <button class="btn-slide-primary" onclick="clearFilters()">Reset Filters</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════ PROMO BANNER ══════════════════════ -->
+<section class="promo-section">
+  <div class="wrap promo-grid">
+    <div class="promo-card" onclick="filterByCategory('Electronics')" style="background:linear-gradient(135deg, rgba(15,23,42,0.9), rgba(99,102,241,0.3));">
+      <div class="promo-text">
+        <span class="promo-tag">Electronics</span>
+        <h3>Up to 50% OFF</h3>
+        <p>Flagship smartphones & laptops</p>
+        <span class="promo-cta">Shop Gear <i class="fas fa-arrow-right"></i></span>
+      </div>
+      <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=200&h=150&fit=crop" alt="Electronics" />
+    </div>
+    <div class="promo-card" onclick="filterByCategory('Fashion')" style="background:linear-gradient(135deg, rgba(15,23,42,0.9), rgba(236,72,153,0.3));">
+      <div class="promo-text">
+        <span class="promo-tag">Trending Fashion</span>
+        <h3>New Arrivals</h3>
+        <p>Contemporary street apparel</p>
+        <span class="promo-cta">Explore Style <i class="fas fa-arrow-right"></i></span>
+      </div>
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=150&fit=crop" alt="Fashion" />
+    </div>
+    <div class="promo-card" onclick="filterByCategory('Fresh Fruits')" style="background:linear-gradient(135deg, rgba(15,23,42,0.9), rgba(6,182,212,0.3));">
+      <div class="promo-text">
+        <span class="promo-tag">Fresh Harvest</span>
+        <h3>Direct From Farm</h3>
+        <p>100% organic guaranteed</p>
+        <span class="promo-cta">Order Fresh <i class="fas fa-arrow-right"></i></span>
+      </div>
+      <img src="https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?w=200&h=150&fit=crop" alt="Fresh Fruits" />
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer class="main-footer">
+  <div class="wrap">
+    <div class="footer-top-grid">
+      <div class="ft-col">
+        <div class="ft-logo"><i class="fas fa-shopping-bag" style="color:var(--primary);"></i> Shop<em>Ease</em></div>
+        <p>India's premier online shopping destination. Delivering curated top-tier products, secure checkout, and express delivery right to your doorstep.</p>
+        <div class="ft-social">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-discord"></i></a>
+        </div>
+      </div>
+      <div class="ft-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#">About Platform</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press Kit</a></li>
+          <li><a href="#">Engineering Blog</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Track Package</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Vault Security</a></li>
+          <li><a href="#">Help Center</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="#" onclick="filterByCategory('Electronics')">Electronics</a></li>
+          <li><a href="#" onclick="filterByCategory('Fashion')">Fashion</a></li>
+          <li><a href="#" onclick="filterByCategory('Home & Kitchen')">Home & Kitchen</a></li>
+          <li><a href="#" onclick="filterByCategory('Books')">Books</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Payment Methods</h4>
+        <p style="font-size:.85rem;margin-bottom:12px;color:var(--txt3);">Encrypted via 256-Bit SSL</p>
+        <div style="font-size:1.5rem;display:flex;gap:12px;color:var(--txt2);">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-google-pay"></i>
+          <i class="fas fa-shield-halved"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ShopEase Retail Pvt. Ltd. All rights reserved.</p>
+      <div style="display:flex;gap:16px;">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════ MODALS ══════════════════════ -->
+
+<!-- Auth Modal -->
+<div id="authModal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+    <div id="authContent"></div>
+  </div>
+</div>
+
+<!-- Product Quick View Modal -->
+<div id="productModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:780px;">
+    <button class="modal-close" onclick="closeModal('productModal')"><i class="fas fa-times"></i></button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- UPI QR Code Payment Modal -->
+<div id="upiModal" class="modal-overlay">
+  <div class="modal-card upi-modal-card" style="max-width:500px;padding:0;overflow:hidden;border-radius:24px;">
+    <div class="upi-header">
+      <div class="upi-header-title">
+        <i class="fas fa-shield-alt" style="color:var(--accent-emerald);"></i>
+        <span>Scan QR code to use UPI</span>
+      </div>
+      <button class="modal-close" onclick="closeModal('upiModal')" style="position:static;"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="upiModalBody" class="upi-modal-body"></div>
+  </div>
+</div>
+
+<!-- Live Order GPS Tracking Modal -->
+<div id="trackingModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:600px;padding:28px;">
+    <button class="modal-close" onclick="closeModal('trackingModal')"><i class="fas fa-times"></i></button>
+    <div id="trackingModalBody"></div>
+  </div>
+</div>
+
+<!-- Order Invoice Modal -->
+<div id="invoiceModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:640px;padding:28px;">
+    <button class="modal-close" onclick="closeModal('invoiceModal')"><i class="fas fa-times"></i></button>
+    <div id="invoiceModalBody"></div>
+  </div>
+</div>
+
+<!-- Slide-Over Cart Drawer -->
+<div id="cartModal" class="cart-drawer">
+  <div class="cart-header">
+    <h3><i class="fas fa-shopping-bag" style="color:var(--primary);"></i> Shopping Cart</h3>
+    <button class="modal-close" onclick="closeModal('cartModal')" style="position:static;"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-body">
+    <div id="cartItems"></div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total-row" style="display:none;" id="cartDiscountRow"><span>Discount</span><span style="color:var(--accent-emerald);">- ₹<span id="cartDiscount">0</span></span></div>
+    <div class="cart-total-row"><span>Total Amount</span><span>₹<span id="cartTotal">0</span></span></div>
+    <p style="font-size:.8rem;color:var(--accent-emerald);margin-bottom:14px;" id="cartSavingsNote"><i class="fas fa-tag"></i> Saving ₹<span id="cartSavings">0</span> on this order!</p>
+    <button class="btn-checkout" onclick="proceedToCheckout()">
+      <i class="fas fa-lock"></i> Proceed to Secure Checkout
+    </button>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<button class="slider-prev" id="backToTop" onclick="scrollToTop()" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9000;box-shadow:var(--shadow-neon);">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Notification Container -->
+<div id="notificationContainer" style="position:fixed;bottom:24px;left:24px;z-index:99999;display:flex;flex-direction:column;gap:10px;"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

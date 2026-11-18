@@ -11,6 +11,8 @@
  */
 
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -32,7 +34,8 @@ const app = express();
 // ── 1. Security Headers (Helmet) ─────────────────────────────────────────────
 app.use(
   helmet({
-    crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow images from Cloudinary
+    crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow images from Cloudinary & Unsplash
+    contentSecurityPolicy: false, // allow CDNs (FontAwesome, Google Fonts, Unsplash)
   })
 );
 
@@ -131,15 +134,31 @@ app.use('/api', (req, res, next) => {
 // Prevent NoSQL injection attacks (e.g. { "$gt": "" })
 app.use(mongoSanitize());
 
-// ── 7. Root Welcome Route ────────────────────────────────────────────────────
-app.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: '🛒 Welcome to ShopEase API',
-    version: '1.0.0',
-    docs: '/api/health',
+// ── 7. Frontend Static Files & Routes ─────────────────────────────────────────
+const clientStaticDir = fs.existsSync(path.join(__dirname, 'public'))
+  ? path.join(__dirname, 'public')
+  : (fs.existsSync(path.join(__dirname, '../client')) ? path.join(__dirname, '../client') : null);
+
+if (clientStaticDir) {
+  app.use(express.static(clientStaticDir));
+
+  app.get('/admin', (req, res) => {
+    res.sendFile(path.join(clientStaticDir, 'admin.html'));
   });
-});
+
+  app.get('/audit', (req, res) => {
+    res.sendFile(path.join(clientStaticDir, 'audit.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: '🛒 Welcome to ShopEase API',
+      version: '1.0.0',
+      docs: '/api/health',
+    });
+  });
+}
 
 // ── 8. API Routes ─────────────────────────────────────────────────────────────
 app.use('/api/products', productRoutes);
@@ -148,7 +167,16 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api', routes);
 
-// ── 9. 404 Handler (for unmatched routes) ────────────────────────────────────
+// ── 9. Frontend SPA Fallback & 404 Handler ───────────────────────────────────
+if (clientStaticDir) {
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientStaticDir, 'index.html'));
+  });
+}
+
 app.all('*', (req, res, next) => {
   next(new AppError(`Route not found: ${req.method} ${req.originalUrl}`, 404));
 });

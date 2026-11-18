@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Catalog Images Audit</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #0f172a; color: #fff; padding: 20px; }
+    h1 { margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .card { background: #1e293b; border-radius: 12px; overflow: hidden; border: 1px solid #334155; }
+    .img-wrap { width: 100%; height: 200px; background: #000; position: relative; }
+    img { width: 100%; height: 100%; object-fit: cover; }
+    .badge { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); font-size: 11px; padding: 4px 8px; border-radius: 6px; }
+    .info { padding: 12px; }
+    .cat { font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 600; }
+    .title { font-size: 14px; font-weight: 600; margin: 4px 0; color: #f8fafc; }
+    .desc { font-size: 12px; color: #cbd5e1; height: 36px; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <h1>ShopEase Product Catalog Image Audit (<span id="total"></span> products)</h1>
+  <div class="grid" id="grid"></div>
+
+  <script src="./seed/products.seed.js"></script>
+  <script>
+    // In node module export, so let's load via fetch
+    fetch('/api/products?limit=100')
+      .then(r => r.json())
+      .then(d => {
+        const prods = d.products || [];
+        document.getElementById('total').textContent = prods.length;
+        document.getElementById('grid').innerHTML = prods.map(p => `
+          <div class="card">
+            <div class="img-wrap">
+              <span class="badge">${p.category}</span>
+              <img src="${p.images?.[0]?.url || p.imageUrl || ''}" alt="${p.name}" />
+            </div>
+            <div class="info">
+              <div class="cat">${p.category}</div>
+              <div class="title">${p.name}</div>
+              <div class="desc">${p.description || ''}</div>
+            </div>
+          </div>
+        `).join('');
+      });
+  </script>
+</body>
+</html>
