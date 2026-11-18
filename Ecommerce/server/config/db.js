@@ -15,12 +15,14 @@ const connectDB = async () => {
   if (isConnecting) return;
   isConnecting = true;
 
-  // Try local MongoDB FIRST, then Atlas as fallback
-  const urisToTry = [
-    'mongodb://127.0.0.1:27017/agrifresh',
-    'mongodb://localhost:27017/agrifresh',
-    process.env.MONGODB_URI,
-  ].filter(Boolean);
+  // In production (Render), connect directly to MONGODB_URI (Atlas). In dev, try local first.
+  const urisToTry = (process.env.NODE_ENV === 'production' && process.env.MONGODB_URI)
+    ? [process.env.MONGODB_URI]
+    : [
+        'mongodb://127.0.0.1:27017/agrifresh',
+        'mongodb://localhost:27017/agrifresh',
+        process.env.MONGODB_URI,
+      ].filter(Boolean);
 
   for (const uri of urisToTry) {
     const label = uri.includes('mongodb.net') ? 'Atlas' : 'Local MongoDB';
