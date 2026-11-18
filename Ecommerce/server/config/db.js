@@ -33,6 +33,18 @@ const connectDB = async () => {
       console.log(`✅ MongoDB Connected: ${conn.connection.host} (${label})`);
       retryCount = 0;
       isConnecting = false;
+
+      // Auto-seed if database is newly created or empty
+      try {
+        const Product = conn.model('Product');
+        const count = await Product.countDocuments();
+        if (count === 0) {
+          const seedProducts = require('../seed/products.seed');
+          await Product.insertMany(seedProducts);
+          console.log(`🌱 Auto-seeded ${seedProducts.length} products into ${label}!`);
+        }
+      } catch (seedErr) {}
+
       return;
     } catch (error) {
       console.warn(`⚠️  ${label} connection failed: ${error.message.split('\n')[0]}`);

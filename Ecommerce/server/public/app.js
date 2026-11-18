@@ -286,11 +286,27 @@ async function loadProducts() {
   try {
     if (loadingEl) loadingEl.style.display = 'flex';
 
-    const res = await fetch(`${API_URL}/products?limit=1000`);
-    const data = await res.json();
-    const raw = (data.success && data.products) ? data.products : (Array.isArray(data) ? data : []);
+    let raw = [];
+    try {
+      const res = await fetch(`${API_URL}/products?limit=1000`);
+      if (res.ok) {
+        const data = await res.json();
+        raw = (data.success && data.products) ? data.products : (Array.isArray(data) ? data : []);
+      }
+    } catch (e) {
+      console.warn('API fetch products error:', e.message);
+    }
 
-    allProducts = raw.map(normalizeProduct);
+    if (!raw || !raw.length) {
+      try {
+        const fallbackRes = await fetch('/products.json');
+        if (fallbackRes.ok) raw = await fallbackRes.json();
+      } catch (fbErr) {
+        console.warn('Static products.json fallback error:', fbErr.message);
+      }
+    }
+
+    allProducts = (raw || []).map(normalizeProduct);
     displayProducts(allProducts);
     renderDealCards();
     updateDynamicCategories();
@@ -303,7 +319,7 @@ async function loadProducts() {
     allProducts = [];
     displayProducts(allProducts);
     const countEl = document.getElementById('productCount');
-    if (countEl) countEl.textContent = `0 Products (Connect API)`;
+    if (countEl) countEl.textContent = `0 Products Found`;
     if (loadingEl) loadingEl.style.display = 'none';
   }
 }

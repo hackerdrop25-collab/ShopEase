@@ -15,25 +15,53 @@ const ApiFeatures = require('../utils/apiFeatures');
  */
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const productsCount = await Product.countDocuments();
-    const limit = parseInt(req.query.limit, 10) || 1000;
+    const mongoose = require('mongoose');
+    let products = [];
+    let productsCount = 0;
 
-    const queryCopy = { ...req.query };
-    queryCopy.limit = limit;
+    if (mongoose.connection.readyState === 1) {
+      try {
+        productsCount = await Product.countDocuments();
+        if (productsCount > 0) {
+          const limit = parseInt(req.query.limit, 10) || 1000;
+          const queryCopy = { ...req.query };
+          queryCopy.limit = limit;
 
-    const apiFeature = new ApiFeatures(Product.find(), queryCopy)
-      .search(['name', 'title', 'description', 'category', 'brand'])
-      .filter()
-      .sort()
-      .paginate();
+          const apiFeature = new ApiFeatures(Product.find(), queryCopy)
+            .search(['name', 'title', 'description', 'category', 'brand'])
+            .filter()
+            .sort()
+            .paginate();
 
-    const products = await apiFeature.query;
+          products = await apiFeature.query;
 
-    sendResponse(res, 200, 'Products fetched successfully', {
-      products,
-      productsCount,
-      count: products.length,
-      filteredProductsCount: products.length,
+          return sendResponse(res, 200, 'Products fetched successfully', {
+            products,
+            productsCount,
+            count: products.length,
+            filteredProductsCount: products.length,
+          });
+        }
+      } catch (dbErr) {
+        console.warn('DB query error, serving static catalog:', dbErr.message);
+      }
+    }
+
+    // Static catalog fallback (ensures store always displays full catalog on Render or offline)
+    let fallback = require('../all_products.json');
+    if (req.query.category) {
+      const cat = req.query.category.toLowerCase();
+      fallback = fallback.filter(p => (p.category || '').toLowerCase() === cat);
+    }
+    if (req.query.keyword || req.query.search) {
+      const q = (req.query.keyword || req.query.search).toLowerCase();
+      fallback = fallback.filter(p => (p.name || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q));
+    }
+    return sendResponse(res, 200, 'Products fetched successfully', {
+      products: fallback,
+      productsCount: fallback.length,
+      count: fallback.length,
+      filteredProductsCount: fallback.length,
     });
   } catch (error) {
     next(error);
@@ -67,8 +95,18 @@ exports.getAllProductsAdmin = async (req, res, next) => {
  */
 exports.getProductDetails = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const mongoose = require('mongoose');
+    if (mongoose.connection.readyState === 1) {
+      try {
+        const product = await Product.findById(req.params.id);
+        if (product) {
+          return sendResponse(res, 200, 'Product fetched successfully', { product });
+        }
+      } catch {}
+    }
 
+    const fallback = require('../all_products.json');
+    const product = fallback.find(p => String(p._id) === String(req.params.id) || p.name === req.params.id);
     if (!product) {
       return res.status(404).json({
         success: false,

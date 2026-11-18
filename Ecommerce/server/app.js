@@ -121,6 +121,10 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' })); // parse URL-enc
 app.use(cookieParser());                             // parse Cookie header
 
 app.use('/api', (req, res, next) => {
+  // Allow products catalog, health, and read-only routes to serve data even if DB is reconnecting
+  if (req.method === 'GET' && (req.path.startsWith('/products') || req.path === '/health' || req.path === '/categories')) {
+    return next();
+  }
   if (mongoose.connection.readyState !== 1) {
     return res.status(503).json({
       success: false,
