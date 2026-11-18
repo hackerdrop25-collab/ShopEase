@@ -909,122 +909,92 @@ function showAuthModal(type) {
 async function handleLogin(e) {
   e.preventDefault();
 
-  const email = document.getElementById('loginEmail').value.trim();
+  const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
-  const loginForm = e.target;
-  const loginBtn = loginForm.querySelector('button[type="submit"]');
+  const loginBtn = e.target.querySelector('button[type="submit"]');
 
-  // Frontend validation
-  if (!email || !password) {
-    showNotification('Email and password are required.', 'error');
-    return;
-  }
+  if (!email || !password) { showNotification('Email and password are required.', 'error'); return; }
+  if (!isValidEmail(email)) { showNotification('Please enter a valid email address.', 'error'); return; }
 
-  if (!isValidEmail(email)) {
-    showNotification('Please enter a valid email address.', 'error');
-    return;
-  }
+  if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = 'Signing in…'; }
 
   try {
-    // Show loading state
-    loginBtn.disabled = true;
-    loginBtn.textContent = 'Signing in...';
-
-    // Call backend API
+    // Try backend first; if it fails, fall back to local auth
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include', // Important: Send cookies with the request
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ email, password }),
     });
-
     const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Login failed. Please check your credentials.');
-    }
-
-    // Store user data from backend response (API returns flat { success, token, user })
+    if (!response.ok) throw new Error(data.message || 'Invalid credentials.');
     currentUser = data.user;
-    localStorage.setItem('shopease_user', JSON.stringify(currentUser));
     if (data.token) localStorage.setItem('shopease_token', data.token);
-
-    updateUserUI();
-    closeAuthModal();
-    loadHome();
-    showNotification(`Welcome back, ${currentUser.name}! 🎉`, 'success');
-
-  } catch (error) {
-    console.error('Login error:', error);
-    showNotification(error.message || 'Login failed. Please try again.', 'error');
-  } finally {
-    if (loginBtn) {
-      loginBtn.disabled = false;
-      loginBtn.textContent = 'Sign In';
+  } catch (err) {
+    // Backend unavailable — use local account store
+    const users = JSON.parse(localStorage.getItem('shopease_users') || '[]');
+    const found  = users.find(u => u.email === email && u.password === password);
+    if (!found) {
+      showNotification('Invalid email or password. Please try again.', 'error');
+      if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; }
+      return;
     }
+    currentUser = { name: found.name, email: found.email, phone: found.phone || '' };
   }
+
+  localStorage.setItem('shopease_user', JSON.stringify(currentUser));
+  updateUserUI();
+  closeAuthModal();
+  showNotification(`Welcome back, ${currentUser.name}! 🎉`, 'success');
+  loadHome();
+  if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; }
 }
 
 async function handleRegister(e) {
   e.preventDefault();
 
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
+  const name     = document.getElementById('regName').value.trim();
+  const email    = document.getElementById('regEmail').value.trim();
   const password = document.getElementById('regPassword').value;
-  const phone = document.getElementById('regPhone')?.value.trim() || '';
+  const phone    = document.getElementById('regPhone')?.value.trim() || '';
 
-  // Frontend validation
   const validation = validateRegistration(name, email, password, phone);
-  if (!validation.valid) {
-    showNotification(validation.message, 'error');
-    return;
-  }
+  if (!validation.valid) { showNotification(validation.message, 'error'); return; }
+
+  const registerBtn = e.target.querySelector('button[type="submit"]');
+  if (registerBtn) { registerBtn.disabled = true; registerBtn.textContent = 'Creating Account…'; }
 
   try {
-    // Show loading state
-    const registerBtn = event.target.querySelector('button');
-    const originalText = registerBtn.textContent;
-    registerBtn.disabled = true;
-    registerBtn.textContent = 'Creating Account...';
-
-    // Call backend API
+    // Try backend first
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({ name, email, password, phone }),
     });
-
     const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Registration failed.');
-    }
-
-    // Store user data from backend response (API returns flat { success, token, user })
+    if (!response.ok) throw new Error(data.message || 'Registration failed.');
     currentUser = data.user;
-    localStorage.setItem('shopease_user', JSON.stringify(currentUser));
     if (data.token) localStorage.setItem('shopease_token', data.token);
-
-    updateUserUI();
-    closeAuthModal();
-    loadHome();
-    showNotification(`Welcome to ShopEase, ${currentUser.name}! 🚀 Please verify your email.`, 'success');
-
-  } catch (error) {
-    console.error('Registration error:', error);
-    showNotification(error.message || 'Registration failed. Please try again.', 'error');
-  } finally {
-    const registerBtn = event.target.querySelector('button');
-    if (registerBtn) {
-      registerBtn.disabled = false;
-      registerBtn.textContent = 'Create Account';
+  } catch (err) {
+    // Backend unavailable — save locally
+    const users = JSON.parse(localStorage.getItem('shopease_users') || '[]');
+    if (users.find(u => u.email === email)) {
+      showNotification('An account with this email already exists. Please sign in.', 'error');
+      if (registerBtn) { registerBtn.disabled = false; registerBtn.textContent = 'Create Account & Sign In'; }
+      return;
     }
+    users.push({ name, email, password, phone });
+    localStorage.setItem('shopease_users', JSON.stringify(users));
+    currentUser = { name, email, phone };
   }
+
+  localStorage.setItem('shopease_user', JSON.stringify(currentUser));
+  updateUserUI();
+  closeAuthModal();
+  showNotification(`Welcome to ShopEase, ${currentUser.name}! 🚀`, 'success');
+  loadHome();
+  if (registerBtn) { registerBtn.disabled = false; registerBtn.textContent = 'Create Account & Sign In'; }
 }
 
 async function handleLogout() {
@@ -1504,8 +1474,14 @@ function placeOrder() {
   };
   const missingField = Object.entries(shippingAddress).find(([field, value]) => field !== 'country' && !value);
   if (missingField) {
-    showNotification('Please fill all required address fields.', 'error');
+    showNotification(`Please fill in: ${missingField[0].replace(/([A-Z])/g,' $1').trim()}`, 'error');
     const fieldIds = { fullName: 'checkoutName', phone: 'checkoutPhone', address: 'checkoutAddress', city: 'checkoutCity', state: 'checkoutState', pincode: 'checkoutPincode' };
+    // Highlight all empty fields with red border
+    Object.entries(shippingAddress).forEach(([field, val]) => {
+      if (field === 'country') return;
+      const el = document.getElementById(fieldIds[field]);
+      if (el) el.style.borderColor = !val ? '#e53935' : '#ccc';
+    });
     document.getElementById(fieldIds[missingField[0]])?.focus();
     return;
   }
